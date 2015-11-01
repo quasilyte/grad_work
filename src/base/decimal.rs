@@ -1,16 +1,12 @@
 use cgen::stmt::pattern_match::Arm;
+use env::Announce;
+use env::error;
 
 pub struct Decimal(pub i64);
 
-#[derive(Debug)]
-pub enum DecimalParseErr {
-    BadInput,
-    Overflow,
-}
-
-fn from_str(s: &[u8]) -> Result<Decimal, DecimalParseErr> {
+fn from_str(s: &[u8]) -> Decimal {
     if 0 == s.len() {
-        return Err(DecimalParseErr::BadInput);
+        error::decimal_parse();
     }
 
     let (is_positive, digits) = match s[0] {
@@ -20,15 +16,15 @@ fn from_str(s: &[u8]) -> Result<Decimal, DecimalParseErr> {
     };
 
     // #TODO: handle len=19 case with `from_digits_checked`
+    // #TODO: actually, we want to prefer long arithmetics over i64 restriction
     match digits.len() {
-        0 => Err(DecimalParseErr::BadInput),
+        0 => error::decimal_parse(),
         1...18 => from_digits(digits, is_positive),
-        _ => Err(DecimalParseErr::Overflow)
+        _ => error::decimal_parse()
     }
 }
 
-fn from_digits(digits: &[u8], is_positive: bool)
-               -> Result<Decimal, DecimalParseErr> {
+fn from_digits(digits: &[u8], is_positive: bool) -> Decimal {
     let mut result = 0_i64;
     
     for &digit in digits.iter() {
@@ -37,15 +33,15 @@ fn from_digits(digits: &[u8], is_positive: bool)
                 result *= 10;
                 result += (digit - b'0') as i64;
             },
-            _ => return Err(DecimalParseErr::BadInput)
+            _ => error::decimal_parse()
         }
     }
 
-    Ok(Decimal(if is_positive { result } else { -result }))
+    Decimal(if is_positive { result } else { -result })
 }
 
 impl Decimal {
-    pub fn from_str(s: &[u8]) -> Result<Decimal, DecimalParseErr> {
+    pub fn from_str(s: &[u8]) -> Decimal {
         from_str(s)
     }
 }

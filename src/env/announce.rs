@@ -1,3 +1,5 @@
+use std::process;
+
 pub struct Announce<'a> {
     context: Option<&'a str>,
     message: &'a str,
@@ -23,24 +25,33 @@ impl<'a> Announce<'a> {
         self
     }
 
-    pub fn send(&self, code: i32) {
-        println!("{} {}\n---------", self.class(code), code.abs());
-        
-        println!("[message] {}", self.message);
+    fn print_header(&self, class: &str, code: i32) {
+        assert!(code > 0);
+        println!("{} {}\n---------", class, code);
+    }
 
+    pub fn send_as_warning(&self, code: i32) {
+        self.print_header("|warning|", code);
+        self.send(code);
+    }
+
+    pub fn send_as_error(&self, code: i32) -> ! {
+        self.print_header("| error |", code);
+        self.send(code);
+        process::exit(code);
+    }
+
+    pub fn send(&self, code: i32) {
+        println!("[message] {}", self.message);
+        
         if let Some(details) = self.details {
             println!("[details] {}", details);
         }
-
         if let Some(context) = self.context {
             println!("[context] {}", context);
         }
 
         println!("---------");
-    }
-
-    fn class(&self, code: i32) -> &'static str {
-        if code < 0 { "|warning|" } else { " |error| " }
     }
 }
 

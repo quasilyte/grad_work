@@ -15,7 +15,7 @@ fn match_pattern(arms: &[&Arm]) {
 */
 
 fn main() {
-    let decimal = Decimal::from_str(b"4758").unwrap();
+    let decimal = Decimal::from_str(b"--4758");
     println!("{}", decimal.0);
 }
 
