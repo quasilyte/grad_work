@@ -32,16 +32,16 @@ impl<'a> Announce<'a> {
 
     pub fn send_as_warning(&self, code: i32) {
         self.print_header("|warning|", code);
-        self.send(code);
+        self.send();
     }
 
     pub fn send_as_error(&self, code: i32) -> ! {
         self.print_header("| error |", code);
-        self.send(code);
-        process::exit(code);
+        self.send();
+        process::exit(0);
     }
 
-    pub fn send(&self, code: i32) {
+    pub fn send(&self) {
         println!("[message] {}", self.message);
         
         if let Some(details) = self.details {
