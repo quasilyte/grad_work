@@ -2,20 +2,16 @@ pub mod cgen;
 pub mod base;
 pub mod env;
 
+use base::Lexer;
 use base::Decimal;
 use cgen::stmt::pattern_match::Arm;
 
-/*
-fn match_pattern(arms: &[&Arm]) {
-    match arms.iter().cloned().by_ref().find(Arm::is_simple) {
-        Some(_) => println!("non-simple case"),
-        None => println!("simple case")
-    }
-}
-*/
-
 fn main() {
-    let decimal = Decimal::from_str(b"--4758");
-    println!("{}", decimal.0);
+    let input = b"xs\tfor + ++ 430 dg3ger  6.63 ";
+    let mut lexer = Lexer::new(input);
+
+    for i in 0..13 {
+        println!("[{:2}] {:?}", i, lexer.next());
+    }
 }
 
