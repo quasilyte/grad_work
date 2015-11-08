@@ -1,0 +1,18 @@
+#+CAPTION: keyword determination
+| algorithm                   | cost |
+|-----------------------------+------|
+| pattern match against &[u8] |   16 |
+| hashSet lookup              |   45 |
+
+#+CAPTION: encoding footprint
+| encoding | cost |
+|----------+------|
+| ASCII    |   43 |
+| UTF-8    |   68 |
+
+#+CAPTION: char class determination
+| method             | cost |
+|--------------------+------|
+| direct fn call     |   19 |
+| indirect fn call   |   20 |
+| &str linear search |   52 |
