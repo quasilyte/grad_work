@@ -1,10 +1,11 @@
 use cgen::stmt::pattern_match::Arm;
 use env::Announce;
 use env::error;
+use base::byte::*;
 
 pub struct Decimal(pub i64);
 
-fn from_str(s: &[u8]) -> Decimal {
+fn from_str(s: &Bytes) -> Decimal {
     if 0 == s.len() {
         error::decimal_parse();
     }
@@ -24,7 +25,7 @@ fn from_str(s: &[u8]) -> Decimal {
     }
 }
 
-fn from_digits(digits: &[u8], is_positive: bool) -> Decimal {
+fn from_digits(digits: &Bytes, is_positive: bool) -> Decimal {
     let mut result = 0_i64;
     
     for &digit in digits.iter() {
@@ -41,7 +42,7 @@ fn from_digits(digits: &[u8], is_positive: bool) -> Decimal {
 }
 
 impl Decimal {
-    pub fn from_str(s: &[u8]) -> Decimal {
+    pub fn from_str(s: &Bytes) -> Decimal {
         from_str(s)
     }
 }
