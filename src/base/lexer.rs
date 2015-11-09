@@ -19,15 +19,28 @@ fn is_keyword(word: &Bytes) -> bool {
 pub struct Lexer<'a> {
     src: Reader<'a>,
     delimiter_p: BytePredicate,
+    identifier_p: BytePredicate,
 }
 
 impl<'a> Lexer<'a> {
     pub fn new(buf: &'a Bytes) -> Self {
+        fn delimiter(c: Byte) -> bool {
+            c == b' ' || c == b'\t' || c == b'\n' || c == b';'
+        }
+
+        fn identifier(c: Byte) -> bool {
+            match c {
+                b'a'...b'z' | b'A'...b'Z' => true,
+                b'0'...b'9' => true,
+                b'_' => true,
+                _ => false
+            }
+        }
+        
         Lexer {
             src: Reader::new(buf),
-            delimiter_p: byte_predicate!(
-                c, c == b' ' || c == b'\t' || c == b'\n' || c == b';'
-            )
+            delimiter_p: delimiter,
+            identifier_p: identifier 
         }
     }
 
@@ -36,7 +49,7 @@ impl<'a> Lexer<'a> {
     }
 
     fn fetch_unit(&mut self) -> &Bytes {
-        let offset = self.src.pos - 1;
+        let offset = self.src.pos() - 1;
         self.skip_to_delimiter();
         self.src.stab(offset)
     }
@@ -84,7 +97,7 @@ impl<'a> Iterator for Lexer<'a> {
     type Item = Token;
   
     fn next(&mut self) -> Option<Token> {
-        if self.src.has_more() {
+        if self.src.has_next() {
             Some(match self.src.next_byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
@@ -101,11 +114,17 @@ impl<'a> Iterator for Lexer<'a> {
 
 pub trait LexerConfig {
     fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig;
+    fn identifier(&mut self, f: BytePredicate) -> &mut LexerConfig;
 }
 
 impl<'a> LexerConfig for Lexer<'a> {
-    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig {
-        self.delimiter_p = f;
+    fn delimiter(&mut self, p: BytePredicate) -> &mut LexerConfig {
+        self.delimiter_p = p;
+        self
+    }
+
+    fn identifier(&mut self, p: BytePredicate) -> &mut LexerConfig {
+        self.identifier_p = p;
         self
     }
 }
