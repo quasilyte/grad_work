@@ -1,0 +1,20 @@
+#+CAPTION: Lexer
+| Task                            |
+|---------------------------------|
+| custom delimeter lambda support |
+| custom keyword dictionary       |
+| parse Decimal type with value   |
+| parse Real type with value      |
+
+#+CAPTION: Types
+| Task                                                                       |
+|----------------------------------------------------------------------------|
+| decide if Decimal/Real should be tuple structs or type aliases for i64/f64 |
+
+#+CAPTION: Routines
+| Task                     |
+|--------------------------|
+| Solve #FIXME annotations |
+| Solve #TODO annotations  |
+
+
