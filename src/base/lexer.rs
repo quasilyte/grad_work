@@ -2,6 +2,7 @@ use env::error;
 use base::byte::*;
 use base::reader::*;
 use base::token::*;
+use base::token::Token::*;
 
 // use base::lexer_config::LexerConfig;
 
@@ -46,26 +47,24 @@ impl<'a> Lexer<'a> {
         let word = self.fetch_unit();
         // print!("`{}` ", String::from_utf8(word.to_owned()).unwrap());
         if is_keyword(word) {
-            Token::W(Word::Keyword(word.to_owned()))
+            W(Word::Keyword(word.to_owned()))
         } else {
-            Token::W(Word::Identifier(word.to_owned()))
+            W(Word::Identifier(word.to_owned()))
         }
     }
 
     fn fetch_number(&mut self) -> Token {
         let word = self.fetch_unit();
-        Token::N(Number::Decimal(55))
+        N(Number::Decimal(55))
     }
 
     fn fetch_whitespace(&mut self) -> Token {
         self.src.skip_while(is_whitespace);
-        Token::S(Space::Whitespace)
+        S(Space::Whitespace)
     }
     
     fn fetch_operator(&mut self) -> Token {
-        use base::token::Token::O;
         use base::token::Operator::*;
-        
         match self.fetch_unit() {
             b"+" => O(Plus),
             b"++" => O(DoublePlus),
@@ -91,8 +90,8 @@ impl<'a> Iterator for Lexer<'a> {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b' ' => self.fetch_whitespace(),
-                b'\t' => Token::S(Space::Tab),
-                b'\n' => Token::S(Space::Newline),
+                b'\t' => S(Space::Tab),
+                b'\n' => S(Space::Newline),
                 _ => self.fetch_operator(),
             })
         } else {
