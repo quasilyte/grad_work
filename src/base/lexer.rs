@@ -91,12 +91,12 @@ impl<'a> LexerConfig for Lexer<'a> {
 
 impl<'a> Iterator for Lexer<'a> {
     type Item = Token;
-    
+  
     fn next(&mut self) -> Option<Token> {
         if self.src.has_more() {
             Some(match self.src.next_byte() {
-                b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b'0'...b'9' => self.fetch_number(),
+                b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b' ' => self.fetch_whitespace(),
                 b'\t' => Token::S(Space::Tab),
                 b'\n' => Token::S(Space::Newline),
