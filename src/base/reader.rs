@@ -2,7 +2,8 @@ use base::byte::*;
 
 pub struct Reader<'a> {
     buf: &'a Bytes,
-    pub pos: usize
+    max_pos: usize,
+    pub pos: usize,
 }
 
 impl<'a> Reader<'a> {        
@@ -17,10 +18,15 @@ impl<'a> Reader<'a> {
     //
     // Pub
     //
+
+    pub fn eof(&self) -> bool {
+        self.pos == self.max_pos
+    }
     
     pub fn new(buf: &'a Bytes) -> Self {
         Reader {
             buf: buf,
+            max_pos: buf.len() - 1,
             pos: 0,
         }
     }

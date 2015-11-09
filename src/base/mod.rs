@@ -17,4 +17,5 @@ pub use self::reader::Reader;
 mod reader;
 
 pub use self::lexer::Lexer;
-mod lexer;
+pub use self::lexer::LexerConfig;
+pub mod lexer;

@@ -1,3 +1,4 @@
+use env::error;
 use base::byte::*;
 use base::reader::*;
 use base::token::*;
@@ -68,7 +69,7 @@ impl<'a> Lexer<'a> {
             b"--" => Token::O(Operator::DoubleMinus),
             b"=" => Token::O(Operator::Eq),
             b"==" => Token::O(Operator::DoubleEq),
-            _ => panic!("unknown token met!")
+            unit @ _ => error::unexpected_token(unit)
         }
     }
     
@@ -81,5 +82,24 @@ impl<'a> Lexer<'a> {
             b'\n' => Token::S(Space::Newline),
             _ => self.fetch_operator(),
         }
+    }
+
+    pub fn eof(&self) -> bool {
+        self.src.eof()
+    }
+
+    pub fn configure(&mut self) -> &mut LexerConfig {
+        self
+    }
+}
+
+pub trait LexerConfig {
+    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig;
+}
+
+impl<'a> LexerConfig for Lexer<'a> {
+    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig {
+        self.delimiter_p = f;
+        self
     }
 }

@@ -1,5 +1,4 @@
 use cgen::stmt::pattern_match::Arm;
-use env::Announce;
 use env::error;
 use base::byte::*;
 
