@@ -19,6 +19,7 @@ pub enum Word {
     Keyword(Vec<Byte>),
 }
 
+// #FIXME: should be `special char`, but `S` is already used by `Space`...
 #[derive(Debug)]
 pub enum Operator {
     Plus,

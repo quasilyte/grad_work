@@ -4,8 +4,6 @@ use base::reader::*;
 use base::token::*;
 use base::token::Token::*;
 
-// use base::lexer_config::LexerConfig;
-
 fn is_whitespace(b: Byte) -> bool {
     b == b' '
 }
@@ -65,6 +63,7 @@ impl<'a> Lexer<'a> {
     
     fn fetch_operator(&mut self) -> Token {
         use base::token::Operator::*;
+        
         match self.fetch_unit() {
             b"+" => O(Plus),
             b"++" => O(DoublePlus),
