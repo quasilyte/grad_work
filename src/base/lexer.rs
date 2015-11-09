@@ -94,14 +94,14 @@ impl<'a> Iterator for Lexer<'a> {
     
     fn next(&mut self) -> Option<Token> {
         if self.src.has_more() {
-            match self.src.next_byte() {
-                b'a'...b'z' | b'A'...b'Z' => Some(self.fetch_word()),
-                b'0'...b'9' => Some(self.fetch_number()),
-                b' ' => Some(self.fetch_whitespace()),
-                b'\t' => Some(Token::S(Space::Tab)),
-                b'\n' => Some(Token::S(Space::Newline)),
-                _ => Some(self.fetch_operator()),
-            }
+            Some(match self.src.next_byte() {
+                b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
+                b'0'...b'9' => self.fetch_number(),
+                b' ' => self.fetch_whitespace(),
+                b'\t' => Token::S(Space::Tab),
+                b'\n' => Token::S(Space::Newline),
+                _ => self.fetch_operator(),
+            })
         } else {
             None
         }
