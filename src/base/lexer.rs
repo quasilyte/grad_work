@@ -3,6 +3,8 @@ use base::byte::*;
 use base::reader::*;
 use base::token::*;
 
+// use base::lexer_config::LexerConfig;
+
 fn is_whitespace(b: Byte) -> bool {
     b == b' '
 }
@@ -55,36 +57,27 @@ impl<'a> Lexer<'a> {
         Token::N(Number::Decimal(55))
     }
 
-    // " "32 "\n"10 "\t"9
     fn fetch_whitespace(&mut self) -> Token {
         self.src.skip_while(is_whitespace);
         Token::S(Space::Whitespace)
     }
-
-    fn fetch_operator(&mut self) -> Token {   
+    
+    fn fetch_operator(&mut self) -> Token {
+        use base::token::Token::O;
+        use base::token::Operator::*;
+        
         match self.fetch_unit() {
-            b"+" => Token::O(Operator::Plus),
-            b"++" => Token::O(Operator::DoublePlus),
-            b"-" => Token::O(Operator::Minus),
-            b"--" => Token::O(Operator::DoubleMinus),
-            b"=" => Token::O(Operator::Eq),
-            b"==" => Token::O(Operator::DoubleEq),
+            b"+" => O(Plus),
+            b"++" => O(DoublePlus),
+            b"-" => O(Minus),
+            b"--" => O(DoubleMinus),
+            b"=" => O(Eq),
+            b"==" => O(DoubleEq),
             unit @ _ => error::unexpected_token(unit)
         }
     }
 
-    pub fn configure(&mut self) -> &mut LexerConfig {
-        self
-    }
-}
-
-pub trait LexerConfig {
-    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig;
-}
-
-impl<'a> LexerConfig for Lexer<'a> {
-    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig {
-        self.delimiter_p = f;
+    pub fn set(&mut self) -> &mut LexerConfig {
         self
     }
 }
@@ -105,5 +98,16 @@ impl<'a> Iterator for Lexer<'a> {
         } else {
             None
         }
+    }
+}
+
+pub trait LexerConfig {
+    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig;
+}
+
+impl<'a> LexerConfig for Lexer<'a> {
+    fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig {
+        self.delimiter_p = f;
+        self
     }
 }

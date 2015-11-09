@@ -19,3 +19,8 @@ mod reader;
 pub use self::lexer::Lexer;
 pub use self::lexer::LexerConfig;
 pub mod lexer;
+
+/*
+pub use self::lexer_config::LexerConfig;
+pub mod lexer_config;
+*/

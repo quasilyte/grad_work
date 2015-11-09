@@ -18,7 +18,7 @@ fn main() {
     let input = b"xs\tfor + ++ 430 dg3ger  6.63 ";
     let mut lexer = Lexer::new(input);
     
-    lexer.configure()
+    lexer.set()
         .delimiter(delimiter);
 
     for token in lexer {
