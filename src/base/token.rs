@@ -14,9 +14,9 @@ pub enum Number {
 }
 
 #[derive(Debug)]
-pub enum Word<'a> {
-    Identifier(&'a Bytes),
-    Keyword(&'a Bytes),
+pub enum Word {
+    Identifier(Vec<Byte>),
+    Keyword(Vec<Byte>),
 }
 
 #[derive(Debug)]
@@ -30,9 +30,9 @@ pub enum Operator {
 }
 
 #[derive(Debug)]
-pub enum Token<'a> {
+pub enum Token {
     N(Number),
-    W(Word<'a>),
+    W(Word),
     O(Operator),
     S(Space),
 }

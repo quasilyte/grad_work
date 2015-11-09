@@ -44,9 +44,9 @@ impl<'a> Lexer<'a> {
         let word = self.fetch_unit();
         // print!("`{}` ", String::from_utf8(word.to_owned()).unwrap());
         if is_keyword(word) {
-            Token::W(Word::Keyword(word))
+            Token::W(Word::Keyword(word.to_owned()))
         } else {
-            Token::W(Word::Identifier(word))
+            Token::W(Word::Identifier(word.to_owned()))
         }
     }
 
@@ -73,17 +73,6 @@ impl<'a> Lexer<'a> {
         }
     }
     
-    pub fn next(&mut self) -> Token {
-        match self.src.next_byte() {
-            b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
-            b'0'...b'9' => self.fetch_number(),
-            b' ' => self.fetch_whitespace(),
-            b'\t' => Token::S(Space::Tab),
-            b'\n' => Token::S(Space::Newline),
-            _ => self.fetch_operator(),
-        }
-    }
-
     pub fn eof(&self) -> bool {
         self.src.eof()
     }
@@ -101,5 +90,25 @@ impl<'a> LexerConfig for Lexer<'a> {
     fn delimiter(&mut self, f: BytePredicate) -> &mut LexerConfig {
         self.delimiter_p = f;
         self
+    }
+}
+
+impl<'a> Iterator for Lexer<'a> {
+    type Item = Token;
+    
+    fn next(&mut self) -> Option<Token> {
+        if self.src.eof() {
+            None
+        } else {
+            match self.src.next_byte() {
+                b'\0' => None,
+                b'a'...b'z' | b'A'...b'Z' => Some(self.fetch_word()),
+                b'0'...b'9' => Some(self.fetch_number()),
+                b' ' => Some(self.fetch_whitespace()),
+                b'\t' => Some(Token::S(Space::Tab)),
+                b'\n' => Some(Token::S(Space::Newline)),
+                _ => Some(self.fetch_operator()),
+            }
+        }
     }
 }
