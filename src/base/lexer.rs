@@ -72,10 +72,6 @@ impl<'a> Lexer<'a> {
             unit @ _ => error::unexpected_token(unit)
         }
     }
-    
-    pub fn eof(&self) -> bool {
-        self.src.eof()
-    }
 
     pub fn configure(&mut self) -> &mut LexerConfig {
         self
@@ -97,11 +93,8 @@ impl<'a> Iterator for Lexer<'a> {
     type Item = Token;
     
     fn next(&mut self) -> Option<Token> {
-        if self.src.eof() {
-            None
-        } else {
+        if self.src.has_more() {
             match self.src.next_byte() {
-                b'\0' => None,
                 b'a'...b'z' | b'A'...b'Z' => Some(self.fetch_word()),
                 b'0'...b'9' => Some(self.fetch_number()),
                 b' ' => Some(self.fetch_whitespace()),
@@ -109,6 +102,8 @@ impl<'a> Iterator for Lexer<'a> {
                 b'\n' => Some(Token::S(Space::Newline)),
                 _ => Some(self.fetch_operator()),
             }
+        } else {
+            None
         }
     }
 }

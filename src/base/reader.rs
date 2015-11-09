@@ -19,8 +19,8 @@ impl<'a> Reader<'a> {
     // Pub
     //
 
-    pub fn eof(&self) -> bool {
-        self.pos == self.max_pos
+    pub fn has_more(&self) -> bool {
+        self.pos < self.max_pos
     }
     
     pub fn new(buf: &'a Bytes) -> Self {

@@ -12,8 +12,10 @@ fn main() {
     fn delimiter(c: Byte) -> bool {
         c == b' ' || c == b'\n' || c == b'\t'
     }
-    
-    let input = b"xs\tfor + ++ 430 dg3ger  6.63 \0";
+
+    // #TODO: lexer must ensure trailing delimiter char in the input,
+    // because we do not want to make excessive checks at run time
+    let input = b"xs\tfor + ++ 430 dg3ger  6.63 ";
     let mut lexer = Lexer::new(input);
     
     lexer.configure()
@@ -22,11 +24,5 @@ fn main() {
     for token in lexer {
         println!("{:?}", token);
     }
-    
-    /*
-    for i in 0..13 {
-        println!("[{:2}] {:?}", i, lexer.next());
-    }
-    */
 }
 
