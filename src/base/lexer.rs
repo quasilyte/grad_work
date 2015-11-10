@@ -1,12 +1,8 @@
 use env::error;
 use base::byte::*;
-use base::reader::*;
 use base::token::*;
 use base::token::Token::*;
-
-fn is_whitespace(b: Byte) -> bool {
-    b == b' '
-}
+use base::decimal::Decimal;
 
 // #FIXME: should be configurable
 fn is_keyword(word: &Bytes) -> bool {
@@ -17,9 +13,38 @@ fn is_keyword(word: &Bytes) -> bool {
 }
 
 pub struct Lexer<'a> {
-    src: Reader<'a>,
+    buf: &'a Bytes,
+    max_pos: usize,
+    pos: usize,
     delimiter_p: BytePredicate,
     identifier_p: BytePredicate,
+}
+
+trait ByteReader {
+    fn has_next(&self) -> bool;
+    
+    fn byte(&self) -> Byte;
+
+    fn next_byte(&mut self) -> Byte;
+    
+    fn at(&self, b: Byte) -> bool {
+        self.byte() == b
+    }
+}
+
+impl<'a> ByteReader for Lexer<'a> {
+    fn has_next(&self) -> bool {
+        self.pos < self.max_pos
+    }
+    
+    fn byte(&self) -> Byte {
+        self.buf[self.pos]
+    }
+
+    fn next_byte(&mut self) -> Byte {
+        self.pos += 1;
+        self.buf[self.pos - 1]
+    }
 }
 
 impl<'a> Lexer<'a> {
@@ -38,46 +63,70 @@ impl<'a> Lexer<'a> {
         }
         
         Lexer {
-            src: Reader::new(buf),
+            buf: buf,
+            max_pos: buf.len() - 1,
+            pos: 0,
             delimiter_p: delimiter,
             identifier_p: identifier 
         }
     }
-
-    fn skip_to_delimiter(&mut self) {
-        self.src.skip_until(self.delimiter_p);
-    }
-
-    fn fetch_unit(&mut self) -> &Bytes {
-        let offset = self.src.pos() - 1;
-        self.skip_to_delimiter();
-        self.src.stab(offset)
-    }
-
+    
     fn fetch_word(&mut self) -> Token {
-        let word = self.fetch_unit();
-        // print!("`{}` ", String::from_utf8(word.to_owned()).unwrap());
-        if is_keyword(word) {
-            W(Word::Keyword(word.to_owned()))
+        use base::token::Word::*;
+        
+        let offset = self.pos - 1;
+        while !(self.delimiter_p)(self.byte()) {
+            if (self.identifier_p)(self.byte()) {
+                self.pos += 1;
+            } else {
+                error::malformed_identifier(self.byte());
+            }
+        }
+        let bytes = &self.buf[offset .. self.pos];
+        
+        // print!("`{}` ", String::from_utf8(bytes.to_owned()).unwrap());
+        
+        if is_keyword(bytes) {
+            W(Keyword(bytes.to_owned()))
         } else {
-            W(Word::Identifier(word.to_owned()))
+            W(Identifier(bytes.to_owned()))
         }
     }
 
     fn fetch_number(&mut self) -> Token {
-        let word = self.fetch_unit();
-        N(Number::Decimal(55))
+        let offset = self.pos - 1;
+        while self.byte().is_digit() {
+            self.pos += 1;
+        }
+        let decimal = Decimal::from_str(&self.buf[offset .. self.pos]);
+        
+        if self.byte() == b'.' {
+            self.pos += 1;
+            let offset = self.pos;
+            while self.byte().is_digit() {
+                self.pos += 1;
+            }
+            N(Number::Real(decimal.to_real(&self.buf[offset .. self.pos]).0))
+        } else {
+            N(Number::Decimal(decimal.0))
+        }
     }
 
     fn fetch_whitespace(&mut self) -> Token {
-        self.src.skip_while(is_whitespace);
+        while self.at(b' ') { self.pos += 1 }
         S(Space::Whitespace)
     }
     
     fn fetch_operator(&mut self) -> Token {
         use base::token::Operator::*;
+
+        let offset = self.pos - 1;
+        while !(self.delimiter_p)(self.byte()) {
+            self.pos += 1;
+        }
+        let bytes = &self.buf[offset .. self.pos];
         
-        match self.fetch_unit() {
+        match bytes {
             b"+" => O(Plus),
             b"++" => O(DoublePlus),
             b"-" => O(Minus),
@@ -97,13 +146,15 @@ impl<'a> Iterator for Lexer<'a> {
     type Item = Token;
   
     fn next(&mut self) -> Option<Token> {
-        if self.src.has_next() {
-            Some(match self.src.next_byte() {
+        use base::token::Space::*;
+        
+        if self.has_next() {
+            Some(match self.next_byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b' ' => self.fetch_whitespace(),
-                b'\t' => S(Space::Tab),
-                b'\n' => S(Space::Newline),
+                b'\t' => S(Tab),
+                b'\n' => S(Newline),
                 _ => self.fetch_operator(),
             })
         } else {

@@ -1,6 +1,7 @@
 use cgen::stmt::pattern_match::Arm;
 use env::error;
 use base::byte::*;
+use base::real::Real;
 
 pub struct Decimal(pub i64);
 
@@ -41,8 +42,14 @@ fn from_digits(digits: &Bytes, is_positive: bool) -> Decimal {
 }
 
 impl Decimal {
-    pub fn from_str(s: &Bytes) -> Self {
-        from_str(s)
+    pub fn from_str(bytes: &Bytes) -> Self {
+        from_str(bytes)
+    }
+
+    pub fn to_real(&self, fractional_part: &Bytes) -> Real {
+        Real(self.0 as f64
+             + (Decimal::from_str(fractional_part).0 as f64
+                * (1.0 / (10_i64.pow(fractional_part.len() as u32) as f64))))
     }
 }
 

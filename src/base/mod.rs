@@ -16,9 +16,6 @@ pub use self::token::Operator;
 pub use self::token::Token;
 mod token;
 
-pub use self::reader::Reader;
-mod reader;
-
 pub use self::lexer::Lexer;
 pub use self::lexer::LexerConfig;
 pub mod lexer;
