@@ -1,14 +1,14 @@
-#+CAPTURE other sources
+#+CAPTION: other sources
 | [[https://swtch.com/~rsc/regexp/regexp1.html][Thompson NFA regexp engine]]        |
 | [[https://golang.org/src/runtime/hashmap.go][Golang std/hashmap impl]]           |
 | [[http://letoverlambda.com/index.cl/guest/chap5.html][LetOverLambda -- about lisp macro]] |
 | [[http://www.sonoma.edu/users/l/luvisi/sl3.c][400 SLOC lisp impl (in C)]]         |
 | [[http://rosettacode.org/wiki/Category:Solutions_by_Programming_Task][Rosetta Code]]                      |
 
-#+CAPTURE misc/temp
+#+CAPTION: misc/temp
 | [[https://yoo2080.wordpress.com/2013/08/16/differences-between-common-lisp-and-emacs-lisp/][Differences between elisp & CL]] |
 
-#+CAPTURE wikipedia
+#+CAPTION: wikipedia
 | [[https://en.wikipedia.org/wiki/Rebol][Rebol language]]          |
 | [[https://en.wikipedia.org/wiki/Red_%28programming_language%29][Red language]]            |
 | [[https://en.wikipedia.org/wiki/Lexical_analysis][Lexical analysis]]        |
@@ -16,7 +16,7 @@
 | [[https://en.wikipedia.org/wiki/Van_Wijngaarden_grammar][Van_Wijngaarden_grammar]] |
 | [[https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form][Extended BNF]]            |
 
-#+CAPTURE Rust docs and books
+#+CAPTION: Rust docs and books
 | [[https://doc.rust-lang.org/book/][Rust book]]                     |
 | [[https://doc.rust-lang.org/reference.htm][Rust refs]]                     |
 | [[http://cglab.ca/~abeinges/blah/too-many-lists/book/][Linked lists troubles in Rust]] |
