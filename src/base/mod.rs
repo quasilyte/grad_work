@@ -6,6 +6,9 @@ mod byte;
 pub use self::decimal::Decimal;
 mod decimal;
 
+pub use self::real::Real;
+mod real;
+
 pub use self::token::Space;
 pub use self::token::Number;
 pub use self::token::Word;
