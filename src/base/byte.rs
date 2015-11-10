@@ -32,16 +32,6 @@ macro_rules! bytes_matcher {
 }
 
 macro_rules! byte_matcher {
-    ($($range: pat),*) => {{
-        fn byte_matcher(byte: Byte) -> bool {
-            match byte {
-                $($range => true,)*
-                _ => false
-            }
-        }
-        byte_matcher
-    }};
-    
     ($byte: expr) => {{
         fn byte_matcher(byte: Byte) -> bool {
             $byte == byte
@@ -52,6 +42,16 @@ macro_rules! byte_matcher {
     ($byte: expr, $($other_byte: expr),*) => {{
         fn byte_matcher(byte: Byte) -> bool {
             $byte == byte $(|| $other_byte == byte)*
+        }
+        byte_matcher
+    }};
+
+    ($($range: pat),*) => {{
+        fn byte_matcher(byte: Byte) -> bool {
+            match byte {
+                $($range => true,)*
+                _ => false
+            }
         }
         byte_matcher
     }};
