@@ -4,7 +4,9 @@
 | [[http://letoverlambda.com/index.cl/guest/chap5.html][LetOverLambda -- about lisp macro]] |
 | [[http://www.sonoma.edu/users/l/luvisi/sl3.c][400 SLOC lisp impl (in C)]]         |
 | [[http://rosettacode.org/wiki/Category:Solutions_by_Programming_Task][Rosetta Code]]                      |
-|                                   |
+
+#+CAPTURE misc/temp
+| [[https://yoo2080.wordpress.com/2013/08/16/differences-between-common-lisp-and-emacs-lisp/][Differences between elisp & CL]] |
 
 #+CAPTURE wikipedia
 | [[https://en.wikipedia.org/wiki/Rebol][Rebol language]]          |
@@ -22,5 +24,3 @@
 | [[http://hermanradtke.com/2015/06/22/effectively-using-iterators-in-rust.html][Effective iterators in Rust]]   |
 | [[https://aturon.github.io/README.html][Rust code style guidelines]]    |
 | [[http://blog.ezyang.com/2013/12/two-bugs-in-the-borrow-checker-every-rust-developer-should-know-about/][Borrow checker issues]]         |
-
-
