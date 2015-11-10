@@ -4,20 +4,13 @@ use base::token::*;
 use base::token::Token::*;
 use base::decimal::Decimal;
 
-// #FIXME: should be configurable
-fn is_keyword(word: &Bytes) -> bool {
-    match word {
-        b"for" => true,
-        _ => false,
-    }
-}
-
 pub struct Lexer<'a> {
     buf: &'a Bytes,
     max_pos: usize,
     pos: usize,
     delimiter_p: BytePredicate,
     identifier_p: BytePredicate,
+    keyword_p: BytesPredicate,
 }
 
 macro_rules! take_bytes {
@@ -56,26 +49,20 @@ impl<'a> Lexer<'a> {
 }
 
 impl<'a> Lexer<'a> {
-    pub fn new(buf: &'a Bytes) -> Self {
-        fn delimiter(c: Byte) -> bool {
-            c == b' ' || c == b'\t' || c == b'\n' || c == b';'
-        }
-
-        fn identifier(c: Byte) -> bool {
-            match c {
-                b'a'...b'z' | b'A'...b'Z' => true,
-                b'0'...b'9' => true,
-                b'_' => true,
-                _ => false
-            }
-        }
+    pub fn new(buf: &'a Bytes, is_keyword: BytesPredicate) -> Self {
+        let is_delimiter = byte_matcher!(b' ', b'\t', b'\n', b';');
+        
+        let is_identifier = byte_matcher!(
+            b'a'...b'z', b'A'...b'Z', b'0'...b'9', b'_'
+        );
         
         Lexer {
             buf: buf,
             max_pos: buf.len() - 1,
             pos: 0,
-            delimiter_p: delimiter,
-            identifier_p: identifier 
+            delimiter_p: is_delimiter,
+            identifier_p: is_identifier,
+            keyword_p: is_keyword,
         }
     }
     
@@ -91,7 +78,7 @@ impl<'a> Lexer<'a> {
             }
         });
                                         
-        if is_keyword(bytes) {
+        if (self.keyword_p)(bytes) {
             W(Keyword(bytes.to_owned()))
         } else {
             W(Identifier(bytes.to_owned()))

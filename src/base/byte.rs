@@ -2,6 +2,7 @@ pub type Byte = u8;
 pub type Bytes = [u8];
 
 pub type BytePredicate = fn(Byte) -> bool;
+pub type BytesPredicate = fn(&Bytes) -> bool;
 
 // #TODO: maybe I need a new type rather than a typedef for `u8`?
 pub trait ByteChar {
@@ -18,25 +19,40 @@ impl ByteChar for Byte {
     }
 }
 
-// #FIXME: sometimes works not how intended
-macro_rules! byte_predicate {
-    ($($body: pat),*) => {{
-        fn predicate(c: Byte) -> bool {
-            match c {
-                $($body => true,)*
-                _ => false,
+macro_rules! bytes_matcher {
+    ($($bytes: pat),*) => {{
+        fn bytes_matcher(bytes: &Bytes) -> bool {
+            match bytes {
+                $($bytes => true,)*
+                _ => false
             }
         }
-        predicate
+        bytes_matcher
+    }};
+}
+
+macro_rules! byte_matcher {
+    ($($range: pat),*) => {{
+        fn byte_matcher(byte: Byte) -> bool {
+            match byte {
+                $($range => true,)*
+                _ => false
+            }
+        }
+        byte_matcher
     }};
     
-    ($arg: ident, $body: expr) => {{
-        fn predicate($arg: Byte) -> bool { $body }
-        predicate
+    ($byte: expr) => {{
+        fn byte_matcher(byte: Byte) -> bool {
+            $byte == byte
+        }
+        byte_matcher
     }};
     
-    ($arg: ident, $body: block) => {{
-        fn predicate($arg: Byte) -> bool $body
-        predicate
+    ($byte: expr, $($other_byte: expr),*) => {{
+        fn byte_matcher(byte: Byte) -> bool {
+            $byte == byte $(|| $other_byte == byte)*
+        }
+        byte_matcher
     }};
 }

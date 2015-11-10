@@ -1,35 +1,29 @@
-pub mod cgen;
+#[macro_use]
 pub mod base;
+pub mod cgen;
 pub mod env;
 
-use base::Lexer;
-use base::Decimal;
-use base::Byte;
+use base::{Lexer, Decimal, Byte, Bytes};
 
-// use cgen::stmt::pattern_match::Arm;
-
-fn main() {
-    fn delimiter(c: Byte) -> bool {
-        c == b' ' || c == b'\n' || c == b'\t'
-    }
-
-    fn identifier(c: Byte) -> bool {
-        match c {
-            b'a'...b'z' | b'A'...b'Z' => true,
-            b'0'...b'9' => true,
-            b'_' => true,
-            _ => false
-        }
-    }
-
+// #TODO: maybe it is a good idea to define a keyword set
+// inside a parser alongside with associated handlers?
+// #TODO: can we get rid of `b` prefixes at least here?
+fn main() {  
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
     let input = b"xs\tfor + ++ 430 dg3ger  6.63 ";
-    let mut lexer = Lexer::new(input);
+    
+    let mut lexer = Lexer::new(input, bytes_matcher!(
+        b"if",
+        b"else",
+        b"for",
+        b"loop",
+        b"while"
+    ));
     
     lexer.set()
-        .delimiter(delimiter)
-        .identifier(identifier);
+        .delimiter(byte_matcher!(b' ', b'\t', b'\n'))
+        .identifier(byte_matcher!(b'a'...b'z', b'A'...b'Z', b'0'...b'9', b'_'));
 
     for token in lexer {
         println!("{:?}", token);
