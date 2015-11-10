@@ -20,6 +20,14 @@ pub struct Lexer<'a> {
     identifier_p: BytePredicate,
 }
 
+macro_rules! take_bytes {
+    ($this: ident, $body: block) => {{
+        let start_pos = $this.pos;
+        $body
+        &$this.buf[start_pos .. $this.pos]
+    }}
+}
+
 impl<'a> Lexer<'a> {
     fn has_next(&self) -> bool {
         self.pos < self.max_pos
@@ -66,18 +74,15 @@ impl<'a> Lexer<'a> {
     fn fetch_word(&mut self) -> Token {
         use base::token::Word::*;
         
-        let offset = self.pos - 1;
-        while !(self.delimiter_p)(self.byte()) {
-            if (self.identifier_p)(self.byte()) {
-                self.pos += 1;
-            } else {
-                error::malformed_identifier(self.byte());
+        let bytes = take_bytes!(self, {
+            while !(self.delimiter_p)(self.byte()) {
+                match (self.identifier_p)(self.byte()) {
+                    true => self.pos += 1,
+                    _ => error::malformed_identifier(self.byte())
+                }
             }
-        }
-        let bytes = &self.buf[offset .. self.pos];
-        
-        // print!("`{}` ", String::from_utf8(bytes.to_owned()).unwrap());
-        
+        });
+                                        
         if is_keyword(bytes) {
             W(Keyword(bytes.to_owned()))
         } else {
@@ -86,19 +91,20 @@ impl<'a> Lexer<'a> {
     }
 
     fn fetch_number(&mut self) -> Token {
-        let offset = self.pos - 1;
-        while self.byte().is_digit() {
-            self.pos += 1;
-        }
-        let decimal = Decimal::from_str(&self.buf[offset .. self.pos]);
-        
-        if self.byte() == b'.' {
-            self.pos += 1;
-            let offset = self.pos;
+        let decimal = Decimal::from_str(take_bytes!(self, {
             while self.byte().is_digit() {
                 self.pos += 1;
             }
-            N(Number::Real(decimal.to_real(&self.buf[offset .. self.pos]).0))
+        }));
+        
+        if self.byte() == b'.' {
+            self.pos += 1;
+            
+            N(Number::Real(decimal.to_real(take_bytes!(self, {
+                while self.byte().is_digit() {
+                    self.pos += 1;
+                }
+            })).0))
         } else {
             N(Number::Decimal(decimal.0))
         }
@@ -112,11 +118,11 @@ impl<'a> Lexer<'a> {
     fn fetch_operator(&mut self) -> Token {
         use base::token::Operator::*;
 
-        let offset = self.pos - 1;
-        while !(self.delimiter_p)(self.byte()) {
-            self.pos += 1;
-        }
-        let bytes = &self.buf[offset .. self.pos];
+        let bytes = take_bytes!(self, {
+            while !(self.delimiter_p)(self.byte()) {
+                self.pos += 1;
+            }
+        });
         
         match bytes {
             b"+" => O(Plus),
@@ -141,12 +147,12 @@ impl<'a> Iterator for Lexer<'a> {
         use base::token::Space::*;
         
         if self.has_next() {
-            Some(match self.next_byte() {
+            Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b' ' => self.fetch_whitespace(),
-                b'\t' => S(Tab),
-                b'\n' => S(Newline),
+                b'\t' => { self.pos += 1; S(Tab) },
+                b'\n' => { self.pos += 1; S(Newline) },
                 _ => self.fetch_operator(),
             })
         } else {
