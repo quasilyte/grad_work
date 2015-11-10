@@ -41,7 +41,7 @@ fn from_digits(digits: &Bytes, is_positive: bool) -> Decimal {
 }
 
 impl Decimal {
-    pub fn from_str(s: &Bytes) -> Decimal {
+    pub fn from_str(s: &Bytes) -> Self {
         from_str(s)
     }
 }
