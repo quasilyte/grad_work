@@ -1,0 +1,11 @@
+| Name                 | Contribution | Status     | Mandatory? |
+|----------------------+--------------+------------+------------|
+| I/O interface        |            2 | paused     | Yes        |
+| Lexer                |           30 | working on | Yes        |
+| Parser framework     |            0 | n/a        | Yes        |
+| Code generator       |            1 | planning   | Yes        |
+| Runtime              |            1 | planning   | Yes        |
+| Grammar validator    |            0 | n/a        | No         |
+| Token stream reducer |            0 | n/a        | No         |
+
+
