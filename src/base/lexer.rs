@@ -28,6 +28,14 @@ macro_rules! take_bytes {
     }}
 }
 
+macro_rules! skip_while {
+    ($this: ident, $cond: expr) => {
+        while $cond {
+            $this.pos += 1;
+        }
+    }
+}
+
 impl<'a> Lexer<'a> {
     fn has_next(&self) -> bool {
         self.pos < self.max_pos
@@ -92,18 +100,14 @@ impl<'a> Lexer<'a> {
 
     fn fetch_number(&mut self) -> Token {
         let decimal = Decimal::from_str(take_bytes!(self, {
-            while self.byte().is_digit() {
-                self.pos += 1;
-            }
+            skip_while!(self, self.byte().is_digit());
         }));
         
         if self.byte() == b'.' {
             self.pos += 1;
             
             N(Number::Real(decimal.to_real(take_bytes!(self, {
-                while self.byte().is_digit() {
-                    self.pos += 1;
-                }
+                skip_while!(self, self.byte().is_digit());
             })).0))
         } else {
             N(Number::Decimal(decimal.0))
@@ -111,7 +115,7 @@ impl<'a> Lexer<'a> {
     }
 
     fn fetch_whitespace(&mut self) -> Token {
-        while self.at(b' ') { self.pos += 1 }
+        skip_while!(self, self.at(b' '));
         S(Space::Whitespace)
     }
     
@@ -119,9 +123,7 @@ impl<'a> Lexer<'a> {
         use base::token::Operator::*;
 
         let bytes = take_bytes!(self, {
-            while !(self.delimiter_p)(self.byte()) {
-                self.pos += 1;
-            }
+            skip_while!(self, !(self.delimiter_p)(self.byte()));
         });
         
         match bytes {
