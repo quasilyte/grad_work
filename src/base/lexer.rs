@@ -20,19 +20,7 @@ pub struct Lexer<'a> {
     identifier_p: BytePredicate,
 }
 
-trait ByteReader {
-    fn has_next(&self) -> bool;
-    
-    fn byte(&self) -> Byte;
-
-    fn next_byte(&mut self) -> Byte;
-    
-    fn at(&self, b: Byte) -> bool {
-        self.byte() == b
-    }
-}
-
-impl<'a> ByteReader for Lexer<'a> {
+impl<'a> Lexer<'a> {
     fn has_next(&self) -> bool {
         self.pos < self.max_pos
     }
@@ -44,6 +32,10 @@ impl<'a> ByteReader for Lexer<'a> {
     fn next_byte(&mut self) -> Byte {
         self.pos += 1;
         self.buf[self.pos - 1]
+    }
+
+    fn at(&self, b: Byte) -> bool {
+        self.byte() == b
     }
 }
 
