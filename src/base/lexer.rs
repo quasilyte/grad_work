@@ -184,7 +184,7 @@ impl<'a> Iterator for LexerIter<'a> {
             }};
         }
 
-        // #TODO: check if typed tokens EVERYWHERE is a nice ided
+        // #TODO: check if typed tokens EVERYWHERE is a nice idea
         if self.has_next() {
             Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),

@@ -20,3 +20,8 @@ pub use self::lexer::Lexer;
 pub use self::lexer::LexerConfig;
 pub mod lexer;
 
+pub use self::parser::Parser;
+mod parser;
+
+pub use self::compiler::Compiler;
+mod compiler;
