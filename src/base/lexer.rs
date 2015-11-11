@@ -129,30 +129,30 @@ impl<'a> Lexer<'a> {
     }
 }
 
-macro_rules! emit {
-    ($this: ident, $value: expr) => {{
-        $this.pos += 1;
-        $value
-    }};
-}
-
 impl<'a> Iterator for Lexer<'a> {
     type Item = Token;
   
     fn next(&mut self) -> Option<Token> {
+        macro_rules! emit {
+            ($value: expr) => {{
+                self.pos += 1;
+                $value
+            }};
+        }
+        
         if self.has_next() {
             Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b' ' => self.fetch_whitespace(),
-                b'\n' => emit!(self, S(Space::Tab)),
-                b'\t' => emit!(self, S(Space::Newline)),
-                b'(' => emit!(self, B(Bracket::P(Paren::Left))),
-                b')' => emit!(self, B(Bracket::P(Paren::Right))),
-                b'[' => emit!(self, B(Bracket::S(Square::Left))),
-                b']' => emit!(self, B(Bracket::S(Square::Right))),
-                b'{' => emit!(self, B(Bracket::C(Curly::Left))),
-                b'}' => emit!(self, B(Bracket::C(Curly::Right))),
+                b'\n' => emit!(S(Space::Tab)),
+                b'\t' => emit!(S(Space::Newline)),
+                b'(' => emit!(B(Bracket::P(Paren::Left))),
+                b')' => emit!(B(Bracket::P(Paren::Right))),
+                b'[' => emit!(B(Bracket::S(Square::Left))),
+                b']' => emit!(B(Bracket::S(Square::Right))),
+                b'{' => emit!(B(Bracket::C(Curly::Left))),
+                b'}' => emit!(B(Bracket::C(Curly::Right))),
                 _ => self.fetch_operator(),
             })
         } else {
