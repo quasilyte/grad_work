@@ -159,7 +159,8 @@ impl<'a> Iterator for Lexer<'a> {
                 $value
             }};
         }
-        
+
+        // #TODO: check if typed tokens EVERYWHERE is a nice ided
         if self.has_next() {
             Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),
