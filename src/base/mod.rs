@@ -10,7 +10,7 @@ pub use self::real::Real;
 mod real;
 
 pub use self::token::Space;
-pub use self::token::Number;
+pub use self::token::Data;
 pub use self::token::Word;
 pub use self::token::Operator;
 pub use self::token::Token;

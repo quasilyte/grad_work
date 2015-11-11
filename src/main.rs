@@ -12,8 +12,9 @@ fn main() {
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
     // let input = b"(define x (+ 10 20)) ";
-    let input = br##" (define str "string content!") "##;
-    
+    // let input = br##" (define str "string content!") "##;
+    let input = br##""s\"tr" "##;
+     
     let mut lexer = Lexer::new(input, bytes_matcher!(
         b"define"
     ));
@@ -26,4 +27,5 @@ fn main() {
         println!("{:?}", token);
     }
 }
+
 

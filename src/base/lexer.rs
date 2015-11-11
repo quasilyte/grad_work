@@ -38,9 +38,13 @@ impl<'a> Lexer<'a> {
         self.buf[self.pos]
     }
 
+    fn back_peek(&self) -> Byte {
+        self.buf[self.pos - 1]
+    }
+
     fn next_byte(&mut self) -> Byte {
         self.pos += 1;
-        self.buf[self.pos - 1]
+        self.back_peek()
     }
 
     fn at(&self, b: Byte) -> bool {
@@ -93,17 +97,31 @@ impl<'a> Lexer<'a> {
         if self.byte() == b'.' {
             self.pos += 1;
             
-            N(Number::Real(decimal.to_real(take_bytes!(self, {
+            D(Data::N(Num::Real(decimal.to_real(take_bytes!(self, {
                 skip_while!(self, self.byte().is_digit());
-            })).0))
+            })).0)))
         } else {
-            N(Number::Decimal(decimal.0))
+            D(Data::N(Num::Decimal(decimal.0)))
         }
     }
 
     fn fetch_whitespace(&mut self) -> Token {
         skip_while!(self, self.at(b' '));
         S(Space::Whitespace)
+    }
+
+    fn fetch_str(&mut self) -> Token {
+        self.pos += 1; // Pass over first `"`
+
+        // #TODO: need more robust scanning
+        let bytes = take_bytes!(self, {
+            while !(self.byte() == b'"' && self.back_peek() != b'\\') {
+                self.pos += 1;
+            }
+        });
+
+        self.pos += 1; // Pass over enclosing `"`
+        D(Data::S(bytes.to_owned()))
     }
     
     fn fetch_operator(&mut self) -> Token {
@@ -120,6 +138,8 @@ impl<'a> Lexer<'a> {
             b"--" => O(DoubleMinus),
             b"=" => O(Eq),
             b"==" => O(DoubleEq),
+            b"'" => O(Quote),
+            b"`" => O(QuasiQuote),
             unit @ _ => error::unexpected_token(unit)
         }
     }
@@ -144,6 +164,7 @@ impl<'a> Iterator for Lexer<'a> {
             Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
+                b'"' => self.fetch_str(),
                 b' ' => self.fetch_whitespace(),
                 b'\n' => emit!(S(Space::Tab)),
                 b'\t' => emit!(S(Space::Newline)),
@@ -153,9 +174,6 @@ impl<'a> Iterator for Lexer<'a> {
                 b']' => emit!(B(Bracket::S(Square::Right))),
                 b'{' => emit!(B(Bracket::C(Curly::Left))),
                 b'}' => emit!(B(Bracket::C(Curly::Right))),
-                b'\'' => emit!(Q(Quote::Single)),
-                b'"' => emit!(Q(Quote::Double)),
-                b'`' => emit!(Q(Quote::Quasi)),
                 _ => self.fetch_operator(),
             })
         } else {

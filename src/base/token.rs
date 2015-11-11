@@ -16,6 +16,7 @@ token_class!(
         Plus DoublePlus
         Minus DoubleMinus
         Eq DoubleEq
+        Quote QuasiQuote
 );
 token_class!(Paren := Left Right);
 token_class!(Square := Left Right);
@@ -23,15 +24,21 @@ token_class!(Curly := Left Right);
 token_class!(Quote := Single Double Quasi);
 
 #[derive(Debug)]
-pub enum Number {
+pub enum Data {
+    N(Num),
+    S(ByteStr),
+}
+
+#[derive(Debug)]
+pub enum Num {
     Decimal(i64),
     Real(f64),
 }
 
 #[derive(Debug)]
 pub enum Word {
-    Identifier(Vec<Byte>),
-    Keyword(Vec<Byte>),
+    Identifier(ByteStr),
+    Keyword(ByteStr),
 }
 
 #[derive(Debug)]
@@ -43,10 +50,9 @@ pub enum Bracket {
 
 #[derive(Debug)]
 pub enum Token {
-    N(Number),
+    D(Data),
     W(Word),
     O(Operator),
     S(Space),
     B(Bracket),
-    Q(Quote),
 }

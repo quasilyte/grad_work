@@ -1,5 +1,6 @@
 pub type Byte = u8;
 pub type Bytes = [u8];
+pub type ByteStr = Vec<Byte>;
 
 pub type BytePredicate = fn(Byte) -> bool;
 pub type BytesPredicate = fn(&Bytes) -> bool;
