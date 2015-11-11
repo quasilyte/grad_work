@@ -1,6 +1,4 @@
 use cgen::stmt::pattern_match::Arm;
-use base::byte::*;
-use base::decimal::Decimal;
 
 pub struct Real(pub f64);
 

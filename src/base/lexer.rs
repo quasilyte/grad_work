@@ -3,6 +3,7 @@ use base::byte::*;
 use base::token::*;
 use base::token::Token::*;
 use base::decimal::Decimal;
+use base::real::Real;
 
 pub struct Lexer {
     delimiter_p: BytePredicate,
@@ -25,6 +26,18 @@ impl Lexer {
         }
     }    
 
+    fn make_str(&self, bytes: &Bytes) -> Token {
+        D(Data::S(bytes.to_owned()))
+    }
+
+    fn make_real(&self, real: Real) -> Token {
+        D(Data::N(Num::Real(real.0)))
+    }
+
+    fn make_decimal(&self, decimal: Decimal) -> Token {
+        D(Data::N(Num::Decimal(decimal.0)))
+    }
+    
     fn match_word(&self, bytes: &Bytes) -> Token {
         use base::token::Word::*;
         
@@ -105,26 +118,12 @@ impl<'a> LexerIter<'a> {
         self.buf[self.pos - 1]
     }
 
-    fn next_byte(&mut self) -> Byte {
-        self.pos += 1;
-        self.back_peek()
-    }
-
-    fn at(&self, b: Byte) -> bool {
-        self.byte() == b
-    }
-
     fn fetch_operator(&mut self) -> Token {
         let bytes = take_bytes!(self, {
             skip_while!(self, !(self.lexer.delimiter_p)(self.byte()));
         });
         
         self.lexer.match_operator(bytes)
-    }
-
-    fn fetch_whitespace(&mut self) -> Token {
-        skip_while!(self, self.at(b' '));
-        S(Space::Whitespace)
     }
 
     fn fetch_str(&mut self) -> Token {
@@ -138,7 +137,7 @@ impl<'a> LexerIter<'a> {
         });
 
         self.pos += 1; // Pass over enclosing `"`
-        D(Data::S(bytes.to_owned()))
+        self.lexer.make_str(bytes)
     }
 
     fn fetch_word(&mut self) -> Token {
@@ -162,12 +161,14 @@ impl<'a> LexerIter<'a> {
         
         if self.byte() == b'.' {
             self.pos += 1;
-            
-            D(Data::N(Num::Real(decimal.to_real(take_bytes!(self, {
+
+            let real = decimal.to_real(take_bytes!(self, {
                 skip_while!(self, self.byte().is_digit());
-            })).0)))
+            }));
+
+            self.lexer.make_real(real)            
         } else {
-            D(Data::N(Num::Decimal(decimal.0)))
+            self.lexer.make_decimal(decimal)
         }
     }
 }
@@ -189,7 +190,7 @@ impl<'a> Iterator for LexerIter<'a> {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b'"' => self.fetch_str(),
-                b' ' => self.fetch_whitespace(),
+                b' ' => emit!(S(Space::Whitespace)),
                 b'\n' => emit!(S(Space::Tab)),
                 b'\t' => emit!(S(Space::Newline)),
                 b'(' => emit!(B(Bracket::P(Paren::Left))),

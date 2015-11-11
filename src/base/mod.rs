@@ -14,7 +14,7 @@ pub use self::token::Data;
 pub use self::token::Word;
 pub use self::token::Operator;
 pub use self::token::Token;
-mod token;
+pub mod token;
 
 pub use self::lexer::Lexer;
 pub use self::lexer::LexerConfig;
