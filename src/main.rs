@@ -11,14 +11,10 @@ use base::{Lexer, Decimal, Byte, Bytes};
 fn main() {  
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
-    let input = b"xs\tfor + ++ 430 dg3ger  6.63 ";
+    let input = b"(define x (+ 10 20)) ";
     
     let mut lexer = Lexer::new(input, bytes_matcher!(
-        b"if",
-        b"else",
-        b"for",
-        b"loop",
-        b"while"
+        b"define"
     ));
     
     lexer.set()

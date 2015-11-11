@@ -33,7 +33,6 @@ pub enum Word {
     Keyword(Vec<Byte>),
 }
 
-
 #[derive(Debug)]
 pub enum Bracket {
     P(Paren),
