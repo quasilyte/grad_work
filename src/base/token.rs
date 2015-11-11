@@ -1,11 +1,25 @@
 use base::byte::*;
 
-#[derive(Debug)]
-pub enum Space {
-    Whitespace,
-    Tab,
-    Newline,
+// #FIXME: not working with tuple-like variants...
+macro_rules! token_class {
+    ($name: ident := $($variant: ident)*) => {
+        #[derive(Debug)]
+        pub enum $name {
+            $($variant,)*
+        }
+    };
 }
+
+token_class!(Space := Whitespace Tab Newline);
+token_class!(
+    Operator :=
+        Plus DoublePlus
+        Minus DoubleMinus
+        Eq DoubleEq
+);
+token_class!(Paren := Left Right);
+token_class!(Square := Left Right);
+token_class!(Curly := Left Right);
 
 #[derive(Debug)]
 pub enum Number {
@@ -19,15 +33,12 @@ pub enum Word {
     Keyword(Vec<Byte>),
 }
 
-// #FIXME: should be `special char`, but `S` is already used by `Space`...
+
 #[derive(Debug)]
-pub enum Operator {
-    Plus,
-    DoublePlus,
-    Minus,
-    DoubleMinus,
-    Eq,
-    DoubleEq,
+pub enum Bracket {
+    P(Paren),
+    S(Square),
+    C(Curly),
 }
 
 #[derive(Debug)]
@@ -36,4 +47,5 @@ pub enum Token {
     W(Word),
     O(Operator),
     S(Space),
+    B(Bracket),
 }
