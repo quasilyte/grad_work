@@ -24,7 +24,17 @@ impl Lexer {
             keyword_p: is_keyword,
         }
     }    
+
+    fn match_word(&self, bytes: &Bytes) -> Token {
+        use base::token::Word::*;
         
+        if (self.keyword_p)(bytes) {
+            W(Keyword(bytes.to_owned()))
+        } else {
+            W(Identifier(bytes.to_owned()))
+        }
+    }
+    
     fn match_operator(&self, bytes: &Bytes) -> Token {
         use base::token::Operator::*;
         
@@ -132,22 +142,17 @@ impl<'a> LexerIter<'a> {
     }
 
     fn fetch_word(&mut self) -> Token {
-        use base::token::Word::*;
-        
         let bytes = take_bytes!(self, {
             while !(self.lexer.delimiter_p)(self.byte()) {
-                match (self.lexer.identifier_p)(self.byte()) {
-                    true => self.pos += 1,
-                    _ => error::malformed_identifier(self.byte())
+                if (self.lexer.identifier_p)(self.byte()) {
+                    self.pos += 1;
+                } else {
+                    error::malformed_identifier(self.byte());
                 }
             }
         });
-                                        
-        if (self.lexer.keyword_p)(bytes) {
-            W(Keyword(bytes.to_owned()))
-        } else {
-            W(Identifier(bytes.to_owned()))
-        }
+
+        self.lexer.match_word(bytes)
     }
 
     fn fetch_number(&mut self) -> Token {
