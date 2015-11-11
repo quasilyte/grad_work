@@ -20,6 +20,7 @@ token_class!(
 token_class!(Paren := Left Right);
 token_class!(Square := Left Right);
 token_class!(Curly := Left Right);
+token_class!(Quote := Single Double Quasi);
 
 #[derive(Debug)]
 pub enum Number {
@@ -47,4 +48,5 @@ pub enum Token {
     O(Operator),
     S(Space),
     B(Bracket),
+    Q(Quote),
 }

@@ -153,6 +153,9 @@ impl<'a> Iterator for Lexer<'a> {
                 b']' => emit!(B(Bracket::S(Square::Right))),
                 b'{' => emit!(B(Bracket::C(Curly::Left))),
                 b'}' => emit!(B(Bracket::C(Curly::Right))),
+                b'\'' => emit!(Q(Quote::Single)),
+                b'"' => emit!(Q(Quote::Double)),
+                b'`' => emit!(Q(Quote::Quasi)),
                 _ => self.fetch_operator(),
             })
         } else {
