@@ -192,9 +192,9 @@ impl<'a> Iterator for LexerIter<'a> {
   
     fn next(&mut self) -> Option<Token> {
         macro_rules! emit {
-            ($value: expr) => {{
+            ($value: ident) => {{
                 self.pos += 1;
-                $value
+                Token::$value
             }};
         }
 
@@ -205,15 +205,15 @@ impl<'a> Iterator for LexerIter<'a> {
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
                 b'#' => self.fetch_comment(),
                 b'"' => self.fetch_str(), 
-                b' ' => emit!(Token::Whitespace),
-                b'\n' => emit!(Token::Newline),
-                b'\t' => emit!(Token::Tab),
-                b'(' => emit!(Token::LeftParen),
-                b')' => emit!(Token::RightParen),
-                b'[' => emit!(Token::LeftSquare),
-                b']' => emit!(Token::RightSquare),
-                b'{' => emit!(Token::LeftCurly),
-                b'}' => emit!(Token::RightCurly),
+                b' ' => emit!(Whitespace),
+                b'\n' => emit!(Newline),
+                b'\t' => emit!(Tab),
+                b'(' => emit!(LeftParen),
+                b')' => emit!(RightParen),
+                b'[' => emit!(LeftSquare),
+                b']' => emit!(RightSquare),
+                b'{' => emit!(LeftCurly),
+                b'}' => emit!(RightCurly),
                 _ => self.fetch_operator(),
             })
         } else {
