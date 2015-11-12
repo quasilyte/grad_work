@@ -1,9 +1,28 @@
+use std::fmt;
+
 pub type Byte = u8;
 pub type Bytes = [u8];
-pub type ByteStr = Vec<Byte>;
 
 pub type BytePredicate = fn(Byte) -> bool;
 pub type BytesPredicate = fn(&Bytes) -> bool;
+
+pub struct ByteStr(Vec<Byte>);
+
+impl ByteStr {
+    pub fn from_bytes(bytes: &Bytes) -> Self {
+        ByteStr(bytes.to_owned())
+    }
+    
+    fn to_string(&self) -> String {
+        String::from_utf8(self.0.clone()).unwrap()
+    }
+}
+
+impl fmt::Debug for ByteStr {
+    fn fmt(&self, stream: &mut fmt::Formatter) -> fmt::Result {
+        write!(stream, "`{}`", self.to_string())
+    }
+}
 
 // #TODO: maybe I need a new type rather than a typedef for `u8`?
 pub trait ByteChar {

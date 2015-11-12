@@ -1,5 +1,6 @@
 pub use self::byte::Byte;
 pub use self::byte::Bytes;
+pub use self::byte::ByteStr;
 #[macro_use]
 mod byte;
 

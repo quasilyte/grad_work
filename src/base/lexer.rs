@@ -26,7 +26,7 @@ impl Lexer {
     }    
 
     fn make_str(&self, bytes: &Bytes) -> Token {
-        Token::Str(bytes.to_owned())            
+        Token::Str(ByteStr::from_bytes(bytes))
     }
 
     fn make_real(&self, real: Real) -> Token {
@@ -39,9 +39,9 @@ impl Lexer {
     
     fn match_word(&self, bytes: &Bytes) -> Token {
         if (self.keyword_p)(bytes) {
-            Token::Keyword(bytes.to_owned())
+            Token::Keyword(ByteStr::from_bytes(bytes))
         } else {
-            Token::Ident(bytes.to_owned())
+            Token::Ident(ByteStr::from_bytes(bytes))
         }
     }
     
@@ -180,10 +180,8 @@ impl<'a> LexerIter<'a> {
         let bytes = take_bytes!(self, {
             skip_while!(self, !self.at(b'\n'));
         });
- 
-        println!("comment: `{}`", String::from_utf8(bytes.to_owned()).unwrap());
 
-        Token::LineComment(bytes.to_owned())
+        Token::LineComment(ByteStr::from_bytes(bytes))
     }
 }
 

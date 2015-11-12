@@ -15,6 +15,7 @@ impl Parser for SchemeParser {
             LeftParen => println!("lparen"),
             Keyword(k) => println!("keyword! {:?}", k),
             Whitespace | Tab | Newline => (),
+            LineComment(text) => println!("comment with text {:?}", text),
             _ => println!("{:?}", token)
         }
     }
