@@ -1,8 +1,7 @@
 use env::error;
 use base::byte::*;
-use base::token::*;
-use base::token::Token::*;
 use base::decimal::Decimal;
+use base::token::Token;
 use base::real::Real;
 
 pub struct Lexer {
@@ -27,39 +26,38 @@ impl Lexer {
     }    
 
     fn make_str(&self, bytes: &Bytes) -> Token {
-        D(Data::S(bytes.to_owned()))
+        Token::Str(bytes.to_owned())            
     }
 
     fn make_real(&self, real: Real) -> Token {
-        D(Data::N(Num::Real(real.0)))
+        Token::Real(real)
     }
 
     fn make_decimal(&self, decimal: Decimal) -> Token {
-        D(Data::N(Num::Decimal(decimal.0)))
+        Token::Decimal(decimal)
     }
     
     fn match_word(&self, bytes: &Bytes) -> Token {
-        use base::token::Word::*;
-        
         if (self.keyword_p)(bytes) {
-            W(Keyword(bytes.to_owned()))
+            Token::Keyword(bytes.to_owned())
         } else {
-            W(Identifier(bytes.to_owned()))
+            Token::Ident(bytes.to_owned())
         }
     }
     
     fn match_operator(&self, bytes: &Bytes) -> Token {
-        use base::token::Operator::*;
+        use base::token::Token::*;
         
         match bytes {
-            b"+" => O(Plus),
-            b"++" => O(DoublePlus),
-            b"-" => O(Minus),
-            b"--" => O(DoubleMinus),
-            b"=" => O(Eq),
-            b"==" => O(DoubleEq),
-            b"'" => O(Quote),
-            b"`" => O(QuasiQuote),
+            b"+" => Plus,
+            b"++" => DoublePlus,
+            b"-" => Minus,
+            b"--" => DoubleMinus,
+            b"=" => Eq,
+            b"==" => DoubleEq,
+            b"'" => Quote,
+            b"`" => QuasiQuote,
+            b"." => Dot,
             unit @ _ => error::unexpected_token(unit)
         }
     }
@@ -171,6 +169,18 @@ impl<'a> LexerIter<'a> {
             self.lexer.make_decimal(decimal)
         }
     }
+
+    fn fetch_comment(&mut self) -> Token {
+        // #TODO: collect annotations into token?
+        // #FIXME: need unexpected EOF protection
+        let bytes = take_bytes!(self, {
+            skip_while!(self, self.byte() != b'\n');
+        });
+ 
+        println!("comment: `{}`", String::from_utf8(bytes.to_owned()).unwrap());
+
+        Token::LineComment(bytes.to_owned())
+    }
 }
 
 impl<'a> Iterator for LexerIter<'a> {
@@ -189,16 +199,17 @@ impl<'a> Iterator for LexerIter<'a> {
             Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),
-                b'"' => self.fetch_str(),
-                b' ' => emit!(S(Space::Whitespace)),
-                b'\n' => emit!(S(Space::Tab)),
-                b'\t' => emit!(S(Space::Newline)),
-                b'(' => emit!(B(Bracket::P(Paren::Left))),
-                b')' => emit!(B(Bracket::P(Paren::Right))),
-                b'[' => emit!(B(Bracket::S(Square::Left))),
-                b']' => emit!(B(Bracket::S(Square::Right))),
-                b'{' => emit!(B(Bracket::C(Curly::Left))),
-                b'}' => emit!(B(Bracket::C(Curly::Right))),
+                b'#' => self.fetch_comment(),
+                b'"' => self.fetch_str(), 
+                b' ' => emit!(Token::Whitespace),
+                b'\n' => emit!(Token::Newline),
+                b'\t' => emit!(Token::Tab),
+                b'(' => emit!(Token::LeftParen),
+                b')' => emit!(Token::RightParen),
+                b'[' => emit!(Token::LeftSquare),
+                b']' => emit!(Token::RightSquare),
+                b'{' => emit!(Token::LeftCurly),
+                b'}' => emit!(Token::RightCurly),
                 _ => self.fetch_operator(),
             })
         } else {

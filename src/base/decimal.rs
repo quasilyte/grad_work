@@ -3,6 +3,7 @@ use env::error;
 use base::byte::*;
 use base::real::Real;
 
+#[derive(Debug)]
 pub struct Decimal(pub i64);
 
 fn from_str(s: &Bytes) -> Decimal {

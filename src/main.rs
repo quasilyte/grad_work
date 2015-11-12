@@ -3,28 +3,18 @@ pub mod base;
 pub mod cgen;
 pub mod env;
 
-use base::{Lexer, Byte, Bytes, Parser, Compiler, Token, Word, Bracket, Paren};
+use base::{Lexer, Byte, Bytes, Parser, Compiler, Token};
 
 struct SchemeParser;
 
-macro_rules! keyword {
-    () => { Token::W(Word::Keyword(_)) };
-    ($binding: ident) => { Token::W(Word::Keyword($binding)) };
-}
-
-macro_rules! space {
-    () => { Token::S(_) };
-    ($binding: ident) => { Token::S($binding) };
-}
-
-macro_rules! lparen { () => { Token::B(Bracket::P(Paren::Left)) }; }
-
 impl Parser for SchemeParser {
     fn parse(&self, token: Token) {
+        use base::Token::*;
+        
         match token {
-            lparen!() => println!("lparen"),
-            keyword!(k) => println!("keyword! {:?}", k),
-            space!() => (),
+            LeftParen => println!("lparen"),
+            Keyword(k) => println!("keyword! {:?}", k),
+            Whitespace | Tab | Newline => (),
             _ => println!("{:?}", token)
         }
     }
@@ -40,7 +30,7 @@ fn main() {
     // let input = br##" (define str "string content!") "##;
     // let input = br##""s\"tr" "##;
     // let input = include_bytes!("../tmp/input.txt");
-    let input = b"(+ 10 20) ";
+    let input = b"#comment\n(+ 10 20) ";
      
     let mut lexer = Lexer::new(bytes_matcher!(
         b"define"

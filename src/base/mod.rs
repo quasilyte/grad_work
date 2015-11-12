@@ -9,13 +9,7 @@ mod decimal;
 pub use self::real::Real;
 mod real;
 
-pub use self::token::Space;
-pub use self::token::Data;
-pub use self::token::Word;
-pub use self::token::Operator;
 pub use self::token::Token;
-pub use self::token::Bracket;
-pub use self::token::Paren;
 pub mod token;
 
 pub use self::lexer::Lexer;

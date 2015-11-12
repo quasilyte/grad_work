@@ -4,6 +4,8 @@
 | [[http://letoverlambda.com/index.cl/guest/chap5.html][LetOverLambda -- about lisp macro]] |
 | [[http://www.sonoma.edu/users/l/luvisi/sl3.c][400 SLOC lisp impl (in C)]]         |
 | [[http://rosettacode.org/wiki/Category:Solutions_by_Programming_Task][Rosetta Code]]                      |
+| [[https://github.com/jneem/regex-dfa][Rust regex DFA impl]]               |
+| [[https://github.com/goffrie/plex][Rust Plex parser+lexer generator]]  |
 
 #+CAPTION: misc/temp
 | [[https://yoo2080.wordpress.com/2013/08/16/differences-between-common-lisp-and-emacs-lisp/][Differences between elisp & CL]] |
