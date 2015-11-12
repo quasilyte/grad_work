@@ -107,6 +107,10 @@ impl<'a> LexerIter<'a> {
     fn has_next(&self) -> bool {
         self.pos < self.max_pos
     }
+
+    fn at(&self, byte: Byte) -> bool {
+        self.byte() == byte
+    }
     
     fn byte(&self) -> Byte {
         self.buf[self.pos]
@@ -174,7 +178,7 @@ impl<'a> LexerIter<'a> {
         // #TODO: collect annotations into token?
         // #FIXME: need unexpected EOF protection
         let bytes = take_bytes!(self, {
-            skip_while!(self, self.byte() != b'\n');
+            skip_while!(self, !self.at(b'\n'));
         });
  
         println!("comment: `{}`", String::from_utf8(bytes.to_owned()).unwrap());
