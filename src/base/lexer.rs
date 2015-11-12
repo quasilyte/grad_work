@@ -47,7 +47,11 @@ impl Lexer {
     
     fn match_operator(&self, bytes: &Bytes) -> Token {
         use base::token::Token::*;
-        
+
+        // #TODO: test if this is efficient for long lists of strings
+        // against other approaches
+        // #TODO: maybe it is a good idea to match single char strings
+        // by a separate match
         match bytes {
             b"+" => Plus,
             b"++" => DoublePlus,
@@ -58,6 +62,7 @@ impl Lexer {
             b"'" => Quote,
             b"`" => QuasiQuote,
             b"." => Dot,
+            b"," => Comma,
             unit @ _ => error::unexpected_token(unit)
         }
     }

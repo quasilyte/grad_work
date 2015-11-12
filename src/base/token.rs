@@ -2,7 +2,6 @@ use base::byte::*;
 use base::decimal::Decimal;
 use base::real::Real;
 
-// #FIXME: how to capture, for example, a Space " \t\n" class?
 #[derive(Debug)]
 pub enum Token {
     // Datum:
@@ -22,6 +21,7 @@ pub enum Token {
     Quote,
     QuasiQuote,
     Dot,
+    Comma,
     // Space:
     Whitespace,
     Tab,

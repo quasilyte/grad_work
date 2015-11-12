@@ -6,6 +6,12 @@ Ident(var) Equals assign[rhs] => Expr {
 Ident(lhs) Eq Expr(rhs) => assign(lhs, rhs);
 bin_op!(assign := Ident Eq Expr);
 
-Ident(object) Dot Ident(method) => invoke_method;
+
+
+Ident(object) Dot Ident(method) => invoke_method(object, method);
+
+Ident(object) Dot Ident(method) => MethodInvocation;
+MethodInvocation LeftParen List(Ident, Comma) RightParen
+
 
     
