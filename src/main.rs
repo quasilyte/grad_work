@@ -108,7 +108,7 @@ fn main() {
     // let input = br##""s\"tr" "##;
     // let input = include_bytes!("../tmp/input.txt");
     // let input = b"#comment\n(+ 10 20) ";
-    let input = b"(+ 1 2) ";
+    let input = b"(+ 1 2)(+ 4 5 5) ";
      
     SchemeParser::new(input).run();
 }

@@ -61,7 +61,7 @@ impl Arm for Decimal {
 
 impl Node for Decimal {
     fn gen_code(&self) -> ByteStr {
-        // self.0.to_string()
-        ByteStr::from_bytes(b"123")
+        // #FIXME: coulde be better written by hand
+        ByteStr::from_bytes(self.0.to_string().as_bytes())
     }
 }

@@ -11,7 +11,7 @@ impl Arm for Real {
 
 impl Node for Real {
     fn gen_code(&self) -> ByteStr {
-        // self.0.to_string()
-        ByteStr::from_bytes(b"5.5")
+        // #FIXME: coulde be better written by hand
+        ByteStr::from_bytes(self.0.to_string().as_bytes())
     }
 }
