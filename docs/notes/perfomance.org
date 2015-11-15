@@ -23,4 +23,8 @@
 | parse<i64> x2 + pow |   61 | supports only \d+\.\d+ format |
 | stdlib/parse<f64>   |  118 | supports MANY formats         |
 
-
+#+CAPTION: ast transformating
+| method                                    | cost |
+|-------------------------------------------+------|
+| many small allocations and concatenations |      |
+| computed length + single allocation       |      |
