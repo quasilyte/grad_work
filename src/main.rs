@@ -86,7 +86,7 @@ fn main() {
     // let input = b"(define x (+ 10 20.4)) ";
     // let input = include_bytes!("../tmp/input.txt");
     // let input = b"#comment\n(+ 10 20) ";
-    let input = b"(+ 1 2)(/ 4 5 5)(* 2 3) ";
+    let input = b"(+ 1 (* 2 2) (/ 4 2)) ";
      
     SchemeParser::new(input).run();
 }
