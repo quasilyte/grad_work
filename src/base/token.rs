@@ -8,9 +8,6 @@ pub enum Token {
     Decimal(Decimal),
     Real(Real),
     Str(ByteStr),
-    // Word:
-    Ident(ByteStr),
-    Keyword(ByteStr),
     // Operators:
     Plus,
     DoublePlus,
@@ -35,4 +32,5 @@ pub enum Token {
     RightCurly,
     // Other:
     LineComment(ByteStr),
+    Ident(ByteStr),
 }

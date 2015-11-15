@@ -7,11 +7,10 @@ use base::real::Real;
 pub struct Lexer {
     delimiter_p: BytePredicate,
     identifier_p: BytePredicate,
-    keyword_p: BytesPredicate,
 }
 
 impl Lexer {
-    pub fn new(is_keyword: BytesPredicate) -> Self {
+    pub fn new() -> Self {
         let is_delimiter = byte_matcher!(b' ', b'\t', b'\n', b';');
         
         let is_identifier = byte_matcher!(
@@ -21,7 +20,6 @@ impl Lexer {
         Lexer {
             delimiter_p: is_delimiter,
             identifier_p: is_identifier,
-            keyword_p: is_keyword,
         }
     }    
 
@@ -36,13 +34,9 @@ impl Lexer {
     fn make_decimal(&self, decimal: Decimal) -> Token {
         Token::Decimal(decimal)
     }
-    
-    fn match_word(&self, bytes: &Bytes) -> Token {
-        if (self.keyword_p)(bytes) {
-            Token::Keyword(ByteStr::from_bytes(bytes))
-        } else {
-            Token::Ident(ByteStr::from_bytes(bytes))
-        }
+
+    fn make_ident(&self, bytes: &Bytes) -> Token {
+        Token::Ident(ByteStr::from_bytes(bytes))
     }
     
     fn match_operator(&self, bytes: &Bytes) -> Token {
@@ -158,7 +152,7 @@ impl<'a> LexerIter<'a> {
             }
         });
 
-        self.lexer.match_word(bytes)
+        self.lexer.make_ident(bytes)
     }
 
     fn fetch_number(&mut self) -> Token {
