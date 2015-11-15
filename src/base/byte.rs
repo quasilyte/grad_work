@@ -13,6 +13,10 @@ impl ByteStr {
     pub fn with_capacity(cap: usize) -> Self {
         ByteStr(Vec::with_capacity(cap))
     }
+
+    pub fn new(value: Vec<Byte>) -> Self {
+        ByteStr(value)
+    }
     
     pub fn from_bytes(bytes: &Bytes) -> Self {
         ByteStr(bytes.to_owned())
@@ -58,8 +62,8 @@ impl ByteChar for Byte {
 
 impl Node for ByteStr {
     fn gen_code(&self) -> ByteStr {
-        // String::from_utf8(self.0.clone()).unwrap()
-        ByteStr::from_bytes(b"455")
+        // #FIXME: clone is undesirable here
+        ByteStr::new(self.0.clone())       
     }
 }
 
