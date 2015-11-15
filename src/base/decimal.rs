@@ -1,4 +1,5 @@
 use cgen::stmt::pattern_match::Arm;
+use cgen::ast::Ast;
 use env::error;
 use base::byte::*;
 use base::real::Real;
@@ -57,3 +58,9 @@ impl Decimal {
 impl Arm for Decimal {
     fn is_simple(&self) -> bool { false }
 } 
+
+impl Ast for Decimal {
+    fn gen_code(&self) -> String {
+        self.0.to_string()
+    }
+}
