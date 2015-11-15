@@ -65,13 +65,13 @@ impl Lexer {
         self
     }
 
-    pub fn tokens<'a>(&'a self, input: &'a Bytes) -> LexerIter<'a> {
+    pub fn into_tokens<'a>(self, input: &'a Bytes) -> LexerIter<'a> {
         LexerIter::new(self, input)
     }
 }
 
 pub struct LexerIter<'a> {
-    lexer: &'a Lexer,
+    lexer: Lexer,
     buf: &'a Bytes,
     max_pos: usize,
     pos: usize,
@@ -94,7 +94,7 @@ macro_rules! skip_while {
 }
 
 impl<'a> LexerIter<'a> {
-    fn new(lexer: &'a Lexer, input: &'a Bytes) -> Self {
+    fn new(lexer: Lexer, input: &'a Bytes) -> Self {
         LexerIter {
             lexer: lexer,
             buf: input,

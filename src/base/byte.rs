@@ -1,4 +1,5 @@
 use std::fmt;
+use cgen::ast::Node;
 
 pub type Byte = u8;
 pub type Bytes = [u8];
@@ -9,8 +10,24 @@ pub type BytesPredicate = fn(&Bytes) -> bool;
 pub struct ByteStr(Vec<Byte>);
 
 impl ByteStr {
+    pub fn with_capacity(cap: usize) -> Self {
+        ByteStr(Vec::with_capacity(cap))
+    }
+    
     pub fn from_bytes(bytes: &Bytes) -> Self {
         ByteStr(bytes.to_owned())
+    }
+
+    pub fn push_bytes(&mut self, bytes: &Bytes) {
+        self.0.extend(bytes.iter().cloned());
+    }
+
+    pub fn push_byte(&mut self, byte: Byte) {
+        self.0.push(byte)
+    }
+
+    pub fn append(&mut self, other: &Self) {
+        self.0.extend(other.0.iter().cloned());
     }
     
     fn to_string(&self) -> String {
@@ -36,6 +53,13 @@ impl ByteChar for Byte {
             b'0'...b'9' => true,
             _ => false
         }
+    }
+}
+
+impl Node for ByteStr {
+    fn gen_code(&self) -> ByteStr {
+        // String::from_utf8(self.0.clone()).unwrap()
+        ByteStr::from_bytes(b"455")
     }
 }
 
