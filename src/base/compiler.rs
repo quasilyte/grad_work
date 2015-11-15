@@ -16,7 +16,9 @@ impl<T> Compiler<T> where T: Parser {
     }
 
     pub fn run(&mut self, input: &Bytes) {
-        for token in self.lexer.tokens(input) {
+        let mut tokens = self.lexer.tokens(input);
+
+        while let Some(token) = tokens.next() {
             self.parser.parse(token);
         }
     }

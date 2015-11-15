@@ -3,21 +3,51 @@ pub mod base;
 pub mod cgen;
 pub mod env;
 
+use cgen::Ast;
 use base::{Lexer, Byte, Parser, Compiler, Token};
 
 struct SchemeParser;
 
+fn fn_call(parse_name: fn(&Parser, Token), parse_arg: fn(&Parser, Token))
+           -> Box<Ast> {
+    println!("{}", parse_name());
+    let args: Vec<Box<Ast>> = Vec::new();
+    while let Some(ast) = parse_arg(token.next()) {
+        args.push(ast);
+    }
+}
+
 impl Parser for SchemeParser {
+    fn fn_name(&self, token: Token) -> Option<Box<Ast>> {
+        match token {
+            Token::Ident => Some(token),
+            _ => panic("expected Ident, found {}", token)
+        };
+    }
+
+    fn fn_arg(&self, token: Token) -> Option<Box<Ast>> {
+        match token {
+            Token::RightParen => None,
+            _ => self.parse(token)
+        }
+    }
+    
     fn parse(&self, token: Token) {
         use base::Token::*;
         
+        match token {
+            LeftParen => fn_call(self.fn_name, ),
+            _ => println!("{:?}", token)
+        };
+        
+        /*
         match token {
             LeftParen => println!("lparen"),
             Ident(k) => println!("keyword! {:?}", k),
             Whitespace | Tab | Newline => (),
             LineComment(text) => println!("comment with text {:?}", text),
             _ => println!("{:?}", token)
-        }
+        }*/
     }
 }
 
