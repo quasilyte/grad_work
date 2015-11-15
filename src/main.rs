@@ -3,7 +3,7 @@ pub mod base;
 pub mod cgen;
 pub mod env;
 
-use base::{Lexer, Byte, Bytes, Parser, Compiler, Token};
+use base::{Lexer, Byte, Parser, Compiler, Token};
 
 struct SchemeParser;
 
@@ -13,7 +13,7 @@ impl Parser for SchemeParser {
         
         match token {
             LeftParen => println!("lparen"),
-            Keyword(k) => println!("keyword! {:?}", k),
+            Ident(k) => println!("keyword! {:?}", k),
             Whitespace | Tab | Newline => (),
             LineComment(text) => println!("comment with text {:?}", text),
             _ => println!("{:?}", token)
@@ -33,9 +33,7 @@ fn main() {
     // let input = include_bytes!("../tmp/input.txt");
     let input = b"#comment\n(+ 10 20) ";
      
-    let mut lexer = Lexer::new(bytes_matcher!(
-        b"define"
-    ));
+    let mut lexer = Lexer::new();
     
     lexer.set()
         .delimiter(byte_matcher!(b' ', b'\t', b'\n'))
