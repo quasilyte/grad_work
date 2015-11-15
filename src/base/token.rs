@@ -19,6 +19,8 @@ pub enum Token {
     QuasiQuote,
     Dot,
     Comma,
+    Mul, // Asterisk?
+    Div, // Slash?
     // Space:
     Whitespace,
     Tab,

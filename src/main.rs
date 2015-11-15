@@ -7,7 +7,7 @@ pub mod env;
 use base::{Lexer, LexerIter, Byte, Bytes, Token};
 use base::{Decimal};
 use cgen::ast::Node;
-use cgen::ast::{Plus, UnaryPlus};
+use cgen::ast::{Plus, Mul, Div, UnaryPlus};
 
 struct SchemeParser<'a> {
     tokens: LexerIter<'a>
@@ -62,6 +62,8 @@ impl<'a> SchemeParser<'a> {
                     _ => Box::new(Plus::new(args))
                 }
             },
+            Token::Mul => Box::new(Mul::new(collect_args!())),
+            Token::Div => Box::new(Div::new(collect_args!())),
             _ => panic!("unsupported operator met")
         }
     }
@@ -84,7 +86,7 @@ fn main() {
     // let input = b"(define x (+ 10 20.4)) ";
     // let input = include_bytes!("../tmp/input.txt");
     // let input = b"#comment\n(+ 10 20) ";
-    let input = b"(+ 1 2)(+ 4 5 5) ";
+    let input = b"(+ 1 2)(/ 4 5 5)(* 2 3) ";
      
     SchemeParser::new(input).run();
 }

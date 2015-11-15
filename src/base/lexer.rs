@@ -57,6 +57,8 @@ impl Lexer {
             b"`" => QuasiQuote,
             b"." => Dot,
             b"," => Comma,
+            b"*" => Mul,
+            b"/" => Div,
             unit @ _ => error::unexpected_token(unit)
         }
     }
