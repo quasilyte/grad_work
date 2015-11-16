@@ -10,6 +10,10 @@ macro_rules! gen_variadic_op {
             pub fn new(args: Vec<Box<Node>>) -> Self {
                 $name(args)
             }
+
+            pub fn boxed(args: Vec<Box<Node>>) -> Box<Self> {
+                Box::new($name(args))
+            }
         }
 
         impl Node for $name {

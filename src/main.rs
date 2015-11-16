@@ -63,12 +63,12 @@ impl<'a> SchemeParser<'a> {
             Token::Plus => {
                 let mut args = self.collect_args();
                 match args.len() {
-                    1 => Box::new(UnaryPlus::new(args.pop().unwrap())),
-                    _ => Box::new(Plus::new(args))
+                    1 => UnaryPlus::boxed(args.pop().unwrap()),
+                    _ => Plus::boxed(args)
                 }
             },
-            Token::Mul => Box::new(Mul::new(self.collect_args())),
-            Token::Div => Box::new(Div::new(self.collect_args())),
+            Token::Mul => Mul::boxed(self.collect_args()),
+            Token::Div => Div::boxed(self.collect_args()),
             _ => panic!("unsupported operator met")
         }
     }
