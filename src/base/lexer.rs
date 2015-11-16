@@ -77,6 +77,7 @@ pub struct LexerIter<'a> {
     buf: &'a Bytes,
     max_pos: usize,
     pos: usize,
+    ignore_spaces: bool,
 }
 
 macro_rules! take_bytes {
@@ -102,6 +103,7 @@ impl<'a> LexerIter<'a> {
             buf: input,
             max_pos: input.len() - 1,
             pos: 0,
+            ignore_spaces: true,
         }
     }
     
@@ -184,6 +186,14 @@ impl<'a> LexerIter<'a> {
 
         Token::LineComment(ByteStr::from_bytes(bytes))
     }
+
+    fn ignore_spaces(&mut self) {
+        self.ignore_spaces = true;
+    }
+    
+    fn return_spaces(&mut self) {
+        self.ignore_spaces = false;
+    }
 }
 
 impl<'a> Iterator for LexerIter<'a> {
@@ -199,6 +209,12 @@ impl<'a> Iterator for LexerIter<'a> {
 
         // #TODO: check if typed tokens EVERYWHERE is a nice idea
         if self.has_next() {
+            // #FIXME: its a temporary CRUTCHY HACK
+            // Whitespace policy is still undefined
+            if self.ignore_spaces {
+                skip_while!(self, self.byte().is_space());
+            }
+            
             Some(match self.byte() {
                 b'0'...b'9' => self.fetch_number(),
                 b'a'...b'z' | b'A'...b'Z' => self.fetch_word(),

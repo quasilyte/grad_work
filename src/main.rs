@@ -17,6 +17,19 @@ use cgen::ast::Node;
 use cgen::ast::{Add, Mul, Div, UnaryAdd};
 use cgen::ast::{Invocation, VarDeclaration};
 
+macro_rules! expect {
+    ($this:ident, $name:path) => {
+        match $this.tokens.next().unwrap() {
+            $name => (),
+            got @ _ => panic!(
+                "expected {:?}, got {:?}",
+                stringify!($name),
+                got
+            )
+        }
+    };
+}
+
 macro_rules! parser_extend {
     ($parser:ident with collect_args) => {
         impl<'a> $parser<'a> {
@@ -85,11 +98,10 @@ impl<'a> SchemeParser<'a> {
             Slash => Div::boxed(self.collect_args()),
             Ident(name) => match name.as_slice() {
                 b"define" => {
-                    let _ = self.tokens.next().unwrap();
                     if let Ident(lvalue) = self.tokens.next().unwrap() {
                         let next_token = self.tokens.next().unwrap();
                         let rvalue = self.parse(next_token);
-                        let _ = self.tokens.next().unwrap();
+                        expect!(self, Token::RightParen);
                         VarDeclaration::boxed(lvalue, rvalue)
                     } else {
                         panic!("expected symbol as lvalue for `define`");
@@ -105,10 +117,6 @@ impl<'a> SchemeParser<'a> {
         match token {
             Token::LeftParen => self.parse_expression(),
             Token::Decimal(x) => Box!(x),
-            Token::Whitespace => {
-                let token = self.tokens.next().unwrap();
-                self.parse(token)
-            }
             _ => panic!("unexpected {:?}", token)
         }
     }

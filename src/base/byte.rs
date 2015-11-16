@@ -58,6 +58,7 @@ impl fmt::Debug for ByteStr {
 // #TODO: maybe I need a new type rather than a typedef for `u8`?
 pub trait ByteChar {
     fn is_digit(self) -> bool;
+    fn is_space(self) -> bool;
 }
 
 impl ByteChar for Byte {
@@ -65,6 +66,13 @@ impl ByteChar for Byte {
     fn is_digit(self) -> bool {
         match self {
             b'0'...b'9' => true,
+            _ => false
+        }
+    }
+
+    fn is_space(self) -> bool {
+        match self {
+            b' ' | b'\t' | b'\n' => true,
             _ => false
         }
     }
