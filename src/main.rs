@@ -9,10 +9,31 @@ use base::{Decimal};
 use cgen::ast::Node;
 use cgen::ast::{Plus, Mul, Div, UnaryPlus};
 
+macro_rules! parser_extend {
+    ($parser:ident with collect_args) => {
+        impl<'a> $parser<'a> {
+            fn collect_args(&mut self) -> Vec<Box<Node>> {
+                let mut args: Vec<Box<Node>> = Vec::with_capacity(2);
+
+                loop {
+                    match self.tokens.next().unwrap() {
+                        Token::Whitespace => (),
+                        Token::RightParen => break,
+                        token @ _ => args.push(self.parse(token))
+                    }
+                }
+
+                args
+            }
+        }
+    };
+}
+
 struct SchemeParser<'a> {
     tokens: LexerIter<'a>
 }
 
+parser_extend!(SchemeParser with collect_args);
 impl<'a> SchemeParser<'a> {
     fn new(input: &'a Bytes) -> Self {
         let mut lexer = Lexer::new();    
@@ -38,32 +59,16 @@ impl<'a> SchemeParser<'a> {
     }
 
     fn fn_call(&mut self) -> Box<Node> {
-        macro_rules! collect_args {
-            () => {{
-                let mut args: Vec<Box<Node>> = Vec::with_capacity(2);
-
-                loop {
-                    match self.tokens.next().unwrap() {
-                        Token::Whitespace => (),
-                        Token::RightParen => break,
-                        token @ _ => args.push(self.parse(token))
-                    }
-                }
-
-                args
-            }};
-        }
-        
         match self.tokens.next().unwrap() {
             Token::Plus => {
-                let mut args = collect_args!();
+                let mut args = self.collect_args();
                 match args.len() {
                     1 => Box::new(UnaryPlus::new(args.pop().unwrap())),
                     _ => Box::new(Plus::new(args))
                 }
             },
-            Token::Mul => Box::new(Mul::new(collect_args!())),
-            Token::Div => Box::new(Div::new(collect_args!())),
+            Token::Mul => Box::new(Mul::new(self.collect_args())),
+            Token::Div => Box::new(Div::new(self.collect_args())),
             _ => panic!("unsupported operator met")
         }
     }
