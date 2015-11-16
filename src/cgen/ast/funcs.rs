@@ -1,6 +1,7 @@
 use cgen::ast::Node;
 use base::byte::ByteStr;
 
+// #TODO: could be used in more places..
 macro_rules! add_ctors {
     ($name:ident, $([$param:ident, $t:ty]),*) => {
         impl $name {
