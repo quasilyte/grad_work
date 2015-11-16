@@ -67,7 +67,7 @@ impl<'a> SchemeParser<'a> {
             _ => panic!("unsupported operator met")
         }
     }
-    
+
     fn parse(&mut self, token: Token) -> Box<Node> {
         match token {
             Token::LeftParen => self.fn_call(),
@@ -83,9 +83,7 @@ impl<'a> SchemeParser<'a> {
 fn main() {  
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
-    // let input = b"(define x (+ 10 20.4)) ";
     // let input = include_bytes!("../tmp/input.txt");
-    // let input = b"#comment\n(+ 10 20) ";
     let input = b"(+ 1 (* 2 2) (/ 4 2)) ";
      
     SchemeParser::new(input).run();
