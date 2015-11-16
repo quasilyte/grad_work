@@ -1,23 +1,27 @@
 use cgen::ast::Node;
 use base::byte::ByteStr;
 
+macro_rules! add_ctors {
+    ($name:ident, $([$param:ident, $t:ty]),*) => {
+        impl $name {
+            pub fn new($($param: $t,)*) -> Self {
+                $name {
+                    $($param: $param,)*
+                }
+            }
+
+            pub fn boxed($($param: $t,)*) -> Box<Self> {
+                Box::new($name::new($($param,)*))
+            }
+        }
+    };
+}
+
 pub struct Invocation {
     name: ByteStr,
     args: Vec<Box<Node>>
 }
-
-impl Invocation {
-    pub fn new(name: ByteStr, args: Vec<Box<Node>>) -> Self {
-        Invocation {
-            name: name,
-            args: args
-        }
-    }
-
-    pub fn boxed(name: ByteStr, args: Vec<Box<Node>>) -> Box<Self> {
-        Box::new(Invocation::new(name, args))
-    }
-}
+add_ctors!(Invocation, [name, ByteStr], [args, Vec<Box<Node>>]);
 
 impl Node for Invocation {
     fn gen_code(&self) -> ByteStr {
@@ -40,19 +44,7 @@ pub struct VarDeclaration {
     lvalue: ByteStr,
     rvalue: Box<Node>,
 }
-
-impl VarDeclaration {
-    pub fn new(lvalue: ByteStr, rvalue: Box<Node>) -> Self {
-        VarDeclaration {
-            lvalue: lvalue,
-            rvalue: rvalue,
-        }
-    }
-
-    pub fn boxed(lvalue: ByteStr, rvalue: Box<Node>) -> Box<Self> {
-        Box::new(VarDeclaration::new(lvalue, rvalue))
-    }
-}
+add_ctors!(VarDeclaration, [lvalue, ByteStr], [rvalue, Box<Node>]);
 
 impl Node for VarDeclaration {
     fn gen_code(&self) -> ByteStr {
