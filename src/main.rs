@@ -1,4 +1,6 @@
 #[macro_use]
+pub mod utils;
+#[macro_use]
 pub mod base;
 pub mod cgen;
 pub mod env;
@@ -76,7 +78,7 @@ impl<'a> SchemeParser<'a> {
     fn parse(&mut self, token: Token) -> Box<Node> {
         match token {
             Token::LeftParen => self.fn_call(),
-            Token::Decimal(x) => Box::new(x),
+            Token::Decimal(x) => Box!(x),
             _ => panic!("unexpected {:?}", token)
         }
     }
