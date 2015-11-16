@@ -187,10 +187,12 @@ impl<'a> LexerIter<'a> {
         Token::LineComment(ByteStr::from_bytes(bytes))
     }
 
+    #[allow(dead_code)]
     fn ignore_spaces(&mut self) {
         self.ignore_spaces = true;
     }
-    
+
+    #[allow(dead_code)]
     fn return_spaces(&mut self) {
         self.ignore_spaces = false;
     }

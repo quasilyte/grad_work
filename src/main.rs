@@ -116,7 +116,8 @@ impl<'a> SchemeParser<'a> {
     fn parse(&mut self, token: Token) -> Box<Node> {
         match token {
             Token::LeftParen => self.parse_expression(),
-            Token::Decimal(x) => Box!(x),
+            Token::Decimal(d) => Box!(d),
+            Token::Real(r) => Box!(r),
             _ => panic!("unexpected {:?}", token)
         }
     }
@@ -129,7 +130,7 @@ fn main() {
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
     // let input = include_bytes!("../tmp/input.txt");
-    let input = b"(define x (+ 10 20)) ";
+    let input = b"(define x (+ 10.5 20)) ";
     
     SchemeParser::new(input).run();
 }
