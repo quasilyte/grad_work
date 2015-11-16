@@ -5,11 +5,16 @@ pub mod base;
 pub mod cgen;
 pub mod env;
 
+// #FIXME: Boxes are everywhere with Tokens;
+// It is not a perfomance/space problem,
+// but they increase verbosity of the code
+// and cause macro like `Box!` to emerge
+
 // use base::{Lexer, Byte, Parser, Compiler, Token};
 use base::{Lexer, LexerIter, Byte, Bytes, Token};
 use base::{Decimal};
 use cgen::ast::Node;
-use cgen::ast::{Add, Mul, Div, UnaryAdd};
+use cgen::ast::{Add, Mul, Div, UnaryAdd, Invocation};
 
 macro_rules! parser_extend {
     ($parser:ident with collect_args) => {
@@ -77,12 +82,10 @@ impl<'a> SchemeParser<'a> {
             },
             Asterisk => Mul::boxed(self.collect_args()),
             Slash => Div::boxed(self.collect_args()),
-            /*
-            Ident(name) => match name {
-                // keyword
-                // user func
+            Ident(name) => match name.as_slice() {
+                // b"define" => ,
+                _ => Invocation::boxed(name, self.collect_args()),
             },
-            */
             _ => panic!("unexpected operator found")
         }
     }
@@ -103,7 +106,7 @@ fn main() {
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
     // let input = include_bytes!("../tmp/input.txt");
-    let input = b"(define x 10) ";
+    let input = b"(define 6 10) ";
      
     SchemeParser::new(input).run();
 }

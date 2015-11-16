@@ -9,3 +9,6 @@ pub mod variadic_op;
 
 pub use self::unary_op::UnaryAdd;
 pub mod unary_op;
+
+pub use self::funcs::Invocation;
+pub mod funcs;

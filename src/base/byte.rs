@@ -34,6 +34,16 @@ impl ByteStr {
         self.0.extend(other.0.iter().cloned());
     }
     
+    pub fn as_slice(&self) -> &Bytes {
+        &self.0[..]
+    }
+
+    // #TODO: must be proven useful
+    pub fn last_byte_set(&mut self, byte: Byte) {
+        let last_pos = self.0.len() - 1;
+        self.0[last_pos] = byte
+    }
+    
     fn to_string(&self) -> String {
         String::from_utf8(self.0.clone()).unwrap()
     }
