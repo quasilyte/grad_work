@@ -9,7 +9,7 @@ pub mod env;
 use base::{Lexer, LexerIter, Byte, Bytes, Token};
 use base::{Decimal};
 use cgen::ast::Node;
-use cgen::ast::{Plus, Mul, Div, UnaryPlus};
+use cgen::ast::{Add, Mul, Div, UnaryAdd};
 
 macro_rules! parser_extend {
     ($parser:ident with collect_args) => {
@@ -60,24 +60,36 @@ impl<'a> SchemeParser<'a> {
         }
     }
 
-    fn fn_call(&mut self) -> Box<Node> {
+    fn parse_expression(&mut self) -> Box<Node> {
+        use base::token::Token::*;
+        
         match self.tokens.next().unwrap() {
-            Token::Plus => {
+            Plus => {
+                // #FIXME: maybe there is a need for some kind of `bag`
+                // which stores collected args inside?
+                // With it: match self.collect_args().len(); and then use
+                // self.collected_args in arms
                 let mut args = self.collect_args();
                 match args.len() {
-                    1 => UnaryPlus::boxed(args.pop().unwrap()),
-                    _ => Plus::boxed(args)
+                    1 => UnaryAdd::boxed(args.pop().unwrap()),
+                    _ => Add::boxed(args)
                 }
             },
-            Token::Mul => Mul::boxed(self.collect_args()),
-            Token::Div => Div::boxed(self.collect_args()),
-            _ => panic!("unsupported operator met")
+            Asterisk => Mul::boxed(self.collect_args()),
+            Slash => Div::boxed(self.collect_args()),
+            /*
+            Ident(name) => match name {
+                // keyword
+                // user func
+            },
+            */
+            _ => panic!("unexpected operator found")
         }
     }
 
     fn parse(&mut self, token: Token) -> Box<Node> {
         match token {
-            Token::LeftParen => self.fn_call(),
+            Token::LeftParen => self.parse_expression(),
             Token::Decimal(x) => Box!(x),
             _ => panic!("unexpected {:?}", token)
         }
@@ -91,7 +103,7 @@ fn main() {
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
     // let input = include_bytes!("../tmp/input.txt");
-    let input = b"(+ 1 (* 2 2) (/ 4 2)) ";
+    let input = b"(define x 10) ";
      
     SchemeParser::new(input).run();
 }

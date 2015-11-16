@@ -1,19 +1,19 @@
 use cgen::ast::Node;
 use base::byte::ByteStr;
 
-pub struct UnaryPlus(Box<Node>);
+pub struct UnaryAdd(Box<Node>);
 
-impl UnaryPlus {
+impl UnaryAdd {
     pub fn new(arg: Box<Node>) -> Self {
-        UnaryPlus(arg)
+        UnaryAdd(arg)
     }
 
     pub fn boxed(arg: Box<Node>) -> Box<Self> {
-        Box::new(UnaryPlus(arg))
+        Box::new(UnaryAdd(arg))
     }
 }
 
-impl Node for UnaryPlus {
+impl Node for UnaryAdd {
     fn gen_code(&self) -> ByteStr {
         self.0.gen_code()
     }

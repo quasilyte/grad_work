@@ -41,8 +41,8 @@ macro_rules! gen_variadic_ops {
 }
 
 gen_variadic_ops!(
-    Plus b"+";
-    Minus b"-";
+    Add b"+";
+    Sub b"-";
     Mul b"*";
     Div b"/"
 );

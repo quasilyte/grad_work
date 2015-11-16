@@ -1,11 +1,11 @@
 pub use self::node::Node;
 pub mod node;
 
-pub use self::variadic_op::Plus;
-pub use self::variadic_op::Minus;
+pub use self::variadic_op::Add;
+pub use self::variadic_op::Sub;
 pub use self::variadic_op::Mul;
 pub use self::variadic_op::Div;
 pub mod variadic_op;
 
-pub use self::unary_op::UnaryPlus;
+pub use self::unary_op::UnaryAdd;
 pub mod unary_op;

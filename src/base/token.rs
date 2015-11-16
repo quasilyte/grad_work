@@ -19,8 +19,8 @@ pub enum Token {
     QuasiQuote,
     Dot,
     Comma,
-    Mul, // Asterisk?
-    Div, // Slash?
+    Asterisk, // #FIXME: is there any better name for "*"?
+    Slash,
     // Space:
     Whitespace,
     Tab,
@@ -33,6 +33,6 @@ pub enum Token {
     LeftCurly,
     RightCurly,
     // Other:
-    LineComment(ByteStr),
+    LineComment(ByteStr), // #FIXME: should be configurable
     Ident(ByteStr),
 }
