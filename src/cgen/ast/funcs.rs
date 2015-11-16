@@ -35,3 +35,37 @@ impl Node for Invocation {
         code
     }
 }
+
+pub struct VarDeclaration {
+    lvalue: ByteStr,
+    rvalue: Box<Node>,
+}
+
+impl VarDeclaration {
+    pub fn new(lvalue: ByteStr, rvalue: Box<Node>) -> Self {
+        VarDeclaration {
+            lvalue: lvalue,
+            rvalue: rvalue,
+        }
+    }
+
+    pub fn boxed(lvalue: ByteStr, rvalue: Box<Node>) -> Box<Self> {
+        Box::new(VarDeclaration::new(lvalue, rvalue))
+    }
+}
+
+impl Node for VarDeclaration {
+    fn gen_code(&self) -> ByteStr {
+        let mut code = ByteStr::with_capacity(64);
+        
+        code.push_bytes(b"Box ");
+        code.append(&self.lvalue);
+        
+        code.push_byte(b'=');
+        
+        code.append(&self.rvalue.gen_code());
+        code.push_byte(b';');
+
+        code
+    }
+}

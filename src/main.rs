@@ -14,7 +14,8 @@ pub mod env;
 use base::{Lexer, LexerIter, Byte, Bytes, Token};
 use base::{Decimal};
 use cgen::ast::Node;
-use cgen::ast::{Add, Mul, Div, UnaryAdd, Invocation};
+use cgen::ast::{Add, Mul, Div, UnaryAdd};
+use cgen::ast::{Invocation, VarDeclaration};
 
 macro_rules! parser_extend {
     ($parser:ident with collect_args) => {
@@ -83,7 +84,17 @@ impl<'a> SchemeParser<'a> {
             Asterisk => Mul::boxed(self.collect_args()),
             Slash => Div::boxed(self.collect_args()),
             Ident(name) => match name.as_slice() {
-                // b"define" => ,
+                b"define" => {
+                    let _ = self.tokens.next().unwrap();
+                    if let Ident(lvalue) = self.tokens.next().unwrap() {
+                        let next_token = self.tokens.next().unwrap();
+                        let rvalue = self.parse(next_token);
+                        let _ = self.tokens.next().unwrap();
+                        VarDeclaration::boxed(lvalue, rvalue)
+                    } else {
+                        panic!("expected symbol as lvalue for `define`");
+                    }
+                },
                 _ => Invocation::boxed(name, self.collect_args()),
             },
             _ => panic!("unexpected operator found")
@@ -94,6 +105,10 @@ impl<'a> SchemeParser<'a> {
         match token {
             Token::LeftParen => self.parse_expression(),
             Token::Decimal(x) => Box!(x),
+            Token::Whitespace => {
+                let token = self.tokens.next().unwrap();
+                self.parse(token)
+            }
             _ => panic!("unexpected {:?}", token)
         }
     }
@@ -106,8 +121,8 @@ fn main() {
     // #TODO: lexer must ensure trailing delimiter char in the input,
     // because we do not want to make excessive checks at run time
     // let input = include_bytes!("../tmp/input.txt");
-    let input = b"(define 6 10) ";
-     
+    let input = b"(define x (+ 10 20)) ";
+    
     SchemeParser::new(input).run();
 }
 
