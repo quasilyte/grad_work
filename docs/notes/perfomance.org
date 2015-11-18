@@ -32,5 +32,14 @@
 #+CAPTION: ast transformating
 | method                                    | cost |
 |-------------------------------------------+------|
-| many small allocations and concatenations |      |
-| computed length + single allocation       |      |
+| many small allocations and concatenations | 60   |
+| computed length + single allocation       | 64   |
+
+#+CAPTION: rng lexer
+| method                         | cost |
+|--------------------------------+------|
+| pass rng by ref (usize, usize) |   24 |
+| pass rng by ref (u32, u32)     |   24 |
+| pass rng copy (usize, usize)   |   24 |
+| pass rng copy (u32, u32)       |   24 |
+
