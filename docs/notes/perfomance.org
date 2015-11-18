@@ -1,27 +1,33 @@
 #+CAPTION: keyword determination
-| algorithm                   | cost |
-|-----------------------------+------|
-| pattern match against &[u8] |   16 |
-| hashSet lookup              |   45 |
+| algorithm                   | cost       |
+|-----------------------------+------------|
+| pattern match against &[u8] | 16         |
+| hashSet lookup              | 45 (+281%) |
 
-#+CAPTION: encoding footprint
-| encoding | cost | commentary                                                |
-|----------+------+-----------------------------------------------------------|
-| ASCII    |   43 |                                                           |
-| UTF-8    |   68 | while UTF-8 is nice, we do not need it (at least for now) |
+#+CAPTION: Rust encoding footprint
+| encoding | cost      |
+|----------+-----------|
+| ASCII    | 43        |
+| UTF-8    | 68 (+48%) |
+
+#+CAPTION: C wchar foorprint
+| encoding | cost       |
+|----------+------------|
+| ASCII    | 264        |
+| Wchar    | 352 (+33%) |
 
 #+CAPTION: char class determination
-| method             | cost | commentary                                             |
-|--------------------+------+--------------------------------------------------------|
-| direct fn call     |   19 |                                                        |
-| indirect fn call   |   20 | Rust docs says that the compiler tries to inline those |
-| &str linear search |   52 |                                                        |
+| method             | cost       | commentary                                             |
+|--------------------+------------+--------------------------------------------------------|
+| direct fn call     | 19         |                                                        |
+| indirect fn call   | 20 (+5%)   | Rust docs says that the compiler tries to inline those |
+| &str linear search | 52 (+273%) |                                                        |
 
 #+CAPTION: parse_float
-| method              | cost | commentary                    |
-|---------------------+------+-------------------------------|
-| parse<i64> x2 + pow |   61 | supports only \d+\.\d+ format |
-| stdlib/parse<f64>   |  118 | supports MANY formats         |
+| method              | cost       | commentary                    |
+|---------------------+------------+-------------------------------|
+| parse<i64> x2 + pow | 61         | supports only \d+\.\d+ format |
+| stdlib/parse<f64>   | 118 (+93%) | supports MANY formats         |
 
 #+CAPTION: ast transformating
 | method                                    | cost |

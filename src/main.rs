@@ -131,7 +131,7 @@ fn main() {
     // because we do not want to make excessive checks at run time
     // let input = include_bytes!("../tmp/input.txt");
     let input = b"(define x (+ 10.5 20)) ";
-    
+
     SchemeParser::new(input).run();
 }
 
