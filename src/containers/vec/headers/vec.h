@@ -7,14 +7,17 @@
   CharVec*: vecc_##FN_NAME, \
   IntVec*: veci_##FN_NAME
 
-#define VEC_GENERIC1(FN_NAME, SELF)			\
+#define VEC_GENERIC1(FN_NAME, SELF)		         	\
   _Generic((SELF), VEC_VARIANTS(FN_NAME))((SELF))
 #define VEC_GENERIC2(FN_NAME, SELF, PARAM1)			\
   _Generic((SELF), VEC_VARIANTS(FN_NAME))((SELF), (PARAM1))
+#define VEC_GENERIC3(FN_NAME, SELF, PARAM1, PARAM2)		\
+  _Generic((SELF), VEC_VARIANTS(FN_NAME))((SELF), (PARAM1), (PARAM2))
 
 #define vec_free(SELF) VEC_GENERIC1(free, SELF)
 #define vec_wild_push(SELF, ELT) VEC_GENERIC2(wild_push, SELF, ELT)
 #define vec_push(SELF, ELT) VEC_GENERIC2(push, SELF, ELT)
+#define vec_npush(SELF, ELTS, N) VEC_GENERIC3(npush, SELF, ELTS, N)
 #define vec_push_arr(SELF, ARR) VEC_GENERIC2(push_arr, SELF, ARR)
 #define vec_push_vec(SELF, VEC) VEC_GENERIC2(push_vec, SELF, VEC)
 #define vec_wild_pop(SELF) VEC_GENERIC1(wild_pop, SELF)

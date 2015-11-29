@@ -17,6 +17,7 @@
 									 \
   static inline void PREFIX##_wild_push(ID *self, ELT_T(ID) elt);        \
   static inline void PREFIX##_push(ID *self, ELT_T(ID) elt);	         \
+  void PREFIX##_npush(ID* self, ELT_T(ID)* elt, size_t n);       	 \
   void PREFIX##_npush_arr(ID* self, ARR_T *arr, size_t n);		 \
   void PREFIX##_push_arr(ID *self, ARR_T *arr);				 \
   void PREFIX##_push_vec(ID *self, ID *vec);				 \

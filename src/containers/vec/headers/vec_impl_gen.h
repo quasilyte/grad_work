@@ -14,22 +14,27 @@
     };  					\
   }
 
+#define VEC_NPUSH(ID, PREFIX)					\
+  void PREFIX##_npush(ID* self, ELT_T(ID)* elts, size_t n) {	\
+    arr_ensure_cap(&self->arr, self->len + n);			\
+    size_t byte_size = n * sizeof(ELT_T(ID));			\
+    memcpy(self->arr.mem + self->len, elts, byte_size);		\
+    self->len += n;						\
+  }
+
 #define VEC_NPUSH_ARR(ID, PREFIX, ARR_T)			\
   void PREFIX##_npush_arr(ID* self, ARR_T* arr, size_t n) {	\
-    arr_ensure_cap(&self->arr, self->len + n);			\
-    size_t byte_size = n * sizeof(*(arr->mem));			\
-    memcpy(self->arr.mem + self->len, arr->mem, byte_size);	\
-    self->len += n;						\
+    PREFIX##_npush(self, arr->mem, n);				\
   }
 
 #define VEC_PUSH_ARR(ID, PREFIX, ARR_T)					\
   void PREFIX##_push_arr(ID* self, ARR_T* arr) {			\
-    PREFIX##_npush_arr(self, arr, arr->cap);				\
+    PREFIX##_npush(self, arr->mem, arr->cap);				\
   }
 
 #define VEC_PUSH_VEC(ID, PREFIX)					\
   void PREFIX##_push_vec(ID* self, ID* vec) {				\
-    PREFIX##_npush_arr(self, &vec->arr, vec->len);			\
+    PREFIX##_npush(self, vec->arr.mem, vec->len);			\
   }
 
 #define VEC_FREE(ID, PREFIX)			\
@@ -37,10 +42,11 @@
     arr_free(&self->arr);			\
   }
 
-#define VEC_IMPL(ID, PREFIX, ARR_T)		\
-  VEC_NEW(ID, PREFIX, ARR_T)			\
-  VEC_NPUSH_ARR(ID, PREFIX, ARR_T)		\
-  VEC_PUSH_ARR(ID, PREFIX, ARR_T)		\
-  VEC_PUSH_VEC(ID, PREFIX)			\
+#define VEC_IMPL(ID, PREFIX, ARR_T)			\
+  VEC_NEW(ID, PREFIX, ARR_T)				\
+  VEC_NPUSH(ID, PREFIX)					\
+  VEC_NPUSH_ARR(ID, PREFIX, ARR_T)			\
+  VEC_PUSH_ARR(ID, PREFIX, ARR_T)			\
+  VEC_PUSH_VEC(ID, PREFIX)				\
   VEC_FREE(ID, PREFIX)				
 
