@@ -1,9 +1,16 @@
 #+CAPTION: vector perfomance
 | vector implementation | cost       |
 |-----------------------+------------|
-| C (homebrew)          | 86         |
-| C++ (GCC STL)         | 104 (120%) |
-| Rust                  | 238 (276%) |
+| C (homebrew)          | 81         |
+| C++ (GCC STL)         | 100 (123%) |
+| Rust                  | 238 (293%) |
+
+#+CAPTION: vector perfomance
+| string implementation | cost       |
+|-----------------------+------------|
+| C (homebrew)          | 58         |
+| C++ (GCC STL)         | 101 (174%) |
+| Rust                  | ?          |
 
 #+CAPTION: keyword determination
 | algorithm                   | cost      |
