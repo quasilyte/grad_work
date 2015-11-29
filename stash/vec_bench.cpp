@@ -10,7 +10,7 @@ int main(void) {
   vals.reserve(20);
   for (int i = 0; i < 20; ++i) vals.push_back(i * i);
 
-  for (int i = 1; i < 50000; ++i) {
+  for (size_t i = 1; i < 50000; ++i) {
     vector<char> vecc;
     vecc.reserve(i);
     vector<int> veci;

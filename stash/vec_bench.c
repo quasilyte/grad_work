@@ -2,12 +2,12 @@
 #include "vec.h"
 
 int main(void) {
-  long score = 0;
+  size_t score = 0;
 
   IntArr vals = arri_new(20);
   for (int i = 0; i < 20; ++i) vals.mem[i] = i * i;
   
-  for (int i = 1; i < 50000; ++i) {
+  for (size_t i = 1; i < 50000; ++i) {
     CharVec vecc = vecc_new(i);
     IntVec veci = veci_new(i);
 
@@ -18,10 +18,10 @@ int main(void) {
     vec_push_arr(&veci, &vals);
 
     while (vecc.len) {
-      score += vec_wild_pop(&vecc);
+      score += (size_t) vec_wild_pop(&vecc);
     }
     while (veci.len) {
-      score += vec_wild_pop(&veci);
+      score += (size_t) vec_wild_pop(&veci);
     }
 
     vec_free(&vecc);
