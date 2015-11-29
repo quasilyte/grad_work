@@ -3,40 +3,21 @@
 #include "char_vec.h"
 #include "int_vec.h"
 
-#define vec_free(vec)					\
-  _Generic((vec),					\
-    CharVec*: vecc_free,				\
-    IntVec*: veci_free	        			\
-  )((vec))
+#define VEC_VARIANTS(FN_NAME) \
+  CharVec*: vecc_##FN_NAME, \
+  IntVec*: veci_##FN_NAME
 
-#define vec_wild_push(vec, elt)				\
-  _Generic((vec),					\
-    CharVec*: vecc_wild_push,				\
-    IntVec*: veci_wild_push		        	\
-  )((vec), (elt))
+#define VEC_GENERIC1(FN_NAME, SELF)			\
+  _Generic((SELF), VEC_VARIANTS(FN_NAME))((SELF))
+#define VEC_GENERIC2(FN_NAME, SELF, PARAM1)			\
+  _Generic((SELF), VEC_VARIANTS(FN_NAME))((SELF), (PARAM1))
 
-#define vec_push(vec, elt)				\
-  _Generic((vec),					\
-    CharVec*: vecc_push,				\
-    IntVec*: veci_push		                	\
-  )((vec), (elt))
-
-#define vec_push_arr(vec, arr)				\
-  _Generic((vec),					\
-    CharVec*: vecc_push_arr,				\
-    IntVec*: veci_push_arr			        \
-  )((vec), (arr))
-
-#define vec_wild_pop(vec)				\
-  _Generic((vec),					\
-    CharVec*: vecc_wild_pop,				\
-    IntVec*: veci_wild_pop			        \
-  )((vec))
-
-#define vec_pop(vec)					\
-  _Generic((vec),					\
-    CharVec*: vecc_pop,	         			\
-    IntVec*: veci_pop   			        \
-  )((vec))
+#define vec_free(SELF) VEC_GENERIC1(free, SELF)
+#define vec_wild_push(SELF, ELT) VEC_GENERIC2(wild_push, SELF, ELT)
+#define vec_push(SELF, ELT) VEC_GENERIC2(push, SELF, ELT)
+#define vec_push_arr(SELF, ARR) VEC_GENERIC2(push_arr, SELF, ARR)
+#define vec_push_vec(SELF, VEC) VEC_GENERIC2(push_vec, SELF, VEC)
+#define vec_wild_pop(SELF) VEC_GENERIC1(wild_pop, SELF)
+#define vec_pop(SELF) VEC_GENERIC1(pop, SELF)
 
 
