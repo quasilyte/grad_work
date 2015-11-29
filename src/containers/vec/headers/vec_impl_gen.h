@@ -1,6 +1,6 @@
 #pragma once
 
-#include "arr/headers/arr.h"
+#include "arr.h"
 
 #define VEC_NEW(ID, PREFIX, ARR_T)		\
   ID PREFIX##_new(size_t cap) {			\
@@ -19,5 +19,5 @@
 
 #define VEC_IMPL(ID, PREFIX, ARR_T)		\
   VEC_NEW(ID, PREFIX, ARR_T)			\
-  VEC_FREE(ID, PREFIX)				\
+  VEC_FREE(ID, PREFIX)				
   

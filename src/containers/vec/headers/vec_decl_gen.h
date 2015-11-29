@@ -1,6 +1,6 @@
 #pragma once
 
-#include "arr/headers/arr.h"
+#include "arr.h"
 #include <assert.h>
 
 #define VEC_DECL(ID, PREFIX, ARR_T, ELT_T)				\
