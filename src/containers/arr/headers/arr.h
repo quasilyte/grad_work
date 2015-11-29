@@ -15,6 +15,12 @@
     IntArr*: arri_realloc	        \
   )((arr), (cap))
 
+#define arr_init(arr, cap)			\
+  _Generic((arr),				\
+    CharArr*: arrc_init,			\
+    IntArr*: arri_init				\
+  )((arr), (cap))  
+
 /*
 #define arrc_foreach(arr, induct)		\
   for (char *induct = arr.mem,			\
