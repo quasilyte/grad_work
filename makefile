@@ -4,8 +4,7 @@ INC=src/headers/
 ## Compilation settings
 BIN=bin/resembler
 CC=gcc
-CFLAGS=-I$(INC) \
-	-std=c11 \
+CFLAGS= -std=c11 \
 	-pedantic \
 	-Wfatal-errors \
 	-Wall \
@@ -26,11 +25,14 @@ CFLAGS=-I$(INC) \
 	-Winline
 
 ## Sources
-SRC=\
-	src/arr.c \
-	src/lex.c \
-	src/vec.c \
-	src/main.c
+SRC=src/*.c
+
+CONTAINERS_SRC=\
+	../src/containers/arr/*.c
+CONTAINERS_INC=\
+	-I../src/containers/arr \
+	-I../src/containers/vec \
+	-I../src/containers/str
 
 ## Targets and dependencies
 all:
@@ -39,3 +41,5 @@ all:
 debug:
 	$(CC) $(CFLAGS) -O0 $(SRC) -o $(BIN)
 
+containers:
+	cd build; $(CC) $(CFLAGS) $(CONTAINERS_SRC) $(CONTAINERS_INC) -O3 -c
