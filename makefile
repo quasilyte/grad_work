@@ -27,8 +27,9 @@ CFLAGS=-I$(INC) \
 
 ## Sources
 SRC=\
-	src/buf.c \
+	src/arr.c \
 	src/lex.c \
+	src/vec.c \
 	src/main.c
 
 ## Targets and dependencies

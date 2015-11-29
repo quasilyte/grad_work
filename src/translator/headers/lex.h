@@ -2,7 +2,7 @@
 #define HEADERS_LEX_
 
 #include "defs.h"
-#include "buf.h"
+#include "arr.h"
 #include "tok.h"
 
 deftype(Lex) {
@@ -12,7 +12,7 @@ deftype(Lex) {
   char* const src;
 };
 
-Lex lex_make(Buf input);
+Lex lex_make(Arr input);
 
 bool lex_has_more(const Lex* lex);
 void lex_fetch_into(Lex* lex, Tok* tok);

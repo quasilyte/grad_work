@@ -11,7 +11,7 @@ inline static void skip_space(Lex* self) {
   SKIP_WHILE(isspace(*self->pos));
 }
 
-inline Lex lex_make(Buf input) {
+inline Lex lex_make(Arr input) {
   Lex self = {
     .pos = input.mem,
     .max_pos = input.mem + input.cap,
