@@ -15,10 +15,13 @@
   ID PREFIX##_new(size_t cap);						 \
   void PREFIX##_free(ID* self);						 \
 									 \
-  static inline void PREFIX##_wild_push(ID* self, ELT_T(ID) elt);        \
-  static inline void PREFIX##_push(ID* self, ELT_T(ID) elt);	         \
-  static inline ELT_T(ID) PREFIX##_wild_pop(ID* self);		         \
-  static inline ELT_T(ID) PREFIX##_pop(ID* self);                        \
+  static inline void PREFIX##_wild_push(ID *self, ELT_T(ID) elt);        \
+  static inline void PREFIX##_push(ID *self, ELT_T(ID) elt);	         \
+  void PREFIX##_npush_arr(ID* self, ARR_T *arr, size_t n);		 \
+  void PREFIX##_push_arr(ID *self, ARR_T *arr);				 \
+  void PREFIX##_push_vec(ID *self, ID *vec);				 \
+  static inline ELT_T(ID) PREFIX##_wild_pop(ID *self);		         \
+  static inline ELT_T(ID) PREFIX##_pop(ID *self);                        \
 									 \
   /* Static Inline functions implementation */				 \
   									 \
@@ -28,7 +31,7 @@
 									 \
   static inline void PREFIX##_push(ID* self, ELT_T(ID) elt) {	         \
     if (self->len == self->arr.cap) {					 \
-      arr_realloc(&self->arr, self->arr.cap * 2);			 \
+      arr_enlarge(&self->arr);						 \
     }									 \
     PREFIX##_wild_push(self, elt);					 \
   }									 \

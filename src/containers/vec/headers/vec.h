@@ -21,6 +21,12 @@
     IntVec*: veci_push		                	\
   )((vec), (elt))
 
+#define vec_push_arr(vec, arr)				\
+  _Generic((vec),					\
+    CharVec*: vecc_push_arr,				\
+    IntVec*: veci_push_arr			        \
+  )((vec), (arr))
+
 #define vec_wild_pop(vec)				\
   _Generic((vec),					\
     CharVec*: vecc_wild_pop,				\

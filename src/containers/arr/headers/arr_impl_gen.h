@@ -37,6 +37,21 @@
     self->cap = cap;						      \
   }
 
+#define ARR_ENLARGE(ID, PREFIX, ELT_T)					\
+  void PREFIX##_enlarge(ID *self) {					\
+    self->cap <<= 1;							\
+    ELT_T* new_mem = realloc(self->mem, self->cap * sizeof(ELT_T));	\
+    assert(NULL != new_mem);						\
+    self->mem = new_mem;						\
+  }
+
+#define ARR_ENSURE_CAP(ID, PREFIX)		   \
+  void PREFIX##_ensure_cap(ID *self, size_t cap) { \
+    if (self->cap < cap ) {			   \
+      PREFIX##_realloc(self, cap + (cap >> 1));	   \
+    }						   \
+  }
+
 #define ARR_FREE(ID, PREFIX, ELT_T)			\
   void PREFIX##_free(ID* self) {			\
     assert(self->mem != NULL);				\
@@ -48,4 +63,6 @@
   ARR_NEW(ID, PREFIX, ELT_T)			\
   ARR_INIT(ID, PREFIX, ELT_T)			\
   ARR_REALLOC(ID, PREFIX, ELT_T)		\
+  ARR_ENLARGE(ID, PREFIX, ELT_T)		\
+  ARR_ENSURE_CAP(ID, PREFIX)			\
   ARR_FREE(ID, PREFIX, ELT_T)
