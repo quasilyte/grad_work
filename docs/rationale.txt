@@ -1,6 +1,0 @@
-Why?
- * zero overhead FFI
- * uniform FFI protocol for multiple languages via transcompiler intrinsics
- * uniform runtime (and standard library)
- * ability to extend C applications from a number of scripting languages
- * 

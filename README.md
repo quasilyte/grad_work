@@ -7,3 +7,5 @@ As a *toolkit* it provides a Rust codebase with libraries full of functions and 
 *Transformator* is a program which serves as a transcompiler to translate arbitrary (defined by a *transformator* grammar) inputs into *final form*.
 
 *Final form* is, currently, a C code with custom runtime.
+
+UPDATE: no more Rust. Transcompiler is being rewritten in C.

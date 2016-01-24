@@ -1,6 +1,3 @@
-## Project settings
-INC=src/headers/
-
 ## Compilation settings
 BIN=bin/resembler
 CC=gcc
@@ -26,20 +23,10 @@ CFLAGS= -std=c11 \
 
 ## Sources
 SRC=src/*.c
-
-CONTAINERS_SRC=\
-	../src/containers/arr/*.c
-CONTAINERS_INC=\
-	-I../src/containers/arr \
-	-I../src/containers/vec \
-	-I../src/containers/str
+INC=    -Isrc/header/trait/ \
+	-Isrc/header/core/ \
+	-Isrc/header/ 
 
 ## Targets and dependencies
 all:
-	$(CC) $(CFLAGS) -O3 $(SRC) -o $(BIN)
-
-debug:
-	$(CC) $(CFLAGS) -O0 $(SRC) -o $(BIN)
-
-containers:
-	cd build; $(CC) $(CFLAGS) $(CONTAINERS_SRC) $(CONTAINERS_INC) -O3 -c
+	$(CC) $(CFLAGS) $(INC) $(SRC) -o $(BIN)
