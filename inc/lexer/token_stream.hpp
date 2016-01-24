@@ -108,7 +108,7 @@ private:
   }
 
   void eval_op() {
-    unsigned hash = *token.value;
+    u32 hash = *token.value;
     for (token.len = 1; not_space(current_char()); ++token.len) {
       hash <<= 7;
       hash += current_char();

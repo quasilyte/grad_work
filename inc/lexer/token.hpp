@@ -1,9 +1,10 @@
 #pragma once
 
+#include "typedefs.hpp"
 #include "parse_val.hpp"
 
-inline constexpr unsigned m4_hash(const char *cstr, unsigned hash = 0) {
-  return *cstr ? (hash << 7) + m4_hash(cstr + 1, static_cast<unsigned>(*cstr)) : hash;
+inline constexpr u32 m4_hash(const char *cstr, u32 hash = 0) {
+  return *cstr ? (hash << 7) + m4_hash(cstr + 1, *cstr) : hash;
 }
 
 enum TokenTag {
