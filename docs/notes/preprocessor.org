@@ -1,8 +1,0 @@
-Open questions:
-* Should new preprocessor be 100% compatible with default C/C++ preprocessor?
-
-#+CAPTION: preprocessor additional features
-| Task      | Keyword | Priority |
-|-----------+---------+----------|
-| Inclusion | #use    |          |
-|           |         |          |
