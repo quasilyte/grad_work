@@ -15,7 +15,7 @@ inline bool token_has_value(Token *tok) {
 
 inline void test_checksum(const char *input, int expected_sum) {
   int sum = 0;
-  TokenStream tokens(input);
+  TokenStream tokens(input, strlen(input));
 
   while (tokens.next_tag() != SOURCE_END) {
     switch (tokens.current()->tag) {
@@ -37,7 +37,7 @@ inline void test_checksum(const char *input, int expected_sum) {
 
 inline void test_tags(const char *input, std::vector<TokenTag> expected_tags) {
   std::vector<TokenTag> tags;
-  TokenStream tokens(input);
+  TokenStream tokens(input, strlen(input));
 
   while (tokens.next_tag() != SOURCE_END) {
     tags.push_back(tokens.current()->tag);
@@ -48,7 +48,7 @@ inline void test_tags(const char *input, std::vector<TokenTag> expected_tags) {
 
 inline void test_values(const char *input, std::vector<std::string> expected_values) {
   std::vector<std::string> values;
-  TokenStream tokens(input);
+  TokenStream tokens(input, strlen(input));
 
   while (tokens.next_tag() != SOURCE_END) {
     if (token_has_value(tokens.current())) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "typedefs.hpp"
+#include "m_hash.hpp"
 
 #define SET_TAG(TAG) token.tag = TAG; break;
 #define TAG_CASE(CHAR, TAG) case CHAR: SET_TAG(TAG);
@@ -8,12 +9,25 @@
 
 class TokenStream {
 public:
-  TokenStream(const char *input): token{input, 0, SOURCE_END} {}
+  TokenStream(const char *input, size_t len):
+    token{input, 0, SOURCE_END},
+    end{input + len}
+  {}
+
+  TokenStream(Token *tok):
+    token{tok->value, 0, SOURCE_END},
+    end{tok->value + tok->len - 1}
+  {}
 
   void next() {
     token.value += token.len;
     consume_spaces();
-    eval();
+
+    if (token.value == end) {
+      token.tag = SOURCE_END;
+    } else {
+      eval();
+    }
   }
   
   Token* next_token() {
@@ -34,7 +48,6 @@ public:
     token.len = 1;
     
     switch (*token.value) {
-    TAG_CASE('\0', SOURCE_END);
     NONPRINTABLE_CASE: throw "nonprintable char met";
     TAG_CASE('!', BANG);
     case '"': throw "cant handle string literals yet";
@@ -43,8 +56,9 @@ public:
     TAG_CASE('%', PERCENT);
     case '&': EVAL(op);
     TAG_CASE('\'', QUOTE);
-    TAG_CASE('(', LPAREN);
-    TAG_CASE(')', RPAREN);
+    case '(':
+      eval_group<PAREN_GROUP, '(', ')'>(); break;
+    case ')': throw "stray )";
     case '*': EVAL(op);
     case '+': EVAL(op);
     TAG_CASE(',', COMMA);
@@ -60,16 +74,18 @@ public:
     TAG_CASE('?', QUES);
     TAG_CASE('@', AT);
     UCASE_CASE: EVAL(word);
-    TAG_CASE('[', LBRACKET);
+    case '[':
+      eval_group<BRACKET_GROUP, '[', ']'>(); break;
     TAG_CASE('\\', BACKSLASH);
-    TAG_CASE(']', RBRACKET);
+    case ']': throw "stray ]";
     TAG_CASE('^', CARET);
     TAG_CASE('_', UNDERSCORE); // Yeah, no leading underscore for identifiers
     TAG_CASE('`', BACK_QUOTE);
     LCASE_CASE: EVAL(word);
-    TAG_CASE('{', LBRACE);
+    case '{':
+      eval_group<BRACE_GROUP, '{', '}'>(); break;
     TAG_CASE('|', PIPE);
-    TAG_CASE('}', RBRACE);
+    case '}': throw "stray }";
     TAG_CASE('~', TILDE);
     default:
       throw "nonprintable char met";
@@ -78,6 +94,7 @@ public:
   
 private:
   Token token;
+  const char *const end;
 
   void eval_word() {
     // We enter this loop after passing first alpha char,
@@ -99,7 +116,7 @@ private:
     collect_digits();
 
     if ('.' == current_char()) {
-      ++token.len; // Pass over dot
+      token.len += 1; // Pass over dot
       collect_digits();
       token.tag = REAL;
     } else {
@@ -107,11 +124,27 @@ private:
     }
   }
 
+  template<TokenTag TAG, char LFT, char RGT> void eval_group() {
+    int balance = 0;
+
+    while (!(RGT == current_char() && 0 == balance)) {
+      if (LFT == current_char()) {
+        balance += 1;
+      } else if (RGT == current_char()) {
+        balance -= 1;
+      }
+
+      token.len += 1;
+    }
+
+    token.tag = TAG;
+    token.value += 1; // Skip opening LFT char
+  }
+
   void eval_op() {
     u32 hash = *token.value;
     for (token.len = 1; not_space(current_char()); ++token.len) {
-      hash <<= 7;
-      hash += current_char();
+      hash = m_encode(hash, current_char());
     }
     token.tag = static_cast<TokenTag>(hash);
   }

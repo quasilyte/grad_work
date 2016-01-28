@@ -19,8 +19,6 @@ inline void dump_token(Token *tok, int depth = 0) {
      }                                          \
    } break;
 
-
-
   // Generated with `script/tokens_dump_labels.awk`
   switch (tok->tag) {
   VALUE_CASE(WORD);

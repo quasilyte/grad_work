@@ -2,10 +2,7 @@
 
 #include "typedefs.hpp"
 #include "parse_val.hpp"
-
-inline constexpr u32 m4_hash(const char *cstr, u32 hash = 0) {
-  return *cstr ? (hash << 7) + m4_hash(cstr + 1, *cstr) : hash;
-}
+#include "m_hash.hpp"
 
 enum TokenTag {
   /**
@@ -18,10 +15,13 @@ enum TokenTag {
     * Identity qualified:
     */
   SOURCE_END,
+  PAREN_GROUP, // ( ... )
   LPAREN, // (
   RPAREN, // )
+  BRACE_GROUP, // { ... }
   LBRACE, // {
   RBRACE, // }
+  BRACKET_GROUP, // [ ... ]
   LBRACKET, // [
   RBRACKET, // ]
   HASH, // #
@@ -77,5 +77,13 @@ struct Token {
 
   decimal fetch_decimal() const {
     return parse_decimal(value);
+  }
+
+  u64 hash_value() const {
+    if (len > MAX_HASHABLE_LEN) {
+      return NIL_HASH;
+    }
+
+    return m9_hash(value, len);
   }
 };
