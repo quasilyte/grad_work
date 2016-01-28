@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_testing()
 # We are currently using GCC only;
 # -Wsign-conversion can be useful, but it is so annoying!
+# -Wshadow prohobits writing sane ctor signatures
 set(
   gcc_warn_flags
   "-pedantic \
@@ -18,7 +19,6 @@ set(
    -Wmissing-declarations \
    -Wmissing-include-dirs \
    -Wredundant-decls \
-   -Wshadow \
    -Wstrict-overflow=5 \
    -Wswitch-default \
    -Wundef \
