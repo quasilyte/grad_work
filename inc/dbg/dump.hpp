@@ -7,31 +7,21 @@
 
 inline void dump_token(Token *tok, int depth = 0) {
 #define VALUE_CASE(tag) \
-  case tag: std::printf("%*s" #tag " `%.*s`\n", depth, "", tok->len, tok->value); break;
+  case tag: std::printf("%*s" #tag " `%.*s`\n", depth, "", static_cast<int>(tok->len), tok->value); break;
 #define CASE(tag) \
   case tag: std::printf("%*s<%s>\n", depth, "", #tag); break;
-#define GROUP_CASE(tag)                         \
-   case tag:                                    \
-   { TokenStream ts{tok};                       \
-     std::printf("%*s" #tag ":\n", depth, "");  \
-     while (SOURCE_END != ts.next_tag()) {      \
-       dump_token(ts.current(), depth + 2);     \
-     }                                          \
-   } break;
 
   // Generated with `script/tokens_dump_labels.awk`
   switch (tok->tag) {
   VALUE_CASE(WORD);
   VALUE_CASE(DECIMAL);
   VALUE_CASE(REAL);
+  VALUE_CASE(STR);
   CASE(SOURCE_END);
-  GROUP_CASE(PAREN_GROUP);
   CASE(LPAREN);
   CASE(RPAREN);
-  GROUP_CASE(BRACE_GROUP);
   CASE(LBRACE);
   CASE(RBRACE);
-  GROUP_CASE(BRACKET_GROUP);
   CASE(LBRACKET);
   CASE(RBRACKET);
   CASE(HASH);

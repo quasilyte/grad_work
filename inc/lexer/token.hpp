@@ -3,6 +3,7 @@
 #include "typedefs.hpp"
 #include "parse_val.hpp"
 #include "m_hash.hpp"
+#include <cstring>
 
 enum TokenTag {
   /**
@@ -11,17 +12,15 @@ enum TokenTag {
   WORD,
   DECIMAL,
   REAL,
+  STR,
   /**
     * Identity qualified:
     */
   SOURCE_END,
-  PAREN_GROUP, // ( ... )
   LPAREN, // (
   RPAREN, // )
-  BRACE_GROUP, // { ... }
   LBRACE, // {
   RBRACE, // }
-  BRACKET_GROUP, // [ ... ]
   LBRACKET, // [
   RBRACKET, // ]
   HASH, // #
@@ -67,9 +66,15 @@ enum TokenTag {
 };
 
 struct Token {
-  const char* value;
-  int len;
+  const char *value;
+  usize len;
   TokenTag tag;
+
+  Token(TokenTag tag, const char *value, usize len):
+    value{value}, tag{tag}, len{len} {}
+
+  Token(TokenTag tag, const char *value):
+    value{value}, tag{tag}, len{strlen(value)} {}
 
   real fetch_real() const {
     return parse_real(value);

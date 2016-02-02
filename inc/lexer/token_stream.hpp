@@ -10,12 +10,12 @@
 class TokenStream {
 public:
   TokenStream(const char *input, size_t len):
-    token{input, 0, SOURCE_END},
+    token{SOURCE_END, input, 0},
     end{input + len}
   {}
 
   TokenStream(Token *tok):
-    token{tok->value, 0, SOURCE_END},
+    token{SOURCE_END, tok->value, 0},
     end{tok->value + tok->len - 1}
   {}
 
@@ -50,15 +50,14 @@ public:
     switch (*token.value) {
     NONPRINTABLE_CASE: throw "nonprintable char met";
     TAG_CASE('!', BANG);
-    case '"': throw "cant handle string literals yet";
+    case '"': EVAL(str);
     TAG_CASE('#', HASH);
     TAG_CASE('$', DOLLAR);
     TAG_CASE('%', PERCENT);
     case '&': EVAL(op);
     TAG_CASE('\'', QUOTE);
-    case '(':
-      eval_group<PAREN_GROUP, '(', ')'>(); break;
-    case ')': throw "stray )";
+    TAG_CASE('(', LPAREN);
+    TAG_CASE(')', RPAREN);
     case '*': EVAL(op);
     case '+': EVAL(op);
     TAG_CASE(',', COMMA);
@@ -74,18 +73,16 @@ public:
     TAG_CASE('?', QUES);
     TAG_CASE('@', AT);
     UCASE_CASE: EVAL(word);
-    case '[':
-      eval_group<BRACKET_GROUP, '[', ']'>(); break;
+    TAG_CASE('[', LBRACKET);
     TAG_CASE('\\', BACKSLASH);
-    case ']': throw "stray ]";
+    TAG_CASE(']', RBRACKET);
     TAG_CASE('^', CARET);
     TAG_CASE('_', UNDERSCORE); // Yeah, no leading underscore for identifiers
     TAG_CASE('`', BACK_QUOTE);
     LCASE_CASE: EVAL(word);
-    case '{':
-      eval_group<BRACE_GROUP, '{', '}'>(); break;
+    TAG_CASE('{', LBRACE);
     TAG_CASE('|', PIPE);
-    case '}': throw "stray }";
+    TAG_CASE('}', RBRACE);
     TAG_CASE('~', TILDE);
     default:
       throw "nonprintable char met";
@@ -106,9 +103,18 @@ private:
     token.tag = WORD;
   }
 
+  void eval_str() {
+    while ('"' != current_char()) {
+      token.len += 1;
+    }
+
+    token.len += 1; // Pass over closing "
+    token.tag = STR;
+  }
+
   void collect_digits() {
     while (is_digit(current_char())) {
-      ++token.len;
+      token.len += 1;
     }
   }
 
@@ -122,23 +128,6 @@ private:
     } else {
       token.tag = DECIMAL;
     }
-  }
-
-  template<TokenTag TAG, char LFT, char RGT> void eval_group() {
-    int balance = 0;
-
-    while (!(RGT == current_char() && 0 == balance)) {
-      if (LFT == current_char()) {
-        balance += 1;
-      } else if (RGT == current_char()) {
-        balance -= 1;
-      }
-
-      token.len += 1;
-    }
-
-    token.tag = TAG;
-    token.value += 1; // Skip opening LFT char
   }
 
   void eval_op() {

@@ -20,7 +20,7 @@ public:
 
   friend Any add(const Any lhs, const Any rhs);
 
-  decimal get_decimal() const {
+  decimal to_decimal() const {
     switch (tag) {
     case D: return value.d;
     case R: return static_cast<decimal>(value.r);
@@ -28,7 +28,7 @@ public:
     }
   }
 
-  real get_real() const {
+  real to_real() const {
     switch (tag) {
     case D: return static_cast<real>(value.d);
     case R: return value.r;
@@ -40,9 +40,9 @@ public:
 Any add(const Any lhs, const Any rhs) {
   switch (lhs.tag) {
   case lhs.D:
-    return Any(lhs.value.d + rhs.get_decimal());
+    return Any(lhs.value.d + rhs.to_decimal());
   case lhs.R:
-    return Any(lhs.value.r + rhs.get_real());
+    return Any(lhs.value.r + rhs.to_real());
   default: throw "unknown type tag";
   }
 }

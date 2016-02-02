@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstddef>
 
+typedef size_t usize;
 typedef unsigned int uint;
 
 typedef int64_t i64;
