@@ -1,9 +1,12 @@
+SET(CMAKE_C_COMPILER "/usr/bin/clang")
+SET(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+
 project(Resembler)
 cmake_minimum_required(VERSION 2.8)
 
 ## Project-wide settings
+
 enable_testing()
-# We are currently using GCC only;
 # -Wsign-conversion can be useful, but it is so annoying!
 # -Wshadow prohobits writing sane ctor signatures
 set(
@@ -31,22 +34,27 @@ set(
    -Wsign-promo \
    -Wstrict-null-sentinel"
 )
+set(
+  clang_warn_flags
+  "-Wall"
+)
 set(project_flags "-std=c++14")
 set(
-  CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${project_flags} ${gcc_warn_flags}"
+  CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${project_flags} ${clang_warn_flags}"
 )
 
-include_directories(inc)
+include_directories(src)
 
 ## Hack to make QtCreator show headers inside project window
-file(GLOB_RECURSE header_files "inc/*.hpp")
+file(GLOB_RECURSE header_files "src/*.hpp")
 add_custom_target(headers SOURCES ${header_files})
 
+## Tests
+add_subdirectory(tests/lex)
 ## Modules
-add_subdirectory(test/lexer)
-add_subdirectory(src/dbg)
+add_subdirectory(src/lex)
 
 ## Main executable (mostly for debug purposes)
 set(main_src main.cpp)
 add_executable(${PROJECT_NAME} ${main_src})
-target_link_libraries(${PROJECT_NAME} dbg)
+target_link_libraries(${PROJECT_NAME} lex)

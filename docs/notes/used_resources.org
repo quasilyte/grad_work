@@ -7,6 +7,10 @@
 | [[https://github.com/jneem/regex-dfa][Rust regex DFA impl]]               |
 | [[https://github.com/goffrie/plex][Rust Plex parser+lexer generator]]  |
 | [[https://github.com/nikomatsakis/lalrpop][Rust LARL-POP]]                     |
+| [[https://github.com/electronicarts/EASTL/tree/master/include/EASTL][EA C++ STL]]                        |
+| [[https://habrahabr.ru/company/wunderfund/blog/277143/][Linux & Chromium DT]]               |
+| [[https://habrahabr.ru/post/247843/][Python Dict]]                       |
+| [[https://en.wikibooks.org/wiki/Optimizing_C%2B%2B][Optimizing C++]]                    |
 
 #+CAPTION: misc/temp
 | [[https://yoo2080.wordpress.com/2013/08/16/differences-between-common-lisp-and-emacs-lisp/][Differences between elisp & CL]] |
