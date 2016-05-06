@@ -1,7 +1,6 @@
 #pragma once
 
-#include "typedefs.hpp"
-#include "token.hpp"
+#include "lex/token.hpp"
 
 namespace lex {
   class TokenStream;
@@ -9,33 +8,39 @@ namespace lex {
 
 class lex::TokenStream {
 public:
-  class NonPrintableCharError{};
-  
-  TokenStream(const char *input, usize len):
-  token{SOURCE_END, input, 0}, end{input + len} {}
+  struct UnexpectedRparen{};
 
-  TokenStream(Token *tok):
-  token{SOURCE_END, tok->value, 0}, end{tok->value + tok->len - 1} {}
+  TokenStream(const char* input, usize input_len);
+  TokenStream(Token);
 
   void next() noexcept;
-  const Token& next_token() noexcept;
-  Tag next_tag() noexcept;
-  const Token& current() const noexcept;
-  Tag current_tag() const noexcept;
-  
+
+  Token next_token() noexcept;
+  Token::Tag next_tag() noexcept;
+
+  Token current_token() const noexcept;
+  Token::Tag current_tag() const noexcept;
+
 private:
-  Token token;
-  const char *const end;
+  const char* input_end;
+  Token tok;
+
+  void consume_spaces() noexcept;
 
   void eval() noexcept;
-  void eval_word() noexcept;
-  void eval_str() noexcept;
   void eval_number() noexcept;
-  void eval_op() noexcept;
-  
-  void collect_digits() noexcept;
-  void consume_spaces() noexcept;
-  char current_char() const noexcept; 
-};
-	     
+  void eval_str() noexcept;
+  void eval_word() noexcept;
+  void eval_list() noexcept;
 
+  char current_char() const noexcept;
+  bool has_more_input() const noexcept;
+
+  void collect_digits() noexcept;
+  void collect_str() noexcept;
+};
+
+static_assert(
+  sizeof(lex::TokenStream) == 24 || sizeof(lex::TokenStream) == 16,
+  "type size expectations failed"
+);

@@ -1,84 +1,49 @@
 #pragma once
 
 #include "typedefs.hpp"
-#include "m_hash.hpp"
 
 namespace lex {
-  using namespace m_hash;
-  
-  enum Tag: u32 {
-    /**
-     * Value qualified:
-     */
-    WORD,
-      INTEGER,
-      REAL,
-      STR,
-      /**
-       * Identity qualified:
-    */
-      SOURCE_END,
-      LPAREN, // (
-      RPAREN, // )
-      LBRACE, // {
-      RBRACE, // }
-      LBRACKET, // [
-      RBRACKET, // ]
-      HASH, // #
-      DOLLAR, // $
-      BACKSLASH,
-      COLON, // :
-      SEMICOLON, // ;
-      AT, // @
-      QUES, // ?
-      CARET, // ^
-      PIPE, // |
-      TILDE, // ~
-      LT, // <
-      GT, // >
-      UNDERSCORE, // _
-      PERCENT, // %
-      BACK_QUOTE, // `
-      QUOTE, // '
-      COMMA, // ,
-      BANG, // !
-      /**
-       * M4 hash qualified:
-       */
-      PLUS = encode4("+"),
-      PLUS2 = encode4("++"),
-      PLUS_EQ = encode4("+="),
-      MINUS = encode4("-"),
-      MINUS2 = encode4("--"),
-      MINUS_EQ = encode4("-="),
-      ARROW = encode4("->"),
-      EQ = encode4("="),
-      EQ2 = encode4("=="),
-      EQ3 = encode4("==="),
-      FAT_ARROW = encode4("=>"),
-      DOT = encode4("."),
-      DOT2 = encode4(".."),
-      DOT3 = encode4("..."),
-      STAR = encode4("*"),
-      SLASH = encode4("/"),
-      SLASH2 = encode4("//"),
-      AMP = encode4("&"),
-      AMP2 = encode4("&&")
-  };
-
-  struct Token;
+  class Token;
+  class TokenStream;
 }
 
-struct lex::Token {
-  const char *value;
+class lex::Token {
+public:
+  enum Tag: i32 {
+    BEGIN_ATOM,
+    INT,
+    REAL,
+    STR,
+    END_ATOM,
+    WORD,
+    LIST,
+    SOURCE_END,
+  };
+
+  Token(Tag, const char* val);
+  Token(Tag, const char* val, u32 len);
+
+  Tag get_tag() const noexcept;
+  u32 get_len() const noexcept;
+  const char* get_val() const noexcept;
+
+  bool is_atom() const noexcept;
+  bool is_int() const noexcept;
+  bool is_real() const noexcept;
+  bool is_str() const noexcept;
+  bool is_word() const noexcept;
+  bool is_list() const noexcept;
+  bool is_eof() const noexcept;
+
+private:
   Tag tag;
-  usize len;
+  u32 len;
+  const char* val;
 
-  Token(Tag tag, const char *value, usize len);
-  Token(Tag tag, const char *value);
-
-  real fetch_real() const;
-  integer fetch_integer() const;
-  
-  u64 hash_value() const;
+  friend class TokenStream;
 };
+
+static_assert(
+  sizeof(lex::Token) == 16 || sizeof(lex::Token) == 12,
+  "type size expectations failed"
+);

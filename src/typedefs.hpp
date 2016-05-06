@@ -16,14 +16,3 @@ typedef int8_t u8;
 
 typedef double f64;
 typedef float f32;
-
-typedef f64 real;
-typedef i64 integer;
-
-inline real operator "" _r(long double literal_value) {
-  return static_cast<real>(literal_value);
-}
-
-inline integer operator "" _i(unsigned long long literal_value) {
-  return static_cast<integer>(literal_value);
-}

@@ -1,28 +1,51 @@
-#include "token.hpp"
+#include "lex/token.hpp"
 
 #include <cstring>
-#include "parse_val.hpp"
 
 using namespace lex;
 
-Token::Token(Tag tag, const char *value, usize len):
-value{value}, tag{tag}, len{len} {}
+Token::Token(Tag tag, const char* val):
+tag{tag}, len{static_cast<u32>(std::strlen(val))}, val{val} {}
 
-Token::Token(Tag tag, const char *value):
-value{value}, tag{tag}, len{strlen(value)} {}
+Token::Token(Tag tag, const char* val, u32 len):
+tag{tag}, len{len}, val{val} {}
 
-real Token::fetch_real() const {
-  return parse_real(value);
+Token::Tag Token::get_tag() const noexcept {
+  return tag;
 }
 
-integer Token::fetch_integer() const {
-  return parse_integer(value);
+u32 Token::get_len() const noexcept {
+  return len;
 }
 
-u64 Token::hash_value() const {
-  if (len > MAX_HASHABLE_LEN) {
-    return NIL_HASH;
-  }
+const char* Token::get_val() const noexcept {
+  return val;
+}
 
-  return m_hash::encode9(value, len);
+bool Token::is_atom() const noexcept {
+  return tag > BEGIN_ATOM && tag < END_ATOM;
+}
+
+bool Token::is_int() const noexcept {
+  return tag == INT;
+}
+
+bool Token::is_real() const noexcept {
+  return tag == REAL;
+}
+
+bool Token::is_str() const noexcept {
+  return tag == STR;
+}
+
+bool Token::is_word() const noexcept {
+  return tag == WORD;
+}
+
+bool Token::is_list() const noexcept {
+  return tag == LIST;
+}
+
+bool Token::is_eof() const noexcept {
+  return tag == SOURCE_END;
 }

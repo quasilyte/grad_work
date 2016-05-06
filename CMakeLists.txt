@@ -49,12 +49,13 @@ include_directories(src)
 file(GLOB_RECURSE header_files "src/*.hpp")
 add_custom_target(headers SOURCES ${header_files})
 
-## Tests
-add_subdirectory(tests/lex)
-## Modules
 add_subdirectory(src/lex)
+add_subdirectory(src/dbg)
+add_subdirectory(src/cc)
+add_subdirectory(src/ast)
+add_subdirectory(src/io)
+add_subdirectory(src/sym)
 
 ## Main executable (mostly for debug purposes)
-set(main_src main.cpp)
-add_executable(${PROJECT_NAME} ${main_src})
-target_link_libraries(${PROJECT_NAME} lex)
+add_executable(${PROJECT_NAME} lisp.cpp)
+target_link_libraries(${PROJECT_NAME} sym io cc ast dbg lex)
