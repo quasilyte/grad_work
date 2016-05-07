@@ -36,7 +36,8 @@ set(
 )
 set(
   clang_warn_flags
-  "-Wall"
+  "-Wall \
+   -Wextra"
 )
 set(project_flags "-std=c++14")
 set(
@@ -55,7 +56,8 @@ add_subdirectory(src/cc)
 add_subdirectory(src/ast)
 add_subdirectory(src/io)
 add_subdirectory(src/sym)
+add_subdirectory(src/dt)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
-target_link_libraries(${PROJECT_NAME} io cc ast dbg lex sym)
+target_link_libraries(${PROJECT_NAME} io cc ast lex sym dt dbg)
