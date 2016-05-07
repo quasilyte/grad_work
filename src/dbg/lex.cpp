@@ -11,7 +11,6 @@ void dump_one_token(Token tok, const char* type, int depth) {
 }
 
 void dbg::dump_token(Token tok, int depth) {
-
   switch (tok.Tag()) {
   case Token::INT: dump_one_token(tok, "int", depth); break;
   case Token::REAL: dump_one_token(tok, "real", depth); break;
