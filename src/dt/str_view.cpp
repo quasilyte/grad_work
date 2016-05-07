@@ -27,5 +27,5 @@ bool StrView::operator<(const StrView& other) const {
 }
 
 bool StrView::operator==(const StrView& other) const {
-  return len == other.len && std::strcmp(data, other.data) == 0;
+  return len == other.len && std::strncmp(data, other.data, other.len) == 0;
 }
