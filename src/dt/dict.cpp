@@ -1,8 +1,8 @@
 #include "dt/dict.hpp"
 
-using namespace dt;
+#include "sym/module.hpp"
 
-#include "dt/dict.hpp"
+using namespace dt;
 
 template<class T>
 void dt::Dict<T>::Put(const char *key, T value) {
@@ -20,18 +20,33 @@ void dt::Dict<T>::Put(StrView key, T value) {
 }
 
 template<class T>
-T& dt::Dict<T>::Get(const char *key) {
+const T& dt::Dict<T>::Get(const char *key) {
   return bag[StrView{key}];
 }
 
 template<class T>
-T& dt::Dict<T>::Get(const char* key, u32 key_len) {
+const T& dt::Dict<T>::Get(const char* key, u32 key_len) {
   return bag[StrView{key, key_len}];
 }
 
 template<class T>
-T& dt::Dict<T>::Get(StrView key) {
+const T& dt::Dict<T>::Get(StrView key) {
   return bag[key];
 }
 
-template class dt::Dict<int>;
+template<class T>
+T& dt::Dict<T>::GetMut(const char *key) {
+  return bag[StrView{key}];
+}
+
+template<class T>
+T& dt::Dict<T>::GetMut(const char* key, u32 key_len) {
+  return bag[StrView{key, key_len}];
+}
+
+template<class T>
+T& dt::Dict<T>::GetMut(StrView key) {
+  return bag[key];
+}
+
+template class dt::Dict<sym::Type>;

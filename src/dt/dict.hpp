@@ -15,9 +15,13 @@ public:
   void Put(const char* key, u32 key_len, T value);
   void Put(StrView key, T value);
 
-  T& Get(const char* key);
-  T& Get(const char* key, u32 key_len);
-  T& Get(StrView key);
+  const T& Get(const char* key);
+  const T& Get(const char* key, u32 key_len);
+  const T& Get(StrView key);
+
+  T& GetMut(const char* key);
+  T& GetMut(const char* key, u32 key_len);
+  T& GetMut(StrView key);
 
 private:
   std::unordered_map<StrView, T> bag;
