@@ -1,0 +1,15 @@
+naming: {
+  PascalCase - type names (classes, enums), method names;
+  snake_case - functions, local & global variables;
+  UPPER_CASE - preprocessor variables & constants;
+}
+
+pointers: {
+  const char* cstr;
+  const char* const cstr;
+  char* func();
+}
+
+rules: {
+  - where size prediction is important, put static_assert
+}
