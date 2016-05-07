@@ -3,11 +3,13 @@
 #include "lex/token.hpp"
 #include "lex/token_stream.hpp"
 #include "dbg/lex.hpp"
+#include "dbg/dt.hpp"
 #include "cc/parser.hpp"
 #include "cc/code_gen.hpp"
 #include "io/file_writer.hpp"
 #include "sym/type.hpp"
 #include "ast/node.hpp"
+#include "dt/dict.hpp"
 #include <fstream>
 #include <string>
 
@@ -30,7 +32,7 @@ std::string slurp(const char* path) {
 // (set-type! sum (int a b))
 
 // phases & passes:
-// pass[1]:
+// pass[1] (parser):
 // + build the ast
 // - maintain symbol table
 // - estimate types
@@ -38,15 +40,25 @@ std::string slurp(const char* path) {
 // - type check
 // + generate code
 
-int main(int argc, char* argv[]) {
+// int main(int argc, char* argv[]) {
+int main() {
   using namespace lex;
 
+  /*
+  dt::Dict<int> dict;
+  dict.Put(dt::StrView{"xd", 1}, 14);
+  printf("%d\n", dict.Get(dt::StrView{"xy", 1}));
+  */
+
   try {
-    const char* input = "(define x (if 1 15 0.3)) (set! x 10)";
+    // const char* input = "(#type x real)(define x 10.5)";
+    const char* input = "(#type x real)(define x 10)";
+    // const char* input = "(define x (if 1 15 3)) (set! x 10)";
+    // const char* input = "(define x (if 1 15 3)) (#type x int)";
     io::FileWriter fw{};
     cc::Parser parser{input};
     auto parse_tree = parser.Parse();
-    cc::CodeGen cg{parse_tree};
+    cc::CodeGen cg{parser.Module(), parse_tree};
     cg.WriteTo(fw);
   } catch (const char* msg) {
     std::fprintf(stderr, "error: %s\n", msg);

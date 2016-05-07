@@ -8,7 +8,7 @@ namespace ast {
 
 struct ast::If: public Node {
   If(Node* cond, Node* on_true, Node* on_false);
-  void GenerateCode(const io::FileWriter&) override;
+  void GenerateCode(const sym::Module&, const io::FileWriter&) override;
   Node* cond;
   Node* on_true;
   Node* on_false;

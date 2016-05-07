@@ -9,10 +9,11 @@ namespace cc {
 
 class cc::CodeGen {
 public:
-  CodeGen(const Parser::Tree&);
+  CodeGen(const sym::Module&, const Parser::Tree&);
 
   void WriteTo(const io::FileWriter&);
 
 private:
+  const sym::Module& module;
   const Parser::Tree& tree;
 };

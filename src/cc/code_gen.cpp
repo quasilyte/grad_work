@@ -4,10 +4,11 @@
 
 using namespace cc;
 
-CodeGen::CodeGen(const Parser::Tree& tree): tree{tree} {}
+CodeGen::CodeGen(const sym::Module& module, const Parser::Tree& tree):
+module{module}, tree{tree} {}
 
 void CodeGen::WriteTo(const io::FileWriter& fw) {
   for (ast::Node* node : tree) {
-    node->GenerateCode(fw);
+    node->GenerateCode(module, fw);
   }
 }

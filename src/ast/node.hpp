@@ -2,6 +2,7 @@
 
 #include "io/file_writer.hpp"
 #include "sym/type.hpp"
+#include "sym/module.hpp"
 
 namespace ast {
   struct Node;
@@ -13,7 +14,7 @@ struct ast::Node {
   Node();
   Node(sym::Type);
 
-  virtual void GenerateCode(const io::FileWriter&) = 0;
+  virtual void GenerateCode(const sym::Module&, const io::FileWriter&) = 0;
 
   const sym::Type& Type() const noexcept;
 

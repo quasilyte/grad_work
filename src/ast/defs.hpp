@@ -10,14 +10,14 @@ namespace ast {
 
 struct ast::Define: public Node {
   Define(lex::Token, Node*);
-  void GenerateCode(const io::FileWriter&) override;
+  void GenerateCode(const sym::Module&, const io::FileWriter&) override;
   lex::Token name;
   Node* assignment;
 };
 
 struct ast::Set: public Node {
   Set(lex::Token, Node*);
-  void GenerateCode(const io::FileWriter&) override;
+  void GenerateCode(const sym::Module&, const io::FileWriter&) override;
   lex::Token name;
   Node* assignment;
 };

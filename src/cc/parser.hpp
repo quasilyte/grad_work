@@ -1,6 +1,8 @@
 #pragma once
 
 #include "lex/token_stream.hpp"
+#include "sym/module.hpp"
+#include "dt/dict.hpp"
 #include <vector>
 
 namespace ast {
@@ -18,10 +20,16 @@ public:
   Parser(const char* input);
 
   const Tree& Parse();
+  const sym::Module& Module() const noexcept;
 
 private:
   Tree tree;
+  sym::Module module;
   lex::TokenStream toks;
+
+  void ExecDirective(lex::Token);
+
+  void ExecType(lex::TokenStream);
 
   ast::Node* ParseToken(lex::Token);
   ast::Node* ParseList(lex::Token);

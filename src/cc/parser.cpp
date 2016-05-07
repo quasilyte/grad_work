@@ -4,6 +4,9 @@
 #include "ast/cond.hpp"
 #include "ast/atoms.hpp"
 #include "ast/defs.hpp"
+#include "dt/str_view.hpp"
+#include "dbg/lex.hpp"
+#include "dbg/dt.hpp"
 #include <cstring>
 #include <vector>
 
@@ -12,11 +15,12 @@
 using namespace cc;
 using namespace lex;
 using namespace ast;
+using namespace dt;
 
 Parser::Parser(const char *input):
-toks{TokenStream{input, strlen(input)}} {}
+module{"global"}, toks{TokenStream{input, strlen(input)}} {}
 
-std::vector<Token> eval_tokens(TokenStream toks, int min_count, int max_count) {
+std::vector<Token> eval_tokens(TokenStream toks, uint min_count, uint max_count) {
   std::vector<Token> items;
   items.reserve(min_count);
 
@@ -40,10 +44,12 @@ std::vector<Token> eval_tokens(TokenStream toks, int count) {
 
 Node* Parser::ParseDefine(TokenStream toks) {
   auto args = eval_tokens(toks, 2);
+
   auto result = new Define{
     args[0],
     ParseToken(args[1]),
   };
+  module.DefineSymbol(StrView{args[0].Val(), args[0].Len()}, result->Type());
   return result;
 }
 
@@ -57,11 +63,9 @@ Node* Parser::ParseSet(TokenStream toks) {
 }
 
 Node* Parser::ParseSum(TokenStream toks) {
-  /*
   auto args = eval_tokens(toks, 1, 5);
-  auto result = new Sum{args};
-  return result;
-  */
+  // auto result = new Sum{args};
+  return nullptr;
 }
 
 Node* Parser::ParseIf(TokenStream toks) {
@@ -97,6 +101,52 @@ Node* Parser::ParseList(Token tok) {
   }
 }
 
+// (type |x real)
+void Parser::ExecType(TokenStream toks) {
+  using namespace mn_hash;
+
+  auto args = eval_tokens(toks, 2);
+
+  auto name = args[0];
+  auto type_name = args[1];
+  auto type_hash = encode9(type_name.Val(), type_name.Len());
+  switch (type_hash) {
+  case encode9("int"):
+    module.SetSymbolType(
+      dt::StrView{name.Val(), name.Len()}, ast::Int::RT_TYPE
+    );
+    break;
+
+  case encode9("real"):
+    module.SetSymbolType(
+      dt::StrView{name.Val(), name.Len()}, ast::Real::RT_TYPE
+    );
+    break;
+
+  default:
+    throw "type unimplemented";
+  }
+
+  // auto symbol = module.Symbol(dt::StrView{args[0].Val(), args[0].Len()});
+  // if ()
+}
+
+void Parser::ExecDirective(Token tok) {
+  using namespace mn_hash;
+
+  TokenStream list{tok};
+
+  auto head = list.NextToken();
+  auto word_hash = encode9(head.Val() + 1, head.Len() - 1);
+
+  switch (word_hash) {
+  case encode9("type"): ExecType(list); return;
+
+  default:
+    throw "unknown directive";
+  }
+}
+
 Node* Parser::ParseToken(Token tok) {
   switch (tok.Tag()) {
   case Token::INT:
@@ -113,8 +163,18 @@ Node* Parser::ParseToken(Token tok) {
 
 const Parser::Tree& Parser::Parse() {
   while (!toks.NextToken().IsEof()) {
-    tree.push_back(ParseToken(toks.CurrentToken()));
+    auto tok = toks.CurrentToken();
+
+    if ('#' == *tok.Val() && tok.IsList()) {
+      ExecDirective(tok);
+    } else {
+      tree.push_back(ParseToken(tok));
+    }
   }
 
   return tree;
+}
+
+const sym::Module& Parser::Module() const noexcept {
+  return module;
 }
