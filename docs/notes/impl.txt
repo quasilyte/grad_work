@@ -1,0 +1,3 @@
+module->symbols[name] == {type_info, other_data}
+
+directives like (#type x y) affect only current module.
