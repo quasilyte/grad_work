@@ -7,10 +7,10 @@ namespace mn_hash {
   const int NIL_HASH = 0;
 
   constexpr u64 encode1(u64 hash, char ch);
-  constexpr u32 encode4(const char *cstr, u32 hash = 0);
-  constexpr u64 encode9(const char *cstr, u64 hash = 0);
+  constexpr u32 encode4(const char* cstr, u32 hash = 0);
+  constexpr u64 encode9(const char* cstr, u64 hash = 0);
 
-  inline u64 encode9(const char *cstr, u32 len);
+  inline u64 encode9(const char* bytes, u32 len);
 }
 
 constexpr u64 mn_hash::encode1(u64 hash, char ch) {
@@ -26,11 +26,11 @@ constexpr u64 mn_hash::encode9(const char *cstr, u64 hash) {
   return *cstr ? encode9(cstr + 1, encode1(hash, *cstr)) : hash;
 }
 
-inline u64 mn_hash::encode9(const char *cstr, u32 len) {
-  u64 hash = cstr[0];
+inline u64 mn_hash::encode9(const char* bytes, u32 count) {
+  u64 hash = bytes[0];
 
-  for (uint i = 1; i != len; ++i) {
-    hash = encode1(hash, cstr[i]);
+  for (uint i = 1; i != count; ++i) {
+    hash = encode1(hash, bytes[i]);
   }
 
   return hash;
