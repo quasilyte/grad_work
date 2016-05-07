@@ -1,0 +1,19 @@
+Directives
+| Signature           |
+|---------------------|
+| (#type <ID> <TYPE>) |
+
+Special forms
+| Signature                      |
+|--------------------------------|
+| (define <ID> <ANY>)            |
+| (define (<ID> <ID> ...) <ANY>) |
+
+
+Builtin functions
+| Signature     |
+|---------------|
+| (+ <NUM> ...) |
+| (- <NUM> ...) |
+|               |
+|               |
