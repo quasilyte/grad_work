@@ -5,3 +5,4 @@ tmp/
 lib/
 build/
 CMakeFiles
+CMakeLists.txt.user
