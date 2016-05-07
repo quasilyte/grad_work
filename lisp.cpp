@@ -44,15 +44,9 @@ std::string slurp(const char* path) {
 int main() {
   using namespace lex;
 
-  /*
-  dt::Dict<int> dict;
-  dict.Put(dt::StrView{"xd", 1}, 14);
-  printf("%d\n", dict.Get(dt::StrView{"xy", 1}));
-  */
-
   try {
     // const char* input = "(#type x real)(define x 10.5)";
-    const char* input = "(#type x real)(define x 10)";
+    const char* input = "(define x (if 1 2.2 3.2))(set! x 10.0)";
     // const char* input = "(define x (if 1 15 3)) (set! x 10)";
     // const char* input = "(define x (if 1 15 3)) (#type x int)";
     io::FileWriter fw{};

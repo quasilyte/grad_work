@@ -15,10 +15,8 @@ public:
   const dt::StrView& Name() const noexcept;
 
   void DefineSymbol(dt::StrView name, Type);
-  void SetSymbolType(dt::StrView name, Type);
 
   const sym::Type& Symbol(dt::StrView name) const;
-  Type& SymbolMut(dt::StrView name);
 
 private:
   dt::StrView name;

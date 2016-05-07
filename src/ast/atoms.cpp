@@ -3,17 +3,34 @@
 using namespace ast;
 using namespace sym;
 
-Type Int::RT_TYPE{1, "long", Type::NUM};
-Int::Int(lex::Token tok): Node{RT_TYPE}, tok{tok} {}
+Int::Int(lex::Token tok): tok{tok} {}
 
 void Int::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
   fw.Write(tok.Val(), tok.Len());
+  fw.Write("_i", 2);
 }
 
-Type Real::RT_TYPE{1, "double", Type::NUM};
-Real::Real(lex::Token tok): Node{RT_TYPE}, tok{tok} {}
+const sym::Type& Int::Type() {
+  return sym::Type::INT;
+}
+
+Real::Real(lex::Token tok): tok{tok} {}
 
 void Real::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
   fw.Write(tok.Val(), tok.Len());
+  fw.Write("_r", 2);
 }
 
+const sym::Type& Real::Type() {
+  return sym::Type::REAL;
+}
+
+Str::Str(lex::Token tok): tok{tok} {}
+
+void Str::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
+  fw.Write(tok.Val(), tok.Len());
+}
+
+const sym::Type& Str::Type() {
+  return sym::Type::STR;
+}

@@ -29,8 +29,6 @@ private:
 
   void ExecDirective(lex::Token);
 
-  void ExecType(lex::TokenStream);
-
   ast::Node* ParseToken(lex::Token);
   ast::Node* ParseList(lex::Token);
 

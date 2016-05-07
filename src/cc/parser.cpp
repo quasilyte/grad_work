@@ -44,22 +44,24 @@ std::vector<Token> eval_tokens(TokenStream toks, int count) {
 
 Node* Parser::ParseDefine(TokenStream toks) {
   auto args = eval_tokens(toks, 2);
+  auto expr = ParseToken(args[1]);
+  auto result = new Define{args[0], expr};
 
-  auto result = new Define{
-    args[0],
-    ParseToken(args[1]),
-  };
-  module.DefineSymbol(StrView{args[0].Val(), args[0].Len()}, result->Type());
+  module.DefineSymbol(StrView{args[0].Val(), args[0].Len()}, expr->Type());
+
   return result;
 }
 
 Node* Parser::ParseSet(TokenStream toks) {
   auto args = eval_tokens(toks, 2);
-  auto result = new Set{
-    args[0],
-    ParseToken(args[1]),
-  };
-  return result;
+  auto symbol = module.Symbol(StrView{args[0].Val(), args[0].Len()});
+
+  if (symbol.Defined()) {
+    auto expr = ParseToken(args[1]);
+    return new Set{args[0], expr};
+  } else {
+    throw "set of undefined";
+  }
 }
 
 Node* Parser::ParseSum(TokenStream toks) {
@@ -101,36 +103,6 @@ Node* Parser::ParseList(Token tok) {
   }
 }
 
-// (type |x real)
-void Parser::ExecType(TokenStream toks) {
-  using namespace mn_hash;
-
-  auto args = eval_tokens(toks, 2);
-
-  auto name = args[0];
-  auto type_name = args[1];
-  auto type_hash = encode9(type_name.Val(), type_name.Len());
-  switch (type_hash) {
-  case encode9("int"):
-    module.SetSymbolType(
-      dt::StrView{name.Val(), name.Len()}, ast::Int::RT_TYPE
-    );
-    break;
-
-  case encode9("real"):
-    module.SetSymbolType(
-      dt::StrView{name.Val(), name.Len()}, ast::Real::RT_TYPE
-    );
-    break;
-
-  default:
-    throw "type unimplemented";
-  }
-
-  // auto symbol = module.Symbol(dt::StrView{args[0].Val(), args[0].Len()});
-  // if ()
-}
-
 void Parser::ExecDirective(Token tok) {
   using namespace mn_hash;
 
@@ -140,7 +112,7 @@ void Parser::ExecDirective(Token tok) {
   auto word_hash = encode9(head.Val() + 1, head.Len() - 1);
 
   switch (word_hash) {
-  case encode9("type"): ExecType(list); return;
+  // case encode9("type"): ExecType(list); return;
 
   default:
     throw "unknown directive";
@@ -153,6 +125,8 @@ Node* Parser::ParseToken(Token tok) {
     return new Int{tok};
   case Token::REAL:
     return new Real{tok};
+  case Token::STR:
+    return new Str{tok};
   case Token::LIST:
     return ParseList(tok);
 

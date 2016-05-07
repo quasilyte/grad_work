@@ -9,6 +9,7 @@ namespace ast {
 struct ast::If: public Node {
   If(Node* cond, Node* on_true, Node* on_false);
   void GenerateCode(const sym::Module&, const io::FileWriter&) override;
+  const sym::Type& Type();
   Node* cond;
   Node* on_true;
   Node* on_false;

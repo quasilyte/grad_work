@@ -5,50 +5,48 @@
 namespace sym {
   class Type;
 
-  Type least_upper_bound(Type, Type);
+  namespace flags {
+    static const i32 ARITH = 1 << 0;
+    static const i32 DEFINED = 1 << 1;
+  }
 }
 
 class sym::Type {
 public:
-  enum Category: i32 {
-    ANY, // Compatible with all categories
-    EITHER, // Exactly one of the two compatible types
-    NUM, // Integers, floats
-    CLASS, // User defined types (optionally can have hierarchical relations)
-    STRICT, // Single type
-    BEGIN_CALLABLE,
-    USER_FUNC,
-    BUILTIN_FUNC,
-    MACRO,
-    END_CALLABLE,
-    FORWARD_DECLARED, // Forward declared is invalid without definition
-    VOID,
-  };
+  // Builtin types defined only once
+  static Type VOID;
+  static Type ANY;
+  static Type INT;
+  static Type REAL;
+  static Type NUM;
+  static Type STR;
 
   Type();
-  Type(int id, const char* name, Category category);
+  Type(int id, const char* name, i32 flags);
 
   int Id() const noexcept;
-  Category Category() const noexcept;
+  i32 Flags() const noexcept;
   const char* Name() const noexcept;
 
-  bool IsAny() const noexcept;
-  bool IsEither() const noexcept;
-  bool IsNumeric() const noexcept;
-  bool IsClass() const noexcept;
-  bool IsUserFunc() const noexcept;
-  bool IsBuiltinFunc() const noexcept;
-  bool IsMacro() const noexcept;
-  bool IsCallable() const noexcept;
   bool IsVoid() const noexcept;
-  bool IsForwardDeclared() const noexcept;
+  bool IsAny() const noexcept;
+  bool IsInt() const noexcept;
+  bool IsReal() const noexcept;
+  bool IsNum() const noexcept;
+  bool IsStr() const noexcept;
 
-  bool CompatibleWith(Type) const noexcept;
+  bool Arith() const noexcept;
+  bool Defined() const noexcept;
+
+  void MarkDefined() noexcept;
+
+  const Type& Merge(const Type&) const noexcept;
+  bool CompatibleWith(const Type&) const noexcept;
 
 private:
   const char* name;
-  int id;
-  enum Category category;
+  i32 id;
+  i32 flags;
 };
 
 static_assert(

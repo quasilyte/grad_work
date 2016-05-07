@@ -3,9 +3,9 @@
 using namespace ast;
 
 Define::Define(lex::Token name, Node* assignment):
-Node{assignment->Type()},
 name{name}, assignment{assignment} {}
 
+// `$type $name{$assignment};`
 void Define::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   if (name.IsList()) {
     throw "cant defun yet";
@@ -15,8 +15,9 @@ void Define::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
     fw.Write(type.Name());
     fw.Write(' ');
     fw.Write(name.Val(), name.Len());
-    fw.Write('=');
+    fw.Write('{');
     assignment->GenerateCode(module, fw);
+    fw.Write('}');
     fw.Write(';');
   } else {
     throw "def symbol must be of type word";
@@ -26,9 +27,9 @@ void Define::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
 Set::Set(lex::Token name, Node* assignment):
 name{name}, assignment{assignment} {}
 
+// `$name=$assignment;`
 void Set::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   if (name.IsWord()) {
-    // #TODO: check type
     fw.Write(name.Val(), name.Len());
     fw.Write('=');
     assignment->GenerateCode(module, fw);

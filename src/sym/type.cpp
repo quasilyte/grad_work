@@ -1,89 +1,72 @@
 #include "sym/type.hpp"
 
 using namespace sym;
+using namespace sym::flags;
 
+Type Type::VOID{0, "void", 0};
+Type Type::ANY{1, "any", ARITH};
+Type Type::INT{2, "long", ARITH};
+Type Type::REAL{3, "double", ARITH};
+Type Type::NUM{4, "num", ARITH};
+Type Type::STR{5, "str", 0};
+
+// #FIXME: Should be removed!
 Type::Type():
-name{"void"}, id{0}, category{VOID} {}
+name{"void"}, id{0}, flags{0} {}
 
-Type::Type(int id, const char* name, enum Category category):
-name{name}, id{id}, category{category} {}
-
-Type sym::least_upper_bound(Type a, Type b) {
-  // Mockup
-  if (b.Id()) {
-
-  }
-  return a;
-}
+Type::Type(int id, const char* name, i32 flags):
+name{name}, id{id}, flags{flags} {}
 
 int Type::Id() const noexcept {
   return id;
 }
 
-enum Type::Category Type::Category() const noexcept {
-  return category;
+i32 Type::Flags() const noexcept {
+  return flags;
 }
 
 const char* Type::Name() const noexcept {
   return name;
 }
 
-bool Type::IsAny() const noexcept {
-  return category == ANY;
-}
+bool Type::IsVoid() const noexcept { return id == VOID.id; }
+bool Type::IsAny() const noexcept { return id == ANY.id; }
+bool Type::IsInt() const noexcept { return id == INT.id; }
+bool Type::IsReal() const noexcept { return id == REAL.id; }
+bool Type::IsNum() const noexcept { return id == NUM.id; }
+bool Type::IsStr() const noexcept { return id == STR.id; }
 
-bool Type::IsEither() const noexcept {
-  return category == EITHER;
-}
+bool Type::Arith() const noexcept { return flags & ARITH; }
+bool Type::Defined() const noexcept { return flags & DEFINED; }
 
-bool Type::IsNumeric() const noexcept {
-  return category == NUM;
-}
+void Type::MarkDefined() noexcept { flags |= DEFINED; }
 
-bool Type::IsClass() const noexcept {
-  return category == CLASS;
-}
-
-bool Type::IsUserFunc() const noexcept {
-  return category == USER_FUNC;
-}
-
-bool Type::IsBuiltinFunc() const noexcept {
-  return category == BUILTIN_FUNC;
-}
-
-bool Type::IsMacro() const noexcept {
-  return category == MACRO;
-}
-
-bool Type::IsCallable() const noexcept {
-  return category > BEGIN_CALLABLE && category < END_CALLABLE;
-}
-
-bool Type::IsVoid() const noexcept {
-  return category == VOID;
-}
-
-bool Type::IsForwardDeclared() const noexcept {
-  return category == FORWARD_DECLARED;
-}
-
-bool Type::CompatibleWith(Type other) const noexcept {
+// Merge rules:
+// A + A -> A
+// int + real -> num
+// A + B -> either<A, B>
+// either<A, B> + C -> any
+// either<A, B> + A -> either<A, B>
+// A + any -> any
+// A + parent_of(A) -> parent_of(A)
+const Type& Type::Merge(const Type& other) const noexcept {
   if (id == other.id) {
+    return other;
+  }
+
+  if (Arith() && other.Arith()) {
+    return sym::Type::NUM;
+  }
+
+  return sym::Type::ANY;
+}
+
+bool Type::CompatibleWith(const Type& other) const noexcept {
+  if ((id == other.id)
+      || (Arith() && other.Arith())
+      || (IsAny() || other.IsAny())) {
     return true;
   }
 
-  // Could be rewritten to bool[][] table
-  switch (category) {
-  case ANY: return true;
-  case EITHER: throw "eithers compat not implemented";
-  case NUM: return other.IsNumeric();
-  case CLASS: throw "classes compat not implemented";
-  case USER_FUNC: throw "user_func compat not implemented";
-  case BUILTIN_FUNC: throw "user_func compat not implemented";
-  case MACRO: throw "macro compat not implemented";
-
-  default:
-    throw "invalid category!";
-  }
+  return false;
 }

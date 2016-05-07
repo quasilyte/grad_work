@@ -2,10 +2,6 @@
 
 using namespace ast;
 
-Node::Node() {}
-
-Node::Node(sym::Type type): type{type} {}
-
-const sym::Type& Node::Type() const noexcept {
-  return type;
+const sym::Type& Node::Type() {
+  return sym::Type::VOID;
 }
