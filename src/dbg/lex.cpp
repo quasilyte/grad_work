@@ -7,12 +7,12 @@
 using namespace lex;
 
 void dump_one_token(Token tok, const char* type, int depth) {
-  std::printf("%*s%s `%.*s`\n", depth, "", type, tok.get_len(), tok.get_val());
+  std::printf("%*s%s `%.*s`\n", depth, "", type, tok.Len(), tok.Val());
 }
 
 void dbg::dump_token(Token tok, int depth) {
 
-  switch (tok.get_tag()) {
+  switch (tok.Tag()) {
   case Token::INT: dump_one_token(tok, "int", depth); break;
   case Token::REAL: dump_one_token(tok, "real", depth); break;
   case Token::STR: dump_one_token(tok, "str", depth); break;
@@ -20,8 +20,8 @@ void dbg::dump_token(Token tok, int depth) {
   case Token::LIST: {
     std::printf("%*slist(\n", depth, "");
     TokenStream toks{tok};
-    while (toks.next_tag() != Token::SOURCE_END) {
-      dump_token(toks.current_token(), depth + 1);
+    while (toks.NextTag() != Token::SOURCE_END) {
+      dump_token(toks.CurrentToken(), depth + 1);
     }
     std::printf("%*s)\n", depth, "");
     break;
@@ -29,7 +29,7 @@ void dbg::dump_token(Token tok, int depth) {
   case Token::SOURCE_END: std::printf("%*s<EOF>\n", depth, ""); break;
 
   default:
-    printf("unknown tag: %d!\n", tok.get_tag());
+    printf("unknown tag: %d!\n", tok.Tag());
     abort();
   }
 }

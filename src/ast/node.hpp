@@ -13,9 +13,9 @@ struct ast::Node {
   Node();
   Node(sym::Type);
 
-  virtual void generate_code(io::FileWriter*) = 0;
+  virtual void GenerateCode(const io::FileWriter&) = 0;
 
-  const sym::Type& get_type() const noexcept;
+  const sym::Type& Type() const noexcept;
 
 protected:
   sym::Type type;

@@ -23,20 +23,20 @@ public:
   Token(Tag, const char* val);
   Token(Tag, const char* val, u32 len);
 
-  Tag get_tag() const noexcept;
-  u32 get_len() const noexcept;
-  const char* get_val() const noexcept;
+  enum Tag Tag() const noexcept;
+  u32 Len() const noexcept;
+  const char* Val() const noexcept;
 
-  bool is_atom() const noexcept;
-  bool is_int() const noexcept;
-  bool is_real() const noexcept;
-  bool is_str() const noexcept;
-  bool is_word() const noexcept;
-  bool is_list() const noexcept;
-  bool is_eof() const noexcept;
+  bool IsAtom() const noexcept;
+  bool IsInt() const noexcept;
+  bool IsReal() const noexcept;
+  bool IsStr() const noexcept;
+  bool IsWord() const noexcept;
+  bool IsList() const noexcept;
+  bool IsEof() const noexcept;
 
 private:
-  Tag tag;
+  enum Tag tag;
   u32 len;
   const char* val;
 

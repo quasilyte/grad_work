@@ -13,8 +13,8 @@ namespace sym {
 // -
 class sym::Signature {
 public:
-  int get_min_arity() const noexcept;
-  int get_max_arity() const noexcept;
+  int MinArity() const noexcept;
+  int MaxArity() const noexcept;
 
 private:
   Type return_type;

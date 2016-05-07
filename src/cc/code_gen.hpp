@@ -11,7 +11,7 @@ class cc::CodeGen {
 public:
   CodeGen(const Parser::Tree&);
 
-  void write_to(io::FileWriter*);
+  void WriteTo(const io::FileWriter&);
 
 private:
   const Parser::Tree& tree;

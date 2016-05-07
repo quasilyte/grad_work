@@ -1,12 +1,14 @@
 #pragma once
 
+#include "typedefs.hpp"
+
 namespace sym {
   class Type;
 }
 
 class sym::Type {
 public:
-  enum Category: int {
+  enum Category: i32 {
     ANY, // Compatible with all categories
     EITHER, // Exactly one of the two compatible types
     NUM, // Integers, floats
@@ -23,27 +25,27 @@ public:
   constexpr Type(int id, const char* name, Category category):
   name{name}, id{id}, category{category} {}
 
-  int get_id() const noexcept;
-  Category get_category() const noexcept;
-  const char* get_name() const noexcept;
+  int Id() const noexcept;
+  Category Category() const noexcept;
+  const char* Name() const noexcept;
 
-  bool is_any() const noexcept;
-  bool is_either() const noexcept;
-  bool is_numeric() const noexcept;
-  bool is_class() const noexcept;
-  bool is_user_func() const noexcept;
-  bool is_builtin_func() const noexcept;
-  bool is_macro() const noexcept;
-  bool is_callable() const noexcept;
+  bool IsAny() const noexcept;
+  bool IsEither() const noexcept;
+  bool IsNumeric() const noexcept;
+  bool IsClass() const noexcept;
+  bool IsUserFunc() const noexcept;
+  bool IsBuiltinFunc() const noexcept;
+  bool IsMacro() const noexcept;
+  bool IsCallable() const noexcept;
 
   // Type LeastUpperBound
 
-  bool compatible_with(Type) const noexcept;
+  bool CompatibleWith(Type) const noexcept;
 
 private:
   const char* name;
   int id;
-  Category category;
+  enum Category category;
 };
 
 static_assert(

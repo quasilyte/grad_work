@@ -10,52 +10,52 @@ input_end{input + input_len},
 tok{Token::SOURCE_END, input, 0} {}
 
 lex::TokenStream::TokenStream(Token tok):
-input_end{tok.get_val() + tok.get_len() - 1},
-tok{Token::SOURCE_END, tok.get_val(), 0} {}
+input_end{tok.Val() + tok.Len() - 1},
+tok{Token::SOURCE_END, tok.Val(), 0} {}
 
-void TokenStream::next() noexcept {
+void TokenStream::Next() noexcept {
   tok.val += tok.len;
-  consume_spaces();
+  ConsumeSpaces();
 
   if (tok.val == input_end) {
     tok.tag = Token::SOURCE_END;
   } else {
-    eval();
+    Eval();
   }
 }
 
-Token TokenStream::next_token() noexcept {
-  next();
+Token TokenStream::NextToken() noexcept {
+  Next();
   return tok;
 }
 
-Token::Tag TokenStream::next_tag() noexcept {
-  next();
+enum Token::Tag TokenStream::NextTag() noexcept {
+  Next();
   return tok.tag;
 }
 
-Token TokenStream::current_token() const noexcept {
+Token TokenStream::CurrentToken() const noexcept {
   return tok;
 }
 
-Token::Tag TokenStream::current_tag() const noexcept {
+enum Token::Tag TokenStream::CurrentTag() const noexcept {
   return tok.tag;
 }
 
-void TokenStream::consume_spaces() noexcept {
+void TokenStream::ConsumeSpaces() noexcept {
   while (is_space(*tok.val)) {
     tok.val += 1;
   }
 }
 
-void TokenStream::eval() noexcept {
+void TokenStream::Eval() noexcept {
   dev_assert(tok.val < input_end);
 
   tok.len = 1;
 
   switch (*tok.val) {
-  case '"': eval_str(); break;
-  case '(': eval_list(); break;
+  case '"': EvalStr(); break;
+  case '(': EvalList(); break;
   case ')': throw UnexpectedRparen{};
   case '0':
   case '1':
@@ -66,25 +66,25 @@ void TokenStream::eval() noexcept {
   case '6':
   case '7':
   case '8':
-  case '9': eval_number(); break;
-  default: eval_word();
+  case '9': EvalNumber(); break;
+  default: EvalWord();
   }
 }
 
-void TokenStream::eval_number() noexcept {
-  collect_digits();
+void TokenStream::EvalNumber() noexcept {
+  CollectDigits();
 
-  if ('.' == current_char()) {
+  if ('.' == CurrentChar()) {
     tok.len += 1; // Pass over dot
-    collect_digits();
+    CollectDigits();
     tok.tag = Token::REAL;
   } else {
     tok.tag = Token::INT;
   }
 }
 
-void TokenStream::eval_str() noexcept {
-  while ('"' != current_char()) {
+void TokenStream::EvalStr() noexcept {
+  while ('"' != CurrentChar()) {
     tok.len += 1;
   }
 
@@ -92,25 +92,25 @@ void TokenStream::eval_str() noexcept {
   tok.tag = Token::STR;
 }
 
-void TokenStream::eval_word() noexcept {
+void TokenStream::EvalWord() noexcept {
   // We enter this loop after passing first alpha char,
   // so no need to handle it (tok.len = 1, so it is not checked).
-  while (has_more_input()
-         && not_space(current_char())
-         && '(' != current_char()
-         && ')' != current_char()
-         && '"' != current_char()) {
+  while (HasMoreInput()
+         && not_space(CurrentChar())
+         && '(' != CurrentChar()
+         && ')' != CurrentChar()
+         && '"' != CurrentChar()) {
     tok.len += 1;
   }
 
   tok.tag = Token::WORD;
 }
 
-void TokenStream::eval_list() noexcept {
+void TokenStream::EvalList() noexcept {
   int depth = 0;
 
-  while (!(')' == current_char() && 0 == depth)) {
-    switch (current_char()) {
+  while (!(')' == CurrentChar() && 0 == depth)) {
+    switch (CurrentChar()) {
     case '(':
       depth += 1;
       tok.len += 1;
@@ -122,7 +122,7 @@ void TokenStream::eval_list() noexcept {
       break;
 
     case '"':
-      collect_str();
+      CollectStr();
       break;
 
     default: tok.len += 1;
@@ -133,22 +133,22 @@ void TokenStream::eval_list() noexcept {
   tok.tag = Token::LIST;
 }
 
-char TokenStream::current_char() const noexcept {
+char TokenStream::CurrentChar() const noexcept {
   return tok.val[tok.len];
 }
 
-bool TokenStream::has_more_input() const noexcept {
+bool TokenStream::HasMoreInput() const noexcept {
   return tok.val + tok.len < input_end;
 }
 
-void TokenStream::collect_digits() noexcept {
-  while (is_digit(current_char())) {
+void TokenStream::CollectDigits() noexcept {
+  while (is_digit(CurrentChar())) {
     tok.len += 1;
   }
 }
 
-void TokenStream::collect_str() noexcept {
-  while ('"' != current_char()) {
+void TokenStream::CollectStr() noexcept {
+  while ('"' != CurrentChar()) {
     tok.len += 1;
   }
 

@@ -17,17 +17,17 @@ public:
 
   Parser(const char* input);
 
-  const Tree& parse();
+  const Tree& Parse();
 
 private:
   Tree tree;
   lex::TokenStream toks;
 
-  ast::Node* parse_token(lex::Token);
-  ast::Node* parse_list(lex::Token);
+  ast::Node* ParseToken(lex::Token);
+  ast::Node* ParseList(lex::Token);
 
-  ast::Node* parse_if(lex::TokenStream);
-  ast::Node* parse_define(lex::TokenStream);
-  ast::Node* parse_set(lex::TokenStream);
-  ast::Node* parse_sum(lex::TokenStream);
+  ast::Node* ParseIf(lex::TokenStream);
+  ast::Node* ParseDefine(lex::TokenStream);
+  ast::Node* ParseSet(lex::TokenStream);
+  ast::Node* ParseSum(lex::TokenStream);
 };

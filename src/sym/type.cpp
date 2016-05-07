@@ -2,51 +2,51 @@
 
 using namespace sym;
 
-int Type::get_id() const noexcept {
+int Type::Id() const noexcept {
   return id;
 }
 
-Type::Category Type::get_category() const noexcept {
+enum Type::Category Type::Category() const noexcept {
   return category;
 }
 
-const char* Type::get_name() const noexcept {
+const char* Type::Name() const noexcept {
   return name;
 }
 
-bool Type::is_any() const noexcept {
+bool Type::IsAny() const noexcept {
   return category == ANY;
 }
 
-bool Type::is_either() const noexcept {
+bool Type::IsEither() const noexcept {
   return category == EITHER;
 }
 
-bool Type::is_numeric() const noexcept {
+bool Type::IsNumeric() const noexcept {
   return category == NUM;
 }
 
-bool Type::is_class() const noexcept {
+bool Type::IsClass() const noexcept {
   return category == CLASS;
 }
 
-bool Type::is_user_func() const noexcept {
+bool Type::IsUserFunc() const noexcept {
   return category == USER_FUNC;
 }
 
-bool Type::is_builtin_func() const noexcept {
+bool Type::IsBuiltinFunc() const noexcept {
   return category == BUILTIN_FUNC;
 }
 
-bool Type::is_macro() const noexcept {
+bool Type::IsMacro() const noexcept {
   return category == MACRO;
 }
 
-bool Type::is_callable() const noexcept {
+bool Type::IsCallable() const noexcept {
   return category > BEGIN_CALLABLE && category < END_CALLABLE;
 }
 
-bool Type::compatible_with(Type other) const noexcept {
+bool Type::CompatibleWith(Type other) const noexcept {
   if (id == other.id) {
     return true;
   }
@@ -55,7 +55,7 @@ bool Type::compatible_with(Type other) const noexcept {
   switch (category) {
   case ANY: return true;
   case EITHER: throw "eithers compat not implemented";
-  case NUM: return other.is_numeric();
+  case NUM: return other.IsNumeric();
   case CLASS: throw "classes compat not implemented";
   case USER_FUNC: throw "user_func compat not implemented";
   case BUILTIN_FUNC: throw "user_func compat not implemented";

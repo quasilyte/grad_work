@@ -7,6 +7,7 @@
 #include "cc/code_gen.hpp"
 #include "io/file_writer.hpp"
 #include "sym/type.hpp"
+#include "ast/node.hpp"
 #include <fstream>
 #include <string>
 
@@ -44,9 +45,9 @@ int main(int argc, char* argv[]) {
     const char* input = "(define x (if 1 15 0.3)) (set! x 10)";
     io::FileWriter fw{};
     cc::Parser parser{input};
-    auto parse_tree = parser.parse();
+    auto parse_tree = parser.Parse();
     cc::CodeGen cg{parse_tree};
-    cg.write_to(&fw);
+    cg.WriteTo(fw);
   } catch (const char* msg) {
     std::fprintf(stderr, "error: %s\n", msg);
   }

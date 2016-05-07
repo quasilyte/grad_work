@@ -15,23 +15,23 @@ file{std::fopen(file_path, "w")} {
 
 FileWriter::~FileWriter() {
   if (file) {
-    close();
+    Close();
   }
 }
 
-void FileWriter::close() {
-  std::fclose(file);
-  file = nullptr;
-}
-
-void FileWriter::write(char ch) {
+void FileWriter::Write(char ch) const {
   std::fputc(ch, file);
 }
 
-void FileWriter::write(const char *cstr) {
-  write(cstr, std::strlen(cstr));
+void FileWriter::Write(const char *cstr) const {
+  Write(cstr, std::strlen(cstr));
 }
 
-void FileWriter::write(const char *bytes, u32 len) {
+void FileWriter::Write(const char *bytes, u32 len) const {
   std::fwrite(bytes, 1, len, file);
+}
+
+void FileWriter::Close() {
+  std::fclose(file);
+  file = nullptr;
 }

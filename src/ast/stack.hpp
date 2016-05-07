@@ -9,9 +9,9 @@ class ast::Stack {
 public:
   class OverflowError{};
 
-  void push(Node*);
-  Node* top() const noexcept;
-  Node* pop();
+  void Push(Node*);
+  Node* Top() const noexcept;
+  Node* Pop();
 
 private:
   static const int MAX_SIZE = 16;

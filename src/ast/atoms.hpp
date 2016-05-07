@@ -13,13 +13,13 @@ namespace ast {
 struct ast::Int: public Node {
   static sym::Type RT_TYPE;
   Int(lex::Token);
-  void generate_code(io::FileWriter*) override;
+  void GenerateCode(const io::FileWriter&) override;
   lex::Token tok;
 };
 
 struct ast::Real: public Node {
   static sym::Type RT_TYPE;
   Real(lex::Token);
-  void generate_code(io::FileWriter*) override;
+  void GenerateCode(const io::FileWriter&) override;
   lex::Token tok;
 };

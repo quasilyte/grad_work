@@ -4,48 +4,48 @@
 
 using namespace lex;
 
-Token::Token(Tag tag, const char* val):
+Token::Token(enum Tag tag, const char* val):
 tag{tag}, len{static_cast<u32>(std::strlen(val))}, val{val} {}
 
-Token::Token(Tag tag, const char* val, u32 len):
+Token::Token(enum Tag tag, const char* val, u32 len):
 tag{tag}, len{len}, val{val} {}
 
-Token::Tag Token::get_tag() const noexcept {
+enum Token::Tag Token::Tag() const noexcept {
   return tag;
 }
 
-u32 Token::get_len() const noexcept {
+u32 Token::Len() const noexcept {
   return len;
 }
 
-const char* Token::get_val() const noexcept {
+const char* Token::Val() const noexcept {
   return val;
 }
 
-bool Token::is_atom() const noexcept {
+bool Token::IsAtom() const noexcept {
   return tag > BEGIN_ATOM && tag < END_ATOM;
 }
 
-bool Token::is_int() const noexcept {
+bool Token::IsInt() const noexcept {
   return tag == INT;
 }
 
-bool Token::is_real() const noexcept {
+bool Token::IsReal() const noexcept {
   return tag == REAL;
 }
 
-bool Token::is_str() const noexcept {
+bool Token::IsStr() const noexcept {
   return tag == STR;
 }
 
-bool Token::is_word() const noexcept {
+bool Token::IsWord() const noexcept {
   return tag == WORD;
 }
 
-bool Token::is_list() const noexcept {
+bool Token::IsList() const noexcept {
   return tag == LIST;
 }
 
-bool Token::is_eof() const noexcept {
+bool Token::IsEof() const noexcept {
   return tag == SOURCE_END;
 }

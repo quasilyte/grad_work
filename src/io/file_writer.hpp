@@ -15,11 +15,11 @@ public:
   FileWriter(const char *file_path);
   ~FileWriter();
 
-  void write(char);
-  void write(const char *cstr);
-  void write(const char *bytes, u32 len);
+  void Write(char) const;
+  void Write(const char *cstr) const ;
+  void Write(const char *bytes, u32 len) const;
 
-  void close();
+  void Close();
 
 private:
   FILE *file = nullptr;

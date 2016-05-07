@@ -6,7 +6,7 @@ namespace sym {
 
 class sym::Table {
 public:
-  int get_either_types();
+  int GetEitherTypes();
 
 private:
 
