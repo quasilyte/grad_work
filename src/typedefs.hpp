@@ -26,5 +26,5 @@ static_assert(
   sizeof(u8) == 1 &&
   sizeof(f64) == 8 &&
   sizeof(f32) == 4,
-  "type size expectations failed"
+  "major type size expectations failed"
 );
