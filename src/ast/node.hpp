@@ -1,6 +1,7 @@
 #pragma once
 
 #include "io/file_writer.hpp"
+#include "sym/type.hpp"
 
 namespace ast {
   struct Node;
@@ -9,15 +10,14 @@ namespace ast {
 struct ast::Node {
   class TypeError{};
 
-  Node() = default;
-  Node(int type);
+  Node();
+  Node(sym::Type);
 
   virtual void generate_code(io::FileWriter*) = 0;
 
-  int get_type() const noexcept;
-  virtual const char* get_type_name() const;
+  const sym::Type& get_type() const noexcept;
 
 protected:
-  int type;
+  sym::Type type;
 };
 

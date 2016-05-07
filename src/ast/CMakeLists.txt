@@ -2,6 +2,7 @@ project(ast)
 
 set(
   ast_src
+
   node.cpp
   cond.cpp
   atoms.cpp

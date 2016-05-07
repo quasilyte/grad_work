@@ -2,12 +2,10 @@
 
 using namespace ast;
 
-Node::Node(int type): type{type} {}
+Node::Node(): type{sym::Type{0, "void", sym::Type::VOID}} {}
 
-int Node::get_type() const noexcept {
+Node::Node(sym::Type type): type{type} {}
+
+const sym::Type& Node::get_type() const noexcept {
   return type;
-}
-
-const char* Node::get_type_name() const {
-  return "void";
 }

@@ -16,22 +16,26 @@ using namespace ast;
 Parser::Parser(const char *input):
 toks{TokenStream{input, strlen(input)}} {}
 
-std::vector<Token> eval_tokens(TokenStream toks, int count) {
+std::vector<Token> eval_tokens(TokenStream toks, int min_count, int max_count) {
   std::vector<Token> items;
-  items.reserve(count);
+  items.reserve(min_count);
 
   while (!toks.next_token().is_eof()) {
-    if (items.size() == count) {
+    if (items.size() == max_count) {
       throw "too much args!";
     }
     items.push_back(toks.current_token());
   }
 
-  if (items.size() != count) {
+  if (items.size() < min_count) {
     throw "too few args!";
   }
 
   return items;
+}
+
+std::vector<Token> eval_tokens(TokenStream toks, int count) {
+  return eval_tokens(toks, count, count);
 }
 
 Node* Parser::parse_define(TokenStream toks) {
@@ -50,6 +54,14 @@ Node* Parser::parse_set(TokenStream toks) {
     parse_token(args[1]),
   };
   return result;
+}
+
+Node* Parser::parse_sum(TokenStream toks) {
+  /*
+  auto args = eval_tokens(toks, 1, 5);
+  auto result = new Sum{args};
+  return result;
+  */
 }
 
 Node* Parser::parse_if(TokenStream toks) {
@@ -74,6 +86,7 @@ Node* Parser::parse_list(Token tok) {
     case encode9("if"): return parse_if(list);
     case encode9("define"): return parse_define(list);
     case encode9("set!"): return parse_set(list);
+    case encode9("+"): return parse_sum(list);
 
     default:
       throw "cant parse user function yet";

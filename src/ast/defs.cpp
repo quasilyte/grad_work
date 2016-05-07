@@ -9,7 +9,7 @@ void Define::generate_code(io::FileWriter* fw) {
   if (name.is_list()) {
     throw "cant defun yet";
   } else if (name.is_word()) {
-    fw->write(assignment->get_type_name());
+    fw->write(assignment->get_type().get_name());
     fw->write(' ');
     fw->write(name.get_val(), name.get_len());
     fw->write('=');

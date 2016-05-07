@@ -58,4 +58,4 @@ add_subdirectory(src/sym)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
-target_link_libraries(${PROJECT_NAME} sym io cc ast dbg lex)
+target_link_libraries(${PROJECT_NAME} io cc ast dbg lex sym)

@@ -23,14 +23,29 @@ std::string slurp(const char* path) {
 // 2) stored in variable -- expand to real function
 // 3) called inline -- series or "+"
 
+// (module "main")
+// (def (sum a b) (+ a b))
+// (sum 4.5 6.0) (; type error)
+// (set-type! sum (int a b))
+
+// phases & passes:
+// pass[1]:
+// + build the ast
+// - maintain symbol table
+// - estimate types
+// pass[2]:
+// - type check
+// + generate code
+
 int main(int argc, char* argv[]) {
   using namespace lex;
 
   try {
-    const char* input = "(define x (if 1 15 (if 2 0 3))) (set! x 10)";
+    const char* input = "(define x (if 1 15 0.3)) (set! x 10)";
     io::FileWriter fw{};
     cc::Parser parser{input};
-    cc::CodeGen cg{parser.parse()};
+    auto parse_tree = parser.parse();
+    cc::CodeGen cg{parse_tree};
     cg.write_to(&fw);
   } catch (const char* msg) {
     std::fprintf(stderr, "error: %s\n", msg);

@@ -5,6 +5,7 @@ set(
   table.cpp
   type.cpp
   signature.cpp
+  modules.cpp
 )
 
 add_library(sym STATIC ${sym_src})

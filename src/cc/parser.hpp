@@ -29,4 +29,5 @@ private:
   ast::Node* parse_if(lex::TokenStream);
   ast::Node* parse_define(lex::TokenStream);
   ast::Node* parse_set(lex::TokenStream);
+  ast::Node* parse_sum(lex::TokenStream);
 };

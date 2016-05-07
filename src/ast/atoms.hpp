@@ -11,17 +11,15 @@ namespace ast {
 }
 
 struct ast::Int: public Node {
-  static const int RT_TYPE = 0;
+  static sym::Type RT_TYPE;
   Int(lex::Token);
-  void generate_code(io::FileWriter*);
-  const char* get_type_name() const;
+  void generate_code(io::FileWriter*) override;
   lex::Token tok;
 };
 
 struct ast::Real: public Node {
-  static const int RT_TYPE = 1;
+  static sym::Type RT_TYPE;
   Real(lex::Token);
-  void generate_code(io::FileWriter*);
-  const char* get_type_name() const;
+  void generate_code(io::FileWriter*) override;
   lex::Token tok;
 };

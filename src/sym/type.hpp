@@ -11,12 +11,17 @@ public:
     EITHER, // Exactly one of the two compatible types
     NUM, // Integers, floats
     CLASS, // User defined types (optionally can have hierarchical relations)
+    STRICT, // Single type
     BEGIN_CALLABLE,
     USER_FUNC,
     BUILTIN_FUNC,
     MACRO,
     END_CALLABLE,
+    VOID,
   };
+
+  constexpr Type(int id, const char* name, Category category):
+  name{name}, id{id}, category{category} {}
 
   int get_id() const noexcept;
   Category get_category() const noexcept;
@@ -30,6 +35,8 @@ public:
   bool is_builtin_func() const noexcept;
   bool is_macro() const noexcept;
   bool is_callable() const noexcept;
+
+  // Type LeastUpperBound
 
   bool compatible_with(Type) const noexcept;
 
