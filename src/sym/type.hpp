@@ -4,6 +4,8 @@
 
 namespace sym {
   class Type;
+
+  Type least_upper_bound(Type, Type);
 }
 
 class sym::Type {
@@ -19,11 +21,12 @@ public:
     BUILTIN_FUNC,
     MACRO,
     END_CALLABLE,
+    FORWARD_DECLARED, // Forward declared is invalid without definition
     VOID,
   };
 
-  constexpr Type(int id, const char* name, Category category):
-  name{name}, id{id}, category{category} {}
+  Type();
+  Type(int id, const char* name, Category category);
 
   int Id() const noexcept;
   Category Category() const noexcept;
@@ -37,8 +40,8 @@ public:
   bool IsBuiltinFunc() const noexcept;
   bool IsMacro() const noexcept;
   bool IsCallable() const noexcept;
-
-  // Type LeastUpperBound
+  bool IsVoid() const noexcept;
+  bool IsForwardDeclared() const noexcept;
 
   bool CompatibleWith(Type) const noexcept;
 

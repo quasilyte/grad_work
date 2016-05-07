@@ -2,6 +2,20 @@
 
 using namespace sym;
 
+Type::Type():
+name{"void"}, id{0}, category{VOID} {}
+
+Type::Type(int id, const char* name, enum Category category):
+name{name}, id{id}, category{category} {}
+
+Type sym::least_upper_bound(Type a, Type b) {
+  // Mockup
+  if (b.Id()) {
+
+  }
+  return a;
+}
+
 int Type::Id() const noexcept {
   return id;
 }
@@ -44,6 +58,14 @@ bool Type::IsMacro() const noexcept {
 
 bool Type::IsCallable() const noexcept {
   return category > BEGIN_CALLABLE && category < END_CALLABLE;
+}
+
+bool Type::IsVoid() const noexcept {
+  return category == VOID;
+}
+
+bool Type::IsForwardDeclared() const noexcept {
+  return category == FORWARD_DECLARED;
 }
 
 bool Type::CompatibleWith(Type other) const noexcept {
