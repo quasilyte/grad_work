@@ -45,8 +45,8 @@ int main() {
   using namespace lex;
 
   try {
-    // const char* input = "(#type x real)(define x 10.5)";
-    const char* input = "(define x 1)(define y x)(set! x 1.5)(define z x)";
+    const char* input = "(let x 10)";
+    // const char* input = "(define x 1)(define y x)(set! x 1.5)(define z x)";
     // const char* input = "(define x (if 1 15 3)) (set! x 10)";
     // const char* input = "(define x (if 1 15 3)) (#type x int)";
     io::FileWriter fw{};

@@ -33,7 +33,7 @@ private:
   ast::Node* ParseList(lex::Token);
 
   ast::Node* ParseIf(lex::TokenStream);
-  ast::Node* ParseDefine(lex::TokenStream);
+  ast::Node* ParseLet(lex::TokenStream);
   ast::Node* ParseSet(lex::TokenStream);
   ast::Node* ParseSum(lex::TokenStream);
 };

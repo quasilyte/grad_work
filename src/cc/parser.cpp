@@ -43,10 +43,10 @@ std::vector<Token> eval_tokens(TokenStream toks, int count) {
   return eval_tokens(toks, count, count);
 }
 
-Node* Parser::ParseDefine(TokenStream toks) {
+Node* Parser::ParseLet(TokenStream toks) {
   auto args = eval_tokens(toks, 2);
   auto expr = ParseToken(args[1]);
-  auto result = new Define{args[0], expr};
+  auto result = new Let{args[0], expr};
 
   module.DefineSymbol(args[0].AsStrView(), expr->Type());
 
@@ -98,7 +98,7 @@ Node* Parser::ParseList(Token tok) {
 
     switch (word_hash) {
     case encode9("if"): return ParseIf(list);
-    case encode9("define"): return ParseDefine(list);
+    case encode9("let"): return ParseLet(list);
     case encode9("set!"): return ParseSet(list);
     case encode9("+"): return ParseSum(list);
 

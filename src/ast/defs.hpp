@@ -4,12 +4,12 @@
 #include "lex/token.hpp"
 
 namespace ast {
-  struct Define;
+  struct Let;
   struct Set;
 }
 
-struct ast::Define: public Node {
-  Define(lex::Token, Node*);
+struct ast::Let: public Node {
+  Let(lex::Token, Node*);
   void GenerateCode(const sym::Module&, const io::FileWriter&) override;
   lex::Token name;
   Node* assignment;
