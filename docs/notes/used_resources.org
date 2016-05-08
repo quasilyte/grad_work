@@ -1,3 +1,9 @@
+#+CAPTION: books
+| SICP |
+|      |
+|      |
+
+
 #+CAPTION: other sources
 | [[https://swtch.com/~rsc/regexp/regexp1.html][Thompson NFA regexp engine]]        |
 | [[https://golang.org/src/runtime/hashmap.go][Golang std/hashmap impl]]           |
@@ -11,6 +17,8 @@
 | [[https://habrahabr.ru/company/wunderfund/blog/277143/][Linux & Chromium DT]]               |
 | [[https://habrahabr.ru/post/247843/][Python Dict]]                       |
 | [[https://en.wikibooks.org/wiki/Optimizing_C%2B%2B][Optimizing C++]]                    |
+| [[https://class.coursera.org/compilers-004/lecture][Coursera "compilers"]]              |
+|                                   |
 
 #+CAPTION: misc/temp
 | [[https://yoo2080.wordpress.com/2013/08/16/differences-between-common-lisp-and-emacs-lisp/][Differences between elisp & CL]] |
