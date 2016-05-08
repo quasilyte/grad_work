@@ -1,7 +1,8 @@
 #pragma once
 
 #include "typedefs.hpp"
-#include <cstdio>
+#include "dt/str_view.hpp"
+#include <cstdio> // #FIXME: can not forward declare FILE* :(
 
 namespace io {
   class FileWriter;
@@ -18,6 +19,7 @@ public:
   void Write(char) const;
   void Write(const char *cstr) const ;
   void Write(const char *bytes, u32 len) const;
+  void Write(const dt::StrView&) const;
 
   void Close();
 

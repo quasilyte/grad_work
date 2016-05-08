@@ -31,6 +31,10 @@ void FileWriter::Write(const char *bytes, u32 len) const {
   std::fwrite(bytes, 1, len, file);
 }
 
+void FileWriter::Write(const dt::StrView& str_view) const {
+  Write(str_view.Data(), str_view.Len());
+}
+
 void FileWriter::Close() {
   std::fclose(file);
   file = nullptr;

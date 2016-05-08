@@ -1,6 +1,7 @@
 #pragma once
 
 #include "typedefs.hpp"
+#include "dt/str_view.hpp"
 
 namespace lex {
   class Token;
@@ -26,6 +27,8 @@ public:
   enum Tag Tag() const noexcept;
   u32 Len() const noexcept;
   const char* Val() const noexcept;
+
+  dt::StrView AsStrView() const noexcept;
 
   bool IsAtom() const noexcept;
   bool IsInt() const noexcept;

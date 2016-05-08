@@ -10,15 +10,14 @@ void Define::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   if (name.IsList()) {
     throw "cant defun yet";
   } else if (name.IsWord()) {
-    auto type = module.Symbol(dt::StrView{name.Val(), name.Len()});
+    auto type = module.Symbol(name.AsStrView());
 
-    fw.Write(type.Name());
+    fw.Write(type.Name()); // #FIXME: type.name should be CstrView
     fw.Write(' ');
-    fw.Write(name.Val(), name.Len());
+    fw.Write(name.AsStrView());
     fw.Write('{');
     assignment->GenerateCode(module, fw);
-    fw.Write('}');
-    fw.Write(';');
+    fw.Write("};", 2);
   } else {
     throw "def symbol must be of type word";
   }
@@ -30,7 +29,7 @@ name{name}, assignment{assignment} {}
 // `$name=$assignment;`
 void Set::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   if (name.IsWord()) {
-    fw.Write(name.Val(), name.Len());
+    fw.Write(name.AsStrView());
     fw.Write('=');
     assignment->GenerateCode(module, fw);
     fw.Write(';');

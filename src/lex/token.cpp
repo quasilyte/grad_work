@@ -22,6 +22,10 @@ const char* Token::Val() const noexcept {
   return val;
 }
 
+dt::StrView Token::AsStrView() const noexcept {
+  return dt::StrView{val, len};
+}
+
 bool Token::IsAtom() const noexcept {
   return tag > BEGIN_ATOM && tag < END_ATOM;
 }

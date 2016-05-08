@@ -48,14 +48,14 @@ Node* Parser::ParseDefine(TokenStream toks) {
   auto expr = ParseToken(args[1]);
   auto result = new Define{args[0], expr};
 
-  module.DefineSymbol(StrView{args[0].Val(), args[0].Len()}, expr->Type());
+  module.DefineSymbol(args[0].AsStrView(), expr->Type());
 
   return result;
 }
 
 Node* Parser::ParseSet(TokenStream toks) {
   auto args = eval_tokens(toks, 2);
-  auto& symbol = module.SymbolMut(StrView{args[0].Val(), args[0].Len()});
+  auto& symbol = module.SymbolMut(args[0].AsStrView());
 
   if (symbol.Defined()) {
     auto expr = ParseToken(args[1]);
@@ -135,10 +135,8 @@ Node* Parser::ParseToken(Token tok) {
     return new Real{tok};
   case Token::STR:
     return new Str{tok};
-  case Token::WORD: {
-    auto& type = module.Symbol(StrView{tok.Val(), tok.Len()});
-    return new Var{type, tok};
-  }
+  case Token::WORD:
+    return new Var{module.Symbol(tok.AsStrView()), tok};
   case Token::LIST:
     return ParseList(tok);
 
