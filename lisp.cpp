@@ -46,7 +46,7 @@ int main() {
 
   try {
     // const char* input = "(#type x real)(define x 10.5)";
-    const char* input = "(define x (if 1 2.2 3.2))(set! x 10.0)";
+    const char* input = "(define x 1)(define y x)(set! x 1.5)(define z x)";
     // const char* input = "(define x (if 1 15 3)) (set! x 10)";
     // const char* input = "(define x (if 1 15 3)) (#type x int)";
     io::FileWriter fw{};
@@ -65,8 +65,8 @@ int main() {
       // const char* input = "(define x (if 1 1 0)) (set! x 10)";
       io::FileWriter fw{};
       cc::Parser parser{input.c_str()};
-      cc::CodeGen cg{parser.parse()};
-      cg.write_to(&fw);
+      cc::CodeGen cg{parser.Module(), parser.Parse()};
+      cg.WriteTo(fw);
     } else {
       throw "file not found";
     }

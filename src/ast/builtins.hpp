@@ -1,16 +1,15 @@
 #pragma once
 
 #include "ast/node.hpp"
+#include <vector>
 
 namespace ast {
-  struct If;
+  struct Sum;
 }
 
-struct ast::If: public Node {
-  If(Node* cond, Node* on_true, Node* on_false);
+struct ast::Sum: public Node {
+  Sum(std::vector<Node*>);
   void GenerateCode(const sym::Module&, const io::FileWriter&) override;
   const sym::Type& Type() override;
-  Node* cond;
-  Node* on_true;
-  Node* on_false;
+  std::vector<Node*> operands;
 };

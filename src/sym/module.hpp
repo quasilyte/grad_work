@@ -17,6 +17,7 @@ public:
   void DefineSymbol(dt::StrView name, Type);
 
   const sym::Type& Symbol(dt::StrView name) const;
+  sym::Type& SymbolMut(dt::StrView name);
 
 private:
   dt::StrView name;

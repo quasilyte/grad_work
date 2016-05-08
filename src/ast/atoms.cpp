@@ -34,3 +34,13 @@ void Str::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
 const sym::Type& Str::Type() {
   return sym::Type::STR;
 }
+
+Var::Var(const sym::Type& type, lex::Token tok): type{type}, tok{tok} {}
+
+void Var::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
+  fw.Write(tok.Val(), tok.Len());
+}
+
+const sym::Type& Var::Type() {
+  return type;
+}

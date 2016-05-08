@@ -4,6 +4,7 @@
 #include "ast/cond.hpp"
 #include "ast/atoms.hpp"
 #include "ast/defs.hpp"
+#include "ast/builtins.hpp"
 #include "dt/str_view.hpp"
 #include "dbg/lex.hpp"
 #include "dbg/dt.hpp"
@@ -54,10 +55,11 @@ Node* Parser::ParseDefine(TokenStream toks) {
 
 Node* Parser::ParseSet(TokenStream toks) {
   auto args = eval_tokens(toks, 2);
-  auto symbol = module.Symbol(StrView{args[0].Val(), args[0].Len()});
+  auto& symbol = module.SymbolMut(StrView{args[0].Val(), args[0].Len()});
 
   if (symbol.Defined()) {
     auto expr = ParseToken(args[1]);
+    symbol = symbol.Merge(expr->Type());
     return new Set{args[0], expr};
   } else {
     throw "set of undefined";
@@ -66,8 +68,14 @@ Node* Parser::ParseSet(TokenStream toks) {
 
 Node* Parser::ParseSum(TokenStream toks) {
   auto args = eval_tokens(toks, 1, 5);
-  // auto result = new Sum{args};
-  return nullptr;
+
+  std::vector<Node*> operands;
+  operands.reserve(args.size());
+  for (auto arg : args) {
+    operands.push_back(ParseToken(arg));
+  }
+
+  return new Sum{operands};
 }
 
 Node* Parser::ParseIf(TokenStream toks) {
@@ -127,6 +135,10 @@ Node* Parser::ParseToken(Token tok) {
     return new Real{tok};
   case Token::STR:
     return new Str{tok};
+  case Token::WORD: {
+    auto& type = module.Symbol(StrView{tok.Val(), tok.Len()});
+    return new Var{type, tok};
+  }
   case Token::LIST:
     return ParseList(tok);
 

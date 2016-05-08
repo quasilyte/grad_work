@@ -19,6 +19,10 @@ const sym::Type& Module::Symbol(dt::StrView name) const {
   return symbols.Get(name);
 }
 
+sym::Type& Module::SymbolMut(dt::StrView name) {
+  return symbols.GetMut(name);
+}
+
 const dt::StrView& Module::Name() const noexcept {
   return name;
 }
