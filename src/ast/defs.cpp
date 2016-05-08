@@ -1,5 +1,7 @@
 #include "ast/defs.hpp"
 
+#include "sym/sym.hpp"
+
 using namespace ast;
 
 Let::Let(lex::Token name, Node* assignment):
@@ -14,7 +16,7 @@ void Let::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
 
     fw.Write(type.Name()); // #FIXME: type.name should be CstrView
     fw.Write(' ');
-    fw.Write(name.AsStrView());
+    fw.WriteMangled(name.AsStrView());
     fw.Write('{');
     assignment->GenerateCode(module, fw);
     fw.Write("};", 2);

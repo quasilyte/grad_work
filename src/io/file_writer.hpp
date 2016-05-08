@@ -20,6 +20,7 @@ public:
   void Write(const char *cstr) const ;
   void Write(const char *bytes, u32 len) const;
   void Write(const dt::StrView&) const;
+  void WriteMangled(const dt::StrView&) const;
 
   void Close();
 

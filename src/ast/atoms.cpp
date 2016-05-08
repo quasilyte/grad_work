@@ -1,5 +1,7 @@
 #include "ast/atoms.hpp"
 
+#include "sym/sym.hpp"
+
 using namespace ast;
 using namespace sym;
 
@@ -38,7 +40,7 @@ const sym::Type& Str::Type() {
 Var::Var(const sym::Type& type, lex::Token tok): type{type}, tok{tok} {}
 
 void Var::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
-  fw.Write(tok.AsStrView());
+  fw.WriteMangled(tok.AsStrView());
 }
 
 const sym::Type& Var::Type() {

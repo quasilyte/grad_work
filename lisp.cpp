@@ -46,8 +46,9 @@ int main() {
 
   try {
     const char* input = R"lisp(
-        (let x (if "true" 1 1.0))
-        (let y (+ x 10)) (#; type is real, not num)
+        (let -> 10)
+        (let b a_0)
+        (let c a24)
 
     )lisp";
 

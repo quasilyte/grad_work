@@ -2,6 +2,7 @@ project(sym)
 
 set(
   sym_src
+  sym.cpp
   type.cpp
   signature.cpp
   module.cpp
