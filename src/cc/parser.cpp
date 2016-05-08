@@ -120,7 +120,7 @@ void Parser::ExecDirective(Token tok) {
   auto word_hash = encode9(head.Val() + 1, head.Len() - 1);
 
   switch (word_hash) {
-  // case encode9("type"): ExecType(list); return;
+  case encode9(";"): return;
 
   default:
     throw "unknown directive";

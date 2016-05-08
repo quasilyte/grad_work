@@ -45,10 +45,12 @@ int main() {
   using namespace lex;
 
   try {
-    const char* input = "(let my+ +)";
-    // const char* input = "(define x 1)(define y x)(set! x 1.5)(define z x)";
-    // const char* input = "(define x (if 1 15 3)) (set! x 10)";
-    // const char* input = "(define x (if 1 15 3)) (#type x int)";
+    const char* input = R"code(
+      (#; this is a comment)
+      (let x 10)
+
+    )code";
+
     io::FileWriter fw{};
     cc::Parser parser{input};
     auto parse_tree = parser.Parse();
