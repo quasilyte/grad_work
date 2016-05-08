@@ -40,7 +40,7 @@ void FileWriter::WriteMangled(const dt::StrView& str_view) const {
   Write('v');
 
   for (uint i = 0; i < str_view.Len(); ++i) {
-    Write(sym::mangle(*(str_view.Val() + i)));
+    Write(sym::mangle(*(str_view.Data() + i)));
   }
 }
 

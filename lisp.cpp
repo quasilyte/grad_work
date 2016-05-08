@@ -26,29 +26,13 @@ std::string slurp(const char* path) {
 // 2) stored in variable -- expand to real function
 // 3) called inline -- series or "+"
 
-// (module "main")
-// (def (sum a b) (+ a b))
-// (sum 4.5 6.0) (; type error)
-// (set-type! sum (int a b))
-
-// phases & passes:
-// pass[1] (parser):
-// + build the ast
-// +- maintain symbol table
-// +- estimate types
-// pass[2]:
-// - type check
-// + generate code
-
 // int main(int argc, char* argv[]) {
 int main() {
   using namespace lex;
 
   try {
     const char* input = R"lisp(
-        (let -> 10)
-        (let b a_0)
-        (let c a24)
+        (def (one) 1)
 
     )lisp";
 

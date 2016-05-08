@@ -4,11 +4,11 @@
 
 using namespace ast;
 
-Let::Let(lex::Token name, Node* assignment):
+Def::Def(lex::Token name, Node* assignment):
 name{name}, assignment{assignment} {}
 
 // `$type $name{$assignment};`
-void Let::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+void Def::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   if (name.IsList()) {
     throw "cant defun yet";
   } else if (name.IsWord()) {
