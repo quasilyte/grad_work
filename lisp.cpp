@@ -45,11 +45,11 @@ int main() {
   using namespace lex;
 
   try {
-    const char* input = R"code(
-      (#; this is a comment)
-      (let x 10)
+    const char* input = R"lisp(
+        (let x (if "true" 1 1.0))
+        (let y (+ x 10)) (#; type is real, not num)
 
-    )code";
+    )lisp";
 
     io::FileWriter fw{};
     cc::Parser parser{input};

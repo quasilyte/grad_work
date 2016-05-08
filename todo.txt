@@ -2,3 +2,7 @@ Implement:
 - id transformations (because we can not map lisp id into C id directly)
 - better type inference
 - assignment of builtin functions to a variable
+
+Compilation perfomance:
+- how much times Type is evaluated for same nodes. Maybe it can be improved
+- check if we can gain benefits from object pool/arena for ast nodes

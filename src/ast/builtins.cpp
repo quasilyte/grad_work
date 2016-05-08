@@ -23,15 +23,17 @@ void Sum::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
 }
 
 const sym::Type& Sum::Type() {
+  bool int_typed = true;
+
   for (Node* operand : operands) {
-    if (operand->Type().IsAny()) {
-      return sym::Type::ANY;
-    } else if (operand->Type().IsNum()) {
-      return sym::Type::NUM;
-    } else if (operand->Type().IsReal()) {
+    if (operand->Type().IsReal()) {
       return sym::Type::REAL;
+    }
+
+    if (operand->Type().IsNum() || operand->Type().IsAny()) {
+      int_typed = false;
     }
   }
 
-  return sym::Type::INT;
+  return int_typed ? sym::Type::INT : sym::Type::NUM;
 }
