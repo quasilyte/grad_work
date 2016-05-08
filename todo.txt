@@ -1,0 +1,3 @@
+Implement:
+- id transformations (because we can not map lisp id into C id directly)
+- better type inference

@@ -34,8 +34,8 @@ std::string slurp(const char* path) {
 // phases & passes:
 // pass[1] (parser):
 // + build the ast
-// - maintain symbol table
-// - estimate types
+// +- maintain symbol table
+// +- estimate types
 // pass[2]:
 // - type check
 // + generate code
@@ -45,7 +45,7 @@ int main() {
   using namespace lex;
 
   try {
-    const char* input = "(let x 10)";
+    const char* input = "(let my+ +)";
     // const char* input = "(define x 1)(define y x)(set! x 1.5)(define z x)";
     // const char* input = "(define x (if 1 15 3)) (set! x 10)";
     // const char* input = "(define x (if 1 15 3)) (#type x int)";
