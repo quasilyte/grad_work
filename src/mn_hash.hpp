@@ -10,7 +10,7 @@ namespace mn_hash {
   constexpr u32 encode4(const char* cstr, u32 hash = 0);
   constexpr u64 encode9(const char* cstr, u64 hash = 0);
 
-  inline u64 encode9(const char* bytes, u32 len);
+  inline u64 encode9(const char* bytes, u32 count);
 }
 
 constexpr u64 mn_hash::encode1(u64 hash, char ch) {
