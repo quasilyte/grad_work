@@ -3,5 +3,5 @@
 #include "typedefs.hpp"
 
 namespace fmt {
-  int width(u64);
+  u32 width(u64);
 }

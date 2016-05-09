@@ -8,7 +8,7 @@ namespace fmt {
   }
 }
 
-int fmt::width(u64 x) {
+u32 fmt::width(u64 x) {
   if (x < 11_zeros) {
     if (x < 100000) {
       if (x < 1_zeros) {
