@@ -31,7 +31,6 @@ public:
   bool IsReal() const noexcept;
   bool IsNum() const noexcept;
   bool IsStr() const noexcept;
-  bool IsFunc() const noexcept; // #FIXME
 
   bool Arith() const noexcept;
 
