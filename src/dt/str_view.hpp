@@ -17,6 +17,7 @@ public:
 
   bool operator<(const StrView& other) const;
   bool operator==(const StrView& other) const;
+  char operator[](std::size_t pos) const;
 
 private:
   const char* data;

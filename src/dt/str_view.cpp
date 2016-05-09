@@ -29,3 +29,7 @@ bool StrView::operator<(const StrView& other) const {
 bool StrView::operator==(const StrView& other) const {
   return len == other.len && std::strncmp(data, other.data, other.len) == 0;
 }
+
+char StrView::operator[](std::size_t pos) const {
+  return data[pos];
+}
