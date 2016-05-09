@@ -35,8 +35,6 @@ std::string slurp(const char* path) {
 int main() {
   using namespace lex;
 
-  u64 x = std::numeric_limits<u64>::max();
-
   // lookup по одному и тому же имени
   //
   try {

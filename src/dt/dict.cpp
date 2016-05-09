@@ -2,7 +2,7 @@
 
 #include "sym/module.hpp"
 #include "sym/func.hpp"
-#include "sym/local.hpp"
+#include "sym/local_var.hpp"
 
 using namespace dt;
 
@@ -53,4 +53,4 @@ T& dt::Dict<T>::GetMut(StrView key) {
 
 template class dt::Dict<sym::Type*>;
 template class dt::Dict<sym::Func>;
-template class dt::Dict<sym::Local>;
+template class dt::Dict<sym::LocalVar>;

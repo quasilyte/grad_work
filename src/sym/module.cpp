@@ -15,7 +15,7 @@ void Module::DefineFunc(dt::StrView name, int arity) {
 const dt::StrView* Module::DefineLocal(dt::StrView name, const Type* type) {
   if (nullptr == locals.Get(name).type) {
     auto interned_name = gensym.Next();
-    locals.Put(name, sym::Local{interned_name, type});
+    locals.Put(name, sym::LocalVar{type, interned_name});
     return interned_name;
   } else {
     throw "already defined";
@@ -40,12 +40,12 @@ const dt::StrView* Module::RebindLocal(dt::StrView name, const Type* type) {
     throw "rebind of undefined";
   } else {
     auto new_name = gensym.Next();
-    locals.Put(name, sym::Local{new_name, type});
+    locals.Put(name, sym::LocalVar{type, new_name});
     return new_name;
   }
 }
 
-sym::Local Module::Local(dt::StrView name) const {
+sym::LocalVar Module::Local(dt::StrView name) const {
   return locals.Get(name);
 }
 

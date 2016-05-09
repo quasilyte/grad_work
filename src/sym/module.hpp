@@ -4,7 +4,7 @@
 #include "dt/dict.hpp"
 #include "sym/type.hpp"
 #include "sym/func.hpp"
-#include "sym/local.hpp"
+#include "sym/local_var.hpp"
 #include "sym/generator.hpp"
 
 namespace sym {
@@ -24,14 +24,14 @@ public:
   // Locals:
   const dt::StrView* DefineLocal(dt::StrView name, const Type*);
   const dt::StrView* RebindLocal(dt::StrView name, const Type*);
-  sym::Local Local(dt::StrView name) const;
+  sym::LocalVar Local(dt::StrView name) const;
 
   // #TODO: globals
   // void MergeSymbol(dt::StrView name, const Type*);
 
 private:
   dt::StrView name;
-  mutable dt::Dict<sym::Local> locals;
+  mutable dt::Dict<sym::LocalVar> locals;
   mutable dt::Dict<sym::Func> funcs;
   sym::Generator gensym;
   // + globals
