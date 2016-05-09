@@ -1,6 +1,5 @@
 #include "io/file_writer.hpp"
 
-#include "sym/sym.hpp"
 #include <cstring>
 
 using namespace io;
@@ -34,14 +33,6 @@ void FileWriter::Write(const char *bytes, u32 len) const {
 
 void FileWriter::Write(const dt::StrView& str_view) const {
   Write(str_view.Data(), str_view.Len());
-}
-
-void FileWriter::WriteMangled(const dt::StrView& str_view) const {
-  Write('v');
-
-  for (uint i = 0; i < str_view.Len(); ++i) {
-    Write(sym::mangle(*(str_view.Data() + i)));
-  }
 }
 
 void FileWriter::Close() {
