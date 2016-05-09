@@ -1,4 +1,4 @@
-#include "fmt/u64.hpp"
+#include "fmt/uint.hpp"
 
 #include <cmath>
 
@@ -8,9 +8,37 @@ namespace fmt {
   }
 }
 
+u32 fmt::width(u32 x) {
+  if (x < 6_zeros) {
+    if (x < 2_zeros) {
+      return x < 1_zeros ? 1 : 2;
+    } else {
+      if (x < 3_zeros) {
+        return 3;
+      } else if (x < 4_zeros) {
+        return 4;
+      } else if (x < 5_zeros) {
+        return 5;
+      }
+    }
+  } else {
+    if (x < 7_zeros) {
+      return x < 6_zeros ? 6 : 7;
+    } else {
+      if (x < 8_zeros) {
+        return 8;
+      } else if (x < 9_zeros) {
+        return 9;
+      } else {
+        return 10;
+      }
+    }
+  }
+}
+
 u32 fmt::width(u64 x) {
   if (x < 11_zeros) {
-    if (x < 100000) {
+    if (x < 5_zeros) {
       if (x < 1_zeros) {
         return 1;
       } else if (x < 2_zeros) {
