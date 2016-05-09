@@ -9,15 +9,17 @@ namespace sym {
 
 class sym::Generator {
 public:
+  typedef u32 Id;
+
   Generator();
   ~Generator();
 
-  u64 NextId();
+  Id NextId();
   const dt::StrView* Next();
-  const dt::StrView* Get(u64 id);
+  const dt::StrView* Get(Id id);
 
 private:
   dt::StrView* pool;
-  u64 current_id;
-  u64 count;
+  Id current_id;
+  Id count;
 };
