@@ -1,7 +1,7 @@
 #include "sym/generator.hpp"
 
 #include "io/utils.hpp"
-#include "fmt/u64.hpp"
+#include "fmt/uint.hpp"
 #include <cstdlib>
 
 using namespace sym;
@@ -10,7 +10,7 @@ Generator::Generator(): current_id{0}, count{32} {
   pool = static_cast<dt::StrView*>(std::malloc(sizeof(dt::StrView) * count));
 }
 
-u64 Generator::NextId() {
+Generator::Id Generator::NextId() {
   auto len = fmt::width(current_id) + 1;
 
   char* buf = new char[len];
@@ -27,7 +27,7 @@ const dt::StrView* Generator::Next() {
 }
 
 // const dt::StrView* Generator::Get(u64 id) {
-const dt::StrView* Generator::Get(u64 id) {
+const dt::StrView* Generator::Get(Id id) {
   return &pool[id];
 }
 
