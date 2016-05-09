@@ -13,6 +13,6 @@ struct ast::Node {
 
   virtual void GenerateCode(const sym::Module&, const io::FileWriter&) = 0;
 
-  virtual const sym::Type& Type();
+  virtual const sym::Type* Type();
 };
 

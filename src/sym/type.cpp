@@ -3,43 +3,32 @@
 using namespace sym;
 using namespace sym::flags;
 
-Type Type::VOID{0, "void", 0};
-Type Type::ANY{1, "any", ARITH};
-Type Type::INT{2, "long", ARITH};
-Type Type::REAL{3, "double", ARITH};
-Type Type::NUM{4, "num", ARITH};
-Type Type::STR{5, "str", 0};
+const Type Type::VOID{"void"};
+const Type Type::ANY{"any"};
+const Type Type::INT{"long"};
+const Type Type::REAL{"double"};
+const Type Type::NUM{"num"};
+const Type Type::STR{"str"};
 
-// #FIXME: Should be removed!
-Type::Type():
-name{"void"}, id{0}, flags{0} {}
-
-Type::Type(int id, const char* name, i32 flags):
-name{name}, id{id}, flags{flags} {}
-
-int Type::Id() const noexcept {
-  return id;
-}
-
-i32 Type::Flags() const noexcept {
-  return flags;
-}
+Type::Type(const char* name): name{name} {}
 
 const char* Type::Name() const noexcept {
   return name;
 }
 
-bool Type::IsVoid() const noexcept { return id == VOID.id; }
-bool Type::IsAny() const noexcept { return id == ANY.id; }
-bool Type::IsInt() const noexcept { return id == INT.id; }
-bool Type::IsReal() const noexcept { return id == REAL.id; }
-bool Type::IsNum() const noexcept { return id == NUM.id; }
-bool Type::IsStr() const noexcept { return id == STR.id; }
+bool Type::IsVoid() const noexcept { return this == &VOID; }
+bool Type::IsAny() const noexcept { return this == &ANY; }
+bool Type::IsInt() const noexcept { return this == &INT; }
+bool Type::IsReal() const noexcept { return this == &REAL; }
+bool Type::IsNum() const noexcept { return this == &NUM; }
+bool Type::IsStr() const noexcept { return this == &STR; }
 
-bool Type::Arith() const noexcept { return flags & ARITH; }
-bool Type::Defined() const noexcept { return flags & DEFINED; }
-
-void Type::MarkDefined() noexcept { flags |= DEFINED; }
+bool Type::Arith() const noexcept {
+  return IsInt()
+      || IsReal()
+      || IsNum()
+      || IsAny();
+}
 
 // Merge rules:
 // A + A -> A
@@ -49,24 +38,28 @@ void Type::MarkDefined() noexcept { flags |= DEFINED; }
 // either<A, B> + A -> either<A, B>
 // A + any -> any
 // A + parent_of(A) -> parent_of(A)
-const Type& Type::Merge(const Type& other) const noexcept {
-  if (id == other.id) {
+const Type* Type::Merge(const Type* other) const noexcept {
+  if (SameAs(other)) {
     return other;
   }
 
-  if (Arith() && other.Arith()) {
-    return sym::Type::NUM;
+  if (Arith() && other->Arith()) {
+    return &sym::Type::NUM;
   }
 
-  return sym::Type::ANY;
+  return &sym::Type::ANY;
 }
 
-bool Type::CompatibleWith(const Type& other) const noexcept {
-  if ((id == other.id)
-      || (Arith() && other.Arith())
-      || (IsAny() || other.IsAny())) {
+bool Type::CompatibleWith(const Type* other) const noexcept {
+  if (SameAs(other)
+      || (Arith() && other->Arith())
+      || (IsAny() || other->IsAny())) {
     return true;
   }
 
   return false;
+}
+
+bool Type::SameAs(const Type* other) const noexcept {
+  return this == other;
 }

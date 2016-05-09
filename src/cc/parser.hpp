@@ -26,12 +26,16 @@ private:
   Tree tree;
   sym::Module module;
   lex::TokenStream toks;
+  int depth = 0;
+
+  bool AtTopLevel() const noexcept;
 
   void ExecDirective(lex::Token);
 
   ast::Node* ParseToken(lex::Token);
   ast::Node* ParseList(lex::Token);
 
+  ast::Node* ParseFuncCall(lex::Token name, lex::TokenStream args);
   ast::Node* ParseIf(lex::TokenStream);
   ast::Node* ParseDef(lex::TokenStream);
   ast::Node* ParseSet(lex::TokenStream);

@@ -1,6 +1,7 @@
 #include "sym/generator.hpp"
 
 #include "io/utils.hpp"
+#include "fmt/u64.hpp"
 #include <cstdlib>
 
 using namespace sym;
@@ -10,11 +11,14 @@ Generator::Generator(): current_id{0}, count{32} {
 }
 
 u64 Generator::NextId() {
-  char* buf = new char[10];
+  auto len = fmt::width(current_id) + 1;
+
+  char* buf = new char[len];
   buf[0] = 't';
   io::write_to_buf(buf + 1, current_id);
 
-  pool[current_id] = dt::StrView{buf, 2};
+  pool[current_id] = dt::StrView{buf, len};
+
   return current_id++;
 }
 

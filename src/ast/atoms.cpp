@@ -12,8 +12,8 @@ void Int::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
   fw.Write("_i", 2);
 }
 
-const sym::Type& Int::Type() {
-  return sym::Type::INT;
+const Type* Int::Type() {
+  return &sym::Type::INT;
 }
 
 Real::Real(lex::Token tok): tok{tok} {}
@@ -23,8 +23,8 @@ void Real::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
   fw.Write("_r", 2);
 }
 
-const sym::Type& Real::Type() {
-  return sym::Type::REAL;
+const Type* Real::Type() {
+  return &sym::Type::REAL;
 }
 
 Str::Str(lex::Token tok): tok{tok} {}
@@ -33,16 +33,17 @@ void Str::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
   fw.Write(tok.AsStrView());
 }
 
-const sym::Type& Str::Type() {
-  return sym::Type::STR;
+const Type* Str::Type() {
+  return &sym::Type::STR;
 }
 
-Var::Var(const sym::Type& type, lex::Token tok): type{type}, tok{tok} {}
+Var::Var(const dt::StrView* name, const sym::Type* type):
+name{name}, type{type} {}
 
 void Var::GenerateCode(const sym::Module&, const io::FileWriter& fw) {
-  fw.WriteMangled(tok.AsStrView());
+  fw.Write(*name);
 }
 
-const sym::Type& Var::Type() {
+const Type* Var::Type() {
   return type;
 }

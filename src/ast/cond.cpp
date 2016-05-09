@@ -16,6 +16,6 @@ void If::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   fw.Write(")");
 }
 
-const sym::Type& If::Type() {
-  return on_false->Type().Merge(on_true->Type());
+const sym::Type* If::Type() {
+  return on_false->Type()->Merge(on_true->Type());
 }

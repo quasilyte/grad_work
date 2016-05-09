@@ -1,26 +1,56 @@
 #include "sym/module.hpp"
 
 #include "dbg/dt.hpp"
+#include "sym/sym.hpp"
 
 using namespace sym;
 
 Module::Module(const char *name): name{dt::StrView{name}} {}
 
-void Module::DefineSymbol(dt::StrView name, Type type) {
-  if (symbols.Get(name).Defined()) {
-    throw "already defined";
+void Module::DefineFunc(dt::StrView name, int arity) {
+  // if (funcs.Get(name))
+  funcs.Put(name, sym::Func{arity});
+}
+
+const dt::StrView* Module::DefineLocal(dt::StrView name, const Type* type) {
+  if (nullptr == locals.Get(name).type) {
+    auto interned_name = gensym.Next();
+    locals.Put(name, sym::Local{interned_name, type});
+    return interned_name;
   } else {
-    type.MarkDefined();
-    symbols.Put(name, type);
+    throw "already defined";
   }
 }
 
-const sym::Type& Module::Symbol(dt::StrView name) const {
-  return symbols.Get(name);
+/*
+void Module::MergeSymbol(dt::StrView name, const Type* type) {
+  auto symbol = locals.Get(name);
+
+  if (nullptr == symbol.type) {
+    throw "update of undefined";
+  } else {
+    // locals.Put(name, sym::Local{name, symbol.type->Merge(type)});
+  }
+}*/
+
+const dt::StrView* Module::RebindLocal(dt::StrView name, const Type* type) {
+  auto local = locals.Get(name);
+
+  if (nullptr == local.type) {
+    throw "rebind of undefined";
+  } else {
+    auto new_name = gensym.Next();
+    locals.Put(name, sym::Local{new_name, type});
+    return new_name;
+  }
 }
 
-sym::Type& Module::SymbolMut(dt::StrView name) {
-  return symbols.GetMut(name);
+sym::Local Module::Local(dt::StrView name) const {
+  return locals.Get(name);
+}
+
+const sym::Func& Module::Func(dt::StrView name) const {
+  return funcs.Get(name);
 }
 
 const dt::StrView& Module::Name() const noexcept {

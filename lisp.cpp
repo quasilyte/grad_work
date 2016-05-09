@@ -7,6 +7,7 @@
 #include "cc/parser.hpp"
 #include "cc/code_gen.hpp"
 #include "io/file_writer.hpp"
+#include "sym/generator.hpp"
 #include "sym/type.hpp"
 #include "ast/node.hpp"
 #include "dt/dict.hpp"
@@ -21,18 +22,36 @@ std::string slurp(const char* path) {
   );
 }
 
+// 1_zeros => 10
+// 2_zeros => 100
+
+
 // +: 1~n args (each <- numeric)
 // 1) called with apply -- expand to real function
 // 2) stored in variable -- expand to real function
 // 3) called inline -- series or "+"
-
+#include <limits>
 // int main(int argc, char* argv[]) {
 int main() {
   using namespace lex;
 
+  u64 x = std::numeric_limits<u64>::max();
+
+  // lookup по одному и тому же имени
+  //
   try {
     const char* input = R"lisp(
-        (def (one) 1)
+        (#;
+        (def (f x y) 1.6)
+        (def res (f 1 2)))
+
+        (def x (if 1 1 1.0))
+        (def y (+ x 1))
+
+        (#;(def x 10) (#; [x: int])
+        (set! x 10.0)
+        (set! x 1)
+        (def y x))
 
     )lisp";
 

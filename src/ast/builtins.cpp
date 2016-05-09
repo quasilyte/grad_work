@@ -2,7 +2,25 @@
 
 using namespace ast;
 
-Sum::Sum(std::vector<Node*> operands): operands{operands} {}
+FuncCall::FuncCall(const sym::Type* type, lex::Token name, std::vector<Node *> &&args):
+type{type}, name{name}, args{args} {}
+
+void FuncCall::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+  fw.Write(name.AsStrView());
+  fw.Write('(');
+  for (uint i = 0; i < args.size() - 1; ++i) {
+    args[i]->GenerateCode(module, fw);
+    fw.Write(',');
+  }
+  args.back()->GenerateCode(module, fw);
+  fw.Write(')');
+}
+
+const sym::Type* FuncCall::Type() {
+  return type;
+}
+
+Sum::Sum(std::vector<Node*>&& operands): operands{operands} {}
 
 void Sum::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   if (operands.size() == 1) {
@@ -10,7 +28,7 @@ void Sum::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   } else {
     fw.Write('(');
     for (uint i = 0; i < operands.size() - 1; ++i) {
-      if (!operands[i]->Type().Arith()) {
+      if (!operands[i]->Type()->Arith()) {
         throw "(+) defined only for {any, num, real, int} types";
       }
       operands[i]->GenerateCode(module, fw);
@@ -22,18 +40,18 @@ void Sum::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
   }
 }
 
-const sym::Type& Sum::Type() {
+const sym::Type* Sum::Type() {
   bool int_typed = true;
 
   for (Node* operand : operands) {
-    if (operand->Type().IsReal()) {
-      return sym::Type::REAL;
+    if (operand->Type()->IsReal()) {
+      return &sym::Type::REAL;
     }
 
-    if (operand->Type().IsNum() || operand->Type().IsAny()) {
+    if (operand->Type()->IsNum() || operand->Type()->IsAny()) {
       int_typed = false;
     }
   }
 
-  return int_typed ? sym::Type::INT : sym::Type::NUM;
+  return int_typed ? &sym::Type::INT : &sym::Type::NUM;
 }

@@ -14,18 +14,15 @@ namespace sym {
 class sym::Type {
 public:
   // Builtin types defined only once
-  static Type VOID;
-  static Type ANY;
-  static Type INT;
-  static Type REAL;
-  static Type NUM;
-  static Type STR;
+  static const Type VOID;
+  static const Type ANY;
+  static const Type INT;
+  static const Type REAL;
+  static const Type NUM;
+  static const Type STR;
 
-  Type();
-  Type(int id, const char* name, i32 flags);
+  Type(const char* name);
 
-  int Id() const noexcept;
-  i32 Flags() const noexcept;
   const char* Name() const noexcept;
 
   bool IsVoid() const noexcept;
@@ -34,22 +31,21 @@ public:
   bool IsReal() const noexcept;
   bool IsNum() const noexcept;
   bool IsStr() const noexcept;
+  bool IsFunc() const noexcept; // #FIXME
 
   bool Arith() const noexcept;
-  bool Defined() const noexcept;
 
-  void MarkDefined() noexcept;
-
-  const Type& Merge(const Type&) const noexcept;
-  bool CompatibleWith(const Type&) const noexcept;
+  const Type* Merge(const Type*) const noexcept;
+  bool CompatibleWith(const Type*) const noexcept;
+  bool SameAs(const Type*) const noexcept;
 
 private:
   const char* name;
-  i32 id;
-  i32 flags;
 };
 
+/*
 static_assert(
   sizeof(sym::Type) == 16 || sizeof(sym::Type) == 12,
   "type size expectations failed"
 );
+*/
