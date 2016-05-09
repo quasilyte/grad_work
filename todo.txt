@@ -5,3 +5,7 @@ Implement:
 Compilation perfomance:
 - how much times Type is evaluated for same nodes. Maybe it can be improved
 - check if we can gain benefits from object pool/arena for ast nodes
+
+Fix:
+- Want to use StrView inside token and other structs with {char*,len}, 
+  but it increases total size due to padding. Maybe something like trait can work?
