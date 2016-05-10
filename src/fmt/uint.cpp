@@ -17,7 +17,7 @@ u32 fmt::width(u32 x) {
         return 3;
       } else if (x < 4_zeros) {
         return 4;
-      } else if (x < 5_zeros) {
+      } else {
         return 5;
       }
     }

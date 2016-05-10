@@ -38,6 +38,8 @@ public:
   bool IsList() const noexcept;
   bool IsEof() const noexcept;
 
+  bool Is(enum Tag) const noexcept;
+
 private:
   enum Tag tag;
   u32 len;

@@ -10,7 +10,10 @@
 #include "sym/generator.hpp"
 #include "sym/type.hpp"
 #include "ast/node.hpp"
+#include "cc/classifier.hpp"
 #include "dt/dict.hpp"
+#include "ast/atoms.hpp"
+#include "ast/defs.hpp"
 #include <fstream>
 #include <string>
 
@@ -22,9 +25,7 @@ std::string slurp(const char* path) {
   );
 }
 
-// 1_zeros => 10
-// 2_zeros => 100
-
+// 16 + 4
 
 // +: 1~n args (each <- numeric)
 // 1) called with apply -- expand to real function
@@ -34,30 +35,24 @@ std::string slurp(const char* path) {
 // int main(int argc, char* argv[]) {
 int main() {
   using namespace lex;
-
+  using namespace cc;
+  printf("%ld\n", sizeof(ast::Int2));
   // lookup по одному и тому же имени
   //
   try {
     const char* input = R"lisp(
-        (#;
-        (def (f x y) 1.6)
-        (def res (f 1 2)))
-
-        (def x (if 1 1 1.0))
-        (def y (+ x 1))
-
-        (#;(def x 10) (#; [x: int])
-        (set! x 10.0)
-        (set! x 1)
-        (def y x))
+        (#def c 1)
 
     )lisp";
 
+    auto parse_tree = Parser::Run(Classifier::Run(input));
+
+    /*
     io::FileWriter fw{};
     cc::Parser parser{input};
     auto parse_tree = parser.Parse();
     cc::CodeGen cg{parser.Module(), parse_tree};
-    cg.WriteTo(fw);
+    cg.WriteTo(fw);*/
   } catch (const char* msg) {
     std::fprintf(stderr, "error: %s\n", msg);
   }

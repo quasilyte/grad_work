@@ -2,14 +2,21 @@
 
 #include "ast/node.hpp"
 
-using namespace cc;
+/*
+using namespace cpp_cg;
 
-CodeGen::CodeGen(const sym::Module& module, const Parser::Tree& tree):
-module{module}, tree{tree} {}
+void CodeGen::Run(const cc::TranslationUnit& input, const io::FileWriter& output) {
+  CodeGen self{input, output};
+  return self.Generate();
+}
 
-void CodeGen::WriteTo(const io::FileWriter& fw) {
-  for (ast::Node* node : tree) {
-    node->GenerateCode(module, fw);
+CodeGen::CodeGen(const cc::TranslationUnit& tu, const io::FileWriter& fw):
+tu{tu}, fw{fw} {}
+
+void CodeGen::Generate() {
+  for (ast::Node* node : tu.tree) {
+    node->GenerateCode(tu.module, fw);
     fw.Write('\n');
   }
 }
+*/

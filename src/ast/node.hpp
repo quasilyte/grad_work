@@ -11,7 +11,7 @@ namespace ast {
 struct ast::Node {
   class TypeError{};
 
-  virtual void GenerateCode(const sym::Module&, const io::FileWriter&) = 0;
+  virtual void GenerateCode(const sym::Module*, const io::FileWriter&) = 0;
 
   virtual const sym::Type* Type();
 };

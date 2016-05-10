@@ -1,19 +1,23 @@
 #pragma once
 
 #include "cc/parser.hpp"
+#include "cc/translation_unit.hpp"
 #include "io/file_writer.hpp"
 
-namespace cc {
+/*
+namespace cpp_cg {
   class CodeGen;
 }
 
-class cc::CodeGen {
+class cpp_cg::CodeGen {
 public:
-  CodeGen(const sym::Module&, const Parser::Tree&);
-
-  void WriteTo(const io::FileWriter&);
+  static void Run(const cc::TranslationUnit& input, const io::FileWriter& output);
 
 private:
-  const sym::Module& module;
-  const Parser::Tree& tree;
-};
+  const cc::TranslationUnit& tu;
+  const io::FileWriter& fw;
+
+  CodeGen(const cc::TranslationUnit&, const io::FileWriter&);
+
+  void Generate();
+};*/

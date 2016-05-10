@@ -18,8 +18,65 @@ using namespace lex;
 using namespace ast;
 using namespace dt;
 
-Parser::Parser(const char *input):
-module{"global"}, toks{TokenStream{input, strlen(input)}} {}
+TranslationUnit Parser::Run(const TopLevel& top) {
+  Parser self{top};
+  return self.Parse();
+}
+
+Parser::Parser(const TopLevel& top):
+module{"global"}, top{top} {}
+
+TranslationUnit Parser::Parse() {
+  // (#def |x 1)
+  for (lex::TokenStream global : top.globals) {
+    ParseGlobal(global);
+  }
+
+  return result;
+}
+
+lex::Token next(TokenStream& ts, enum Token::Tag tag, const char* msg) {
+  auto token = ts.NextToken();
+  if (token.Is(tag)) {
+    return token;
+  } else {
+    throw msg;
+  }
+}
+
+void Parser::ParseGlobal(TokenStream& args) {
+  // auto name_tok = next(args, Token::INT, "=)");
+
+  auto name_tok = args.NextToken();
+  auto expr_tok = args.NextToken();
+
+  // result.exprs.push_back();
+}
+
+/*
+Node* Parser::ParseToken(Token tok) {
+  switch (tok.Tag()) {
+  case Token::INT:
+    return new Int{tok};
+  case Token::REAL:
+    return new Real{tok};
+  case Token::STR:
+    return new Str{tok};
+  case Token::WORD: {
+    auto local = module.Local(tok.AsStrView());
+    return new Var{local.bound_name, local.type};
+  }
+  case Token::LIST:
+    return ParseList(tok);
+
+  default:
+    throw "not implemented";
+  }
+}*/
+
+/*
+
+  LEGACY
 
 std::vector<Token> eval_tokens(TokenStream toks, uint min_count, uint max_count) {
   std::vector<Token> items;
@@ -49,13 +106,11 @@ Node* Parser::ParseDef(TokenStream toks) {
   auto expr = ParseToken(args[1]);
 
   if (args[0].IsList()) {
-    depth += 1;
     auto signature = eval_tokens(args[0], 1, 10);
     auto name = signature[0];
     std::vector<Token> params{signature.begin() + 1, signature.end()};
     module.DefineFunc(name.AsStrView(), params.size());
     auto result = new DefFunc{name, std::move(params), expr};
-    depth -= 1;
     return result;
   } else if (args[0].IsWord()) {
     auto name = module.DefineLocal(args[0].AsStrView(), expr->Type());
@@ -136,10 +191,6 @@ Node* Parser::ParseList(Token tok) {
   }
 }
 
-bool Parser::AtTopLevel() const noexcept {
-  return 0 == depth;
-}
-
 void Parser::ExecDirective(Token tok) {
   using namespace mn_hash;
 
@@ -149,8 +200,6 @@ void Parser::ExecDirective(Token tok) {
   auto word_hash = encode9(head.Val() + 1, head.Len() - 1);
 
   switch (word_hash) {
-  case encode9(";"): return;
-
   default:
     throw "unknown directive";
   }
@@ -175,21 +224,4 @@ Node* Parser::ParseToken(Token tok) {
     throw "not implemented";
   }
 }
-
-const Parser::Tree& Parser::Parse() {
-  while (!toks.NextToken().IsEof()) {
-    auto tok = toks.CurrentToken();
-
-    if ('#' == *tok.Val() && tok.IsList()) {
-      ExecDirective(tok);
-    } else {
-      tree.push_back(ParseToken(tok));
-    }
-  }
-
-  return tree;
-}
-
-const sym::Module& Parser::Module() const noexcept {
-  return module;
-}
+*/

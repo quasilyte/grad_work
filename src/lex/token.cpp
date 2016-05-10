@@ -53,3 +53,7 @@ bool Token::IsList() const noexcept {
 bool Token::IsEof() const noexcept {
   return tag == SOURCE_END;
 }
+
+bool Token::Is(enum Tag tag) const noexcept {
+  return this->tag == tag;
+}

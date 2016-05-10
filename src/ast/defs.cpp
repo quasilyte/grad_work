@@ -8,8 +8,8 @@ DefVar::DefVar(dt::StrView name, Node* assignment):
 name{name}, assignment{assignment} {}
 
 // `$type $name{$assignment};`
-void DefVar::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
-  auto type = module.Local(name).type;
+void DefVar::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
+  auto type = module->Local(name).type;
 
   fw.Write(type->Name()); // #FIXME: type.name should be CstrView
   fw.Write(' ');
@@ -23,7 +23,7 @@ DefLocal::DefLocal(const dt::StrView* name, Node* assignment):
 name{name}, assignment{assignment} {}
 
 // `$type $name{$assignment};`
-void DefLocal::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+void DefLocal::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   fw.Write(assignment->Type()->Name()); // #FIXME: type.name should be CstrView
   fw.Write(' ');
   fw.Write(*name);
@@ -35,7 +35,7 @@ void DefLocal::GenerateCode(const sym::Module& module, const io::FileWriter& fw)
 DefFunc::DefFunc(lex::Token name, std::vector<lex::Token>&& params, Node* body):
 name{name}, params{params}, body{body} {}
 
-void DefFunc::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+void DefFunc::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   auto type = body->Type();
 
   fw.Write(type->Name());
@@ -58,7 +58,7 @@ Set::Set(lex::Token name, Node* assignment):
 name{name}, assignment{assignment} {}
 
 // `$name=$assignment;`
-void Set::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+void Set::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   if (name.IsWord()) {
     fw.Write(name.AsStrView());
     fw.Write('=');

@@ -5,7 +5,7 @@ using namespace ast;
 FuncCall::FuncCall(const sym::Type* type, lex::Token name, std::vector<Node *> &&args):
 type{type}, name{name}, args{args} {}
 
-void FuncCall::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+void FuncCall::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   fw.Write(name.AsStrView());
   fw.Write('(');
   for (uint i = 0; i < args.size() - 1; ++i) {
@@ -22,7 +22,7 @@ const sym::Type* FuncCall::Type() {
 
 Sum::Sum(std::vector<Node*>&& operands): operands{operands} {}
 
-void Sum::GenerateCode(const sym::Module& module, const io::FileWriter& fw) {
+void Sum::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   if (operands.size() == 1) {
     operands[0]->GenerateCode(module, fw);
   } else {

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "lex/token_stream.hpp"
+#include "cc/top_level.hpp"
+#include "cc/translation_unit.hpp"
 #include "sym/module.hpp"
 #include "dt/dict.hpp"
 #include <vector>
@@ -15,22 +17,28 @@ namespace cc {
 
 class cc::Parser {
 public:
-  typedef std::vector<ast::Node*> Tree;
 
-  Parser(const char* input);
-
-  const Tree& Parse();
-  const sym::Module& Module() const noexcept;
+  static TranslationUnit Run(const TopLevel&);
 
 private:
-  Tree tree;
   sym::Module module;
-  lex::TokenStream toks;
-  int depth = 0;
+  const TopLevel& top;
+  TranslationUnit result;
 
-  bool AtTopLevel() const noexcept;
+  Parser(const TopLevel&);
+
+  TranslationUnit Parse();
+
+  void ParseGlobal(lex::TokenStream&);
+
+  ast::Node* ParseToken(lex::Token);
+
+  /*
+
+  void ParseFuncDecls();
 
   void ExecDirective(lex::Token);
+  void ExecDef(lex::TokenStream);
 
   ast::Node* ParseToken(lex::Token);
   ast::Node* ParseList(lex::Token);
@@ -40,4 +48,5 @@ private:
   ast::Node* ParseDef(lex::TokenStream);
   ast::Node* ParseSet(lex::TokenStream);
   ast::Node* ParseSum(lex::TokenStream);
+  */
 };
