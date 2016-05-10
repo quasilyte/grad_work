@@ -10,7 +10,6 @@ namespace sym {
 }
 
 struct sym::LocalVar {
-  const sym::Type* type;
-  const dt::StrView* bound_name;
+  sym::Type type;
+  const dt::StrView* name;
 };
-

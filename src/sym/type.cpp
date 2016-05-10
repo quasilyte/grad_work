@@ -1,6 +1,81 @@
 #include "sym/type.hpp"
 
 using namespace sym;
+
+Type Type::Void() { return Type{VOID}; }
+Type Type::Any() { return Type{ANY}; }
+Type Type::Num() { return Type{NUM}; }
+Type Type::Real() { return Type{REAL}; }
+Type Type::Int() { return Type{INT}; }
+Type Type::Str() { return Type{STR}; }
+
+Type::Type(): Type(VOID) {}
+Type::Type(enum Tag tag): tag{tag} {}
+
+enum Type::Tag Type::Tag() const noexcept {
+  return tag;
+}
+
+bool Type::IsVoid() const noexcept { return tag == VOID; }
+bool Type::IsAny() const noexcept { return tag == ANY; }
+bool Type::IsInt() const noexcept { return tag == INT; }
+bool Type::IsReal() const noexcept { return tag == REAL; }
+bool Type::IsNum() const noexcept { return tag == NUM; }
+bool Type::IsStr() const noexcept { return tag == STR; }
+
+bool Type::IsArith() const noexcept {
+  return tag > BEGIN_ARITH && tag < END_ARITH;
+}
+
+// Merge rules:
+// A + A -> A
+// int + real -> num
+// A + B -> either<A, B>
+// either<A, B> + C -> any
+// either<A, B> + A -> either<A, B>
+// A + any -> any
+// A + parent_of(A) -> parent_of(A)
+Type Type::ExtendedWith(Type other) {
+  // No need to extend
+  if (SameAs(other)) {
+    return other;
+  }
+
+  // Nothing can extend Any
+  if (IsAny() || other.IsAny()) {
+    return Type::Any();
+  }
+
+  // !Any & not same arith types => promote to Num
+  if (IsArith() || other.IsArith()) {
+    return Type::Num();
+  }
+
+  // #FIXME: handle classes
+  // #FIXME: handle either<A, B>
+
+  return Type::Any();
+}
+
+void Type::ExtendWith(Type other) {
+  tag = ExtendedWith(other).Tag();
+}
+
+bool Type::CompatibleWith(Type other) const noexcept {
+  if (SameAs(other)
+      || (IsArith() && other.IsArith())
+      || (IsAny() || other.IsAny())) {
+    return true;
+  }
+
+  return false;
+}
+
+bool Type::SameAs(Type other) const noexcept {
+  return tag == other.tag;
+}
+
+/*
 using namespace sym::flags;
 
 const Type Type::VOID{"void"};
@@ -63,3 +138,4 @@ bool Type::CompatibleWith(const Type* other) const noexcept {
 bool Type::SameAs(const Type* other) const noexcept {
   return this == other;
 }
+*/

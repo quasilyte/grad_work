@@ -32,5 +32,5 @@ const dt::StrView* Generator::Get(Id id) {
 }
 
 Generator::~Generator() {
-  std::free(pool);
+  // std::free(pool);
 }

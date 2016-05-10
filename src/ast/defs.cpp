@@ -1,9 +1,11 @@
 #include "ast/defs.hpp"
 
 #include "sym/sym.hpp"
+#include "ast/visitor.hpp"
 
 using namespace ast;
 
+/*
 DefVar::DefVar(dt::StrView name, Node* assignment):
 name{name}, assignment{assignment} {}
 
@@ -53,18 +55,34 @@ void DefFunc::GenerateCode(const sym::Module* module, const io::FileWriter& fw) 
   fw.Write(';');
   fw.Write('}');
 }
+*/
 
-Set::Set(lex::Token name, Node* assignment):
-name{name}, assignment{assignment} {}
+SetGlobal::SetGlobal(dt::StrView name, Node* value):
+name{name}, value{value} {}
 
-// `$name=$assignment;`
-void Set::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
-  if (name.IsWord()) {
-    fw.Write(name.AsStrView());
-    fw.Write('=');
-    assignment->GenerateCode(module, fw);
-    fw.Write(';');
-  } else {
-    throw "name for set! must be word";
-  }
+void SetGlobal::Accept(Visitor* v) { v->Visit(this); }
+
+const dt::StrView& SetGlobal::Name() const noexcept {
+  return name;
+}
+
+Node* SetGlobal::Value() const noexcept {
+  return value;
+}
+
+DefLocal::DefLocal(const dt::StrView* name, Node* value, sym::Type ty):
+name{name}, value{value}, type{ty} {}
+
+void DefLocal::Accept(Visitor* v) { v->Visit(this); }
+
+const dt::StrView* DefLocal::Name() const noexcept {
+  return name;
+}
+
+Node* DefLocal::Value() const noexcept {
+  return value;
+}
+
+sym::Type DefLocal::Type() const noexcept {
+  return type;
 }

@@ -25,8 +25,8 @@ public:
   Token(Tag, const char* val, u32 len);
 
   enum Tag Tag() const noexcept;
+  const char* Data() const noexcept;
   u32 Len() const noexcept;
-  const char* Val() const noexcept;
 
   dt::StrView AsStrView() const noexcept;
 

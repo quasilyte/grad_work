@@ -1,6 +1,7 @@
 #include "cc/classifier.hpp"
 
 #include "mn_hash.hpp"
+#include "dbg/lex.hpp"
 #include <cstring>
 
 using namespace cc;
@@ -27,7 +28,7 @@ TopLevel Classifier::Classify() {
 
     auto tok = toks.CurrentToken();
 
-    if ('#' == *tok.Val() && tok.IsList()) {
+    if ('#' == *tok.Data() && tok.IsList()) {
       ClassifyDirective(tok);
     } else {
       result.exprs.push_back(tok);
@@ -42,9 +43,9 @@ void Classifier::ClassifyDirective(const lex::Token& directive) {
 
   TokenStream list{directive};
 
-  auto name = list.NextToken();
+  auto name_tok = list.NextToken();
   // Skip '#' char during hashing (hence +1)
-  auto name_hash = encode9(name.Val() + 1, name.Len() - 1);
+  auto name_hash = encode9(name_tok.Data() + 1, name_tok.Len() - 1);
 
   switch (name_hash) {
   case encode9("def"): ClassifyDef(list);

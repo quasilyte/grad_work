@@ -14,12 +14,12 @@ enum Token::Tag Token::Tag() const noexcept {
   return tag;
 }
 
-u32 Token::Len() const noexcept {
-  return len;
+const char* Token::Data() const noexcept {
+  return val;
 }
 
-const char* Token::Val() const noexcept {
-  return val;
+u32 Token::Len() const noexcept {
+  return len;
 }
 
 dt::StrView Token::AsStrView() const noexcept {

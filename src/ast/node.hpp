@@ -5,14 +5,12 @@
 #include "sym/module.hpp"
 
 namespace ast {
-  struct Node;
+  class Node;
+  class Visitor;
 }
 
-struct ast::Node {
-  class TypeError{};
-
-  virtual void GenerateCode(const sym::Module*, const io::FileWriter&) = 0;
-
-  virtual const sym::Type* Type();
+class ast::Node {
+public:
+  virtual void Accept(Visitor*) = 0;
 };
 

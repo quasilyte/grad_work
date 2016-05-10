@@ -14,6 +14,8 @@
 #include "dt/dict.hpp"
 #include "ast/atoms.hpp"
 #include "ast/defs.hpp"
+#include "backend/cpp/cg/visitor.hpp"
+#include "backend/cpp/cg/translator.hpp"
 #include <fstream>
 #include <string>
 
@@ -31,28 +33,27 @@ std::string slurp(const char* path) {
 // 1) called with apply -- expand to real function
 // 2) stored in variable -- expand to real function
 // 3) called inline -- series or "+"
-#include <limits>
+
 // int main(int argc, char* argv[]) {
 int main() {
   using namespace lex;
   using namespace cc;
-  printf("%ld\n", sizeof(ast::Int2));
+  using namespace cpp_cg;
+
   // lookup по одному и тому же имени
   //
   try {
     const char* input = R"lisp(
-        (#def c 1)
+        (#; testing)
+        (#def s "3rs")
+        (#def x (+ 1 4.5 3))
+        (set! x 3)
+        (def local 32)
+        (set! local 23.4)
 
     )lisp";
 
-    auto parse_tree = Parser::Run(Classifier::Run(input));
-
-    /*
-    io::FileWriter fw{};
-    cc::Parser parser{input};
-    auto parse_tree = parser.Parse();
-    cc::CodeGen cg{parser.Module(), parse_tree};
-    cg.WriteTo(fw);*/
+    Translator::Run(Parser::Run(Classifier::Run(input)));
   } catch (const char* msg) {
     std::fprintf(stderr, "error: %s\n", msg);
   }

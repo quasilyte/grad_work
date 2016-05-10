@@ -7,7 +7,7 @@
 using namespace lex;
 
 void dump_one_token(Token tok, const char* type, int depth) {
-  std::printf("%*s%s `%.*s`\n", depth, "", type, tok.Len(), tok.Val());
+  std::printf("%*s%s `%.*s`\n", depth, "", type, tok.Len(), tok.Data());
 }
 
 void dbg::dump_token(Token tok, int depth) {

@@ -1,14 +1,10 @@
 #pragma once
 
-#include "ast/global_var.hpp"
+#include "sym/module.hpp"
 #include <vector>
 
 namespace ast {
-  struct Node;
-}
-
-namespace sym {
-  class Module;
+  class Node;
 }
 
 namespace cc {
@@ -16,8 +12,10 @@ namespace cc {
 }
 
 struct cc::TranslationUnit {
-  std::vector<ast::GlobalVar> globals;
+  std::vector<dt::StrView> globals;
   std::vector<ast::Node*> exprs;
+
+  sym::Module module;
 
   /*std::vector<ast::Node*> vars;
   std::vector<ast::Node*> tree;

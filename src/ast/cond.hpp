@@ -2,6 +2,7 @@
 
 #include "ast/node.hpp"
 
+/*
 namespace ast {
   struct If;
 }
@@ -14,3 +15,4 @@ struct ast::If: public Node {
   Node* on_true;
   Node* on_false;
 };
+*/

@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace ast {
-  struct Node;
+  class Node;
 }
 
 namespace cc {
@@ -21,6 +21,8 @@ public:
   static TranslationUnit Run(const TopLevel&);
 
 private:
+  const int LONGEST_ARG_LIST = 32;
+
   sym::Module module;
   const TopLevel& top;
   TranslationUnit result;
@@ -30,8 +32,14 @@ private:
   TranslationUnit Parse();
 
   void ParseGlobal(lex::TokenStream&);
+  void ParseExpr(lex::Token& tok);
 
   ast::Node* ParseToken(lex::Token);
+  ast::Node* ParseList(lex::Token);
+
+  ast::Node* ParseSum(lex::TokenStream&);
+  ast::Node* ParseSet(lex::TokenStream&);
+  ast::Node* ParseDefLocal(lex::TokenStream&);
 
   /*
 

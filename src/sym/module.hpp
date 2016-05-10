@@ -13,17 +13,21 @@ namespace sym {
 
 class sym::Module {
 public:
+  Module();
   Module(const char* name);
 
   const dt::StrView& Name() const noexcept;
 
-  // Functions:
-  void DefineFunc(dt::StrView name, int arity);
-  const sym::Func& Func(dt::StrView name) const;
+  void DefineGlobal(dt::StrView name, sym::Type);
+  void UpdateGlobal(dt::StrView name, sym::Type);
+  Type Global(dt::StrView name) const;
 
-  // Locals:
-  const dt::StrView* DefineLocal(dt::StrView name, const Type*);
-  const dt::StrView* RebindLocal(dt::StrView name, const Type*);
+  // Functions:
+  // void DefineFunc(dt::StrView name, int arity);
+  // const sym::Func& Func(dt::StrView name) const;
+
+  const dt::StrView* DefineLocal(dt::StrView name, Type);
+  const dt::StrView* RebindLocal(dt::StrView name, Type);
   sym::LocalVar Local(dt::StrView name) const;
 
   // #TODO: globals
@@ -31,8 +35,9 @@ public:
 
 private:
   dt::StrView name;
+  mutable dt::Dict<sym::Type> globals;
   mutable dt::Dict<sym::LocalVar> locals;
-  mutable dt::Dict<sym::Func> funcs;
+  // mutable dt::Dict<sym::Func> funcs;
   sym::Generator gensym;
   // + globals
 };

@@ -1,6 +1,44 @@
 #pragma once
 
 #include "ast/node.hpp"
+
+namespace ast {
+  class SetGlobal;
+  class DefLocal;
+}
+
+class ast::SetGlobal: public Node {
+public:
+  SetGlobal(dt::StrView name, Node* value);
+
+  const dt::StrView& Name() const noexcept;
+  Node* Value() const noexcept;
+
+  void Accept(Visitor*) override;
+
+private:
+  dt::StrView name;
+  Node* value;
+};
+
+class ast::DefLocal: public Node {
+public:
+  DefLocal(const dt::StrView* name, Node* value, sym::Type);
+
+  const dt::StrView* Name() const noexcept;
+  Node* Value() const noexcept;
+  sym::Type Type() const noexcept;
+
+  void Accept(Visitor*) override;
+
+private:
+  const dt::StrView* name;
+  Node* value;
+  sym::Type type;
+};
+
+/*
+#include "ast/node.hpp"
 #include "lex/token.hpp"
 #include <vector>
 
@@ -40,3 +78,4 @@ struct ast::Set: public Node {
   lex::Token name;
   Node* assignment;
 };
+*/

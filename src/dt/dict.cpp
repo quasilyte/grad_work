@@ -51,6 +51,6 @@ T& dt::Dict<T>::GetMut(StrView key) {
   return bag[key];
 }
 
-template class dt::Dict<sym::Type*>;
+template class dt::Dict<sym::Type>;
 template class dt::Dict<sym::Func>;
 template class dt::Dict<sym::LocalVar>;

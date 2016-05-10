@@ -10,8 +10,8 @@ input_end{input + input_len},
 tok{Token::SOURCE_END, input, 0} {}
 
 lex::TokenStream::TokenStream(Token tok):
-input_end{tok.Val() + tok.Len() - 1},
-tok{Token::SOURCE_END, tok.Val(), 0} {}
+input_end{tok.Data() + tok.Len() - 1},
+tok{Token::SOURCE_END, tok.Data(), 0} {}
 
 void TokenStream::Next() noexcept {
   tok.val += tok.len;

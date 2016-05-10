@@ -1,6 +1,26 @@
 #pragma once
 
 #include "ast/node.hpp"
+#include <vector>
+
+namespace ast {
+  class Sum;
+}
+
+class ast::Sum: public Node {
+public:
+  Sum(std::vector<Node*>&&);
+
+  const std::vector<Node*>& Operands() const noexcept;
+
+  void Accept(Visitor*);
+
+private:
+  std::vector<Node*> operands;
+};
+
+/*
+#include "ast/node.hpp"
 #include "lex/token.hpp"
 #include <vector>
 
@@ -24,3 +44,4 @@ struct ast::Sum: public Node {
   const sym::Type* Type() override;
   std::vector<Node*> operands;
 };
+*/

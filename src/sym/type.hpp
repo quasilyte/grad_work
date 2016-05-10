@@ -4,6 +4,55 @@
 
 namespace sym {
   class Type;
+}
+
+class sym::Type {
+public:
+  enum Tag: i32 {
+    VOID,
+    BEGIN_ARITH,
+    ANY,
+    NUM,
+    REAL,
+    INT,
+    END_ARITH,
+    STR
+  };
+
+  static Type Void();
+  static Type Any();
+  static Type Num();
+  static Type Real();
+  static Type Int();
+  static Type Str();
+
+  Type();
+  Type(enum Tag);
+
+  enum Tag Tag() const noexcept;
+
+  bool IsVoid() const noexcept;
+  bool IsAny() const noexcept;
+  bool IsInt() const noexcept;
+  bool IsReal() const noexcept;
+  bool IsNum() const noexcept;
+  bool IsStr() const noexcept;
+
+  bool IsArith() const noexcept;
+
+  Type ExtendedWith(Type);
+  void ExtendWith(Type);
+
+  bool CompatibleWith(Type) const noexcept;
+  bool SameAs(Type) const noexcept;
+
+private:
+  enum Tag tag;
+};
+
+/*
+namespace sym {
+  class Type;
 
   namespace flags {
     static const i32 ARITH = 1 << 0;
@@ -41,6 +90,7 @@ public:
 private:
   const char* name;
 };
+*/
 
 /*
 static_assert(

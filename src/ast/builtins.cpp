@@ -1,7 +1,10 @@
 #include "ast/builtins.hpp"
 
+#include "ast/visitor.hpp"
+
 using namespace ast;
 
+/*
 FuncCall::FuncCall(const sym::Type* type, lex::Token name, std::vector<Node *> &&args):
 type{type}, name{name}, args{args} {}
 
@@ -19,9 +22,17 @@ void FuncCall::GenerateCode(const sym::Module* module, const io::FileWriter& fw)
 const sym::Type* FuncCall::Type() {
   return type;
 }
+*/
 
 Sum::Sum(std::vector<Node*>&& operands): operands{operands} {}
 
+const std::vector<Node*>& Sum::Operands() const noexcept {
+  return operands;
+}
+
+void Sum::Accept(Visitor* v) { v->Visit(this); }
+
+/*
 void Sum::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   if (operands.size() == 1) {
     operands[0]->GenerateCode(module, fw);
@@ -55,3 +66,4 @@ const sym::Type* Sum::Type() {
 
   return int_typed ? &sym::Type::INT : &sym::Type::NUM;
 }
+*/
