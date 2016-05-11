@@ -1,0 +1,142 @@
+<style>
+  body {
+    width: 800px;
+  }
+  ul {
+    list-style-type: square;
+  }
+</style>
+
+<h1>Resembler IR design document</h1>
+<h2>Work in progress version</h2>
+
+<ul>
+  <li><a href="#type-sys">Type system</a></li>
+  <ul>
+    <li><a href="#type-sys-builtins">Builtin types</a></li>
+    <li><a href="#type-sys-widening">Static type widening</a></li>
+  </ul>
+  
+  <li><a href="#passive-opt"><b>Passive optimizations</b></a></li>
+  <ul>
+    <li><a href="#passive-opt-ntcr">Numeric type constriction rules</a></li>
+  </ul>
+  
+  <li><a href="#active-opt"></b>Active optimizations</a></li>
+</ul>
+
+<fieldset>
+  <legend>
+    <a name="type-sys"><h3>Type system</h3></a>
+  </legend>
+
+  <fieldset>
+    <legend>
+      <a name="type-sys-builtins"><h4>Builtin types</h4></a>
+    </legend>
+
+    IR main types are:
+    <ul>
+      <li>Any</li>
+      <li>Either[A, B]</li>
+      <li>Str</li>
+      <li>Num</li>
+      <li>Real</li>
+      <li>Int</li>
+    </ul>
+
+    #TODO: add arrays/lists/hash tables and other data structures<br>
+
+    <p>
+      <b>Any</b> - tagged union that can hold any value.
+      Everything is checked at a run time.
+      This is fallback type when compiler can not figure out something better.
+    </p>
+
+    <p>
+      <b>Either[A, B]</b> - more predictable version of <b>Any</b> which can
+      have exactly 2 different possible types. Type A is always incompatible
+      with B. 
+    </p>
+
+    <p>
+      <b>Str</b> - array of bytes with length.
+    </p>
+
+    <p>
+      <b>Num</b> - something like <b>Either[Int, Real]</b>.
+      Can properly hold both <b>Int</b> and <b>Real</b> values.
+    </p>
+
+    <p>
+      <b>Real</b> - single or double precision floating point number.
+    </p>
+    
+    <p>
+      <b>Int</b> - fixed size signed integer number. The concrete size of this one is
+      undefined, but most probably backend code generator will spit out 64 bits one.
+    </p>
+  </fieldset>
+
+  <fieldset>
+    <legend>
+      <a name="type-sys-widening"><h4>Static type widening</h4></a>
+    </legend>
+
+    To preserve dynamic properties, static type of the declaration must sometimes
+    be extended. This "extension" is referred here as "widening".
+
+    <p>
+      Example1
+      <br>
+      <code>
+        1) (def x 10)<br>
+        2) (set! x (if y "value" 5))<br>
+        3) (println x)<br>
+      </code>
+      <br>
+      At line 1 "x" is definitely should receive static type of int,
+      but then at line 2, depending on the run time value of "y",
+      it could also become a string. Line 3 will execute some operations
+      depending on the both run time type and static type. In this
+      example, valid type for "x" is <b>Either[Int, Str]</b>.
+      Print will execute with static type of <b>Either[Int, Str]</b>
+      and upon unboxing it will discover underlying type "y".
+      This substitution of "x" type from <b>Int</b> to <b>Either[Int, Str]</b>
+      is called <b>static type widening</b>.
+    </p>
+  </fieldset>
+</fieldset>
+
+<fieldset>
+  <legend>
+    <a name="passive-opt"><h3>Passive optimizations</h3></a>
+  </legend>
+
+  Passive optimizations as opposed to
+  <a href="#active-opt">active optimizations</a> are performed along
+  AST construction and are mandatory.
+
+  <fieldset>
+    <legend>
+      <a name="passive-opt-ntcr"><h4>Numeric type constriction rules</h4></a>
+    </legend>
+
+    Because expressions like
+    <code>(if p 1 1.0)</code>
+    yield an result of type <b>num</b> it is important to
+    reduce boxed numeric types spread.
+
+    <p>
+      <b></b>
+    </p>
+  </fieldset>
+</fieldset>
+
+<fieldset>
+  <legend>
+    <a name="active-opt"><h3>Active optimizations</h3></a>
+  </legend>
+
+  
+</fieldset>
