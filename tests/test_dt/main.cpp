@@ -8,5 +8,5 @@ int main() {
   RUN(list<dt::Alist>);
   RUN(list<dt::Hlist>);
 
-  FINISH(0);
+  FINISH();
 }
