@@ -22,7 +22,10 @@ public:
 
   void Drop(int n);
 
-  T Find(const StrView& key) const noexcept;
+  T Find(const StrView& key, int limit) const noexcept;
+  T Find(const StrView &key) const noexcept;
+
+  uint Size() const noexcept;
 
 private:
   std::vector<Node> nodes;

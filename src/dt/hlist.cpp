@@ -1,7 +1,7 @@
 #include "dt/hlist.hpp"
 
 #include "mn_hash.hpp"
-#include "dev_assert.hpp"
+#include "sym/type.hpp"
 
 using namespace dt;
 
@@ -20,10 +20,16 @@ void Hlist<T>::Drop(int n) {
 }
 
 template<class T>
-T Hlist<T>::Find(const StrView& key) const noexcept {
+uint Hlist<T>::Size() const noexcept {
+  return nodes.size();
+}
+
+template<class T>
+T Hlist<T>::Find(const StrView& key, int limit) const noexcept {
   auto hashed_key = mn_hash::encode9(key.Data(), key.Len());
 
-  for (auto it = nodes.rbegin(); it != nodes.rend(); ++it) {
+  auto end = nodes.rend() - (Size() - limit);
+  for (auto it = nodes.rbegin(); it != end; ++it) {
     if (it->hashed_key == hashed_key) {
       return it->val;
     }
@@ -32,4 +38,10 @@ T Hlist<T>::Find(const StrView& key) const noexcept {
   return T{};
 }
 
-template class dt::Hlist<i32>;
+template<class T>
+T Hlist<T>::Find(const StrView& key) const noexcept {
+  return Find(key, Size());
+}
+
+template class dt::Hlist<i32>; // For tests
+template class dt::Hlist<sym::Type*>;

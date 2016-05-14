@@ -1,5 +1,7 @@
 #include "dt/alist.hpp"
 
+#include "sym/type.hpp"
+
 using namespace dt;
 
 template<class T>
@@ -17,8 +19,14 @@ void Alist<T>::Drop(int n) {
 }
 
 template<class T>
-T Alist<T>::Find(const StrView& key) const noexcept {
-  for (auto it = nodes.rbegin(); it != nodes.rend(); ++it) {
+uint Alist<T>::Size() const noexcept {
+  return nodes.size();
+}
+
+template<class T>
+T Alist<T>::Find(const StrView& key, int limit) const noexcept {
+  auto end = nodes.rend() - (Size() - limit);
+  for (auto it = nodes.rbegin(); it != end; ++it) {
     if (it->key == key) {
       return it->val;
     }
@@ -27,4 +35,10 @@ T Alist<T>::Find(const StrView& key) const noexcept {
   return T{};
 }
 
-template class dt::Alist<i32>;
+template<class T>
+T Alist<T>::Find(const StrView& key) const noexcept {
+  return Find(key, Size());
+}
+
+template class dt::Alist<i32>; // For tests
+template class dt::Alist<sym::Type*>;
