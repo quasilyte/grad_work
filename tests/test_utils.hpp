@@ -22,7 +22,6 @@ inline int errors_count(int value = -1) {
     throw "not false: {" #COND __LINE__ "}"; \
   }
 
-
 #define RUN(NAME) \
   try { \
     test_##NAME(); \
