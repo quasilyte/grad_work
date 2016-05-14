@@ -2,7 +2,7 @@ project(dt_test)
 
 set(
   dt_test_src
-  alist.cpp
+  list.cpp
   main.cpp
 )
 

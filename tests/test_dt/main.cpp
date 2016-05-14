@@ -1,8 +1,11 @@
 #include "test_dt/suit.hpp"
 
-#include "dt/alist.hpp"
-#include "dt/hlist.hpp"
 #include "test_utils.hpp"
+
+namespace dt {
+  template<class T> class Alist;
+  template<class T> class Hlist;
+}
 
 int main() {
   RUN(list<dt::Alist>);
