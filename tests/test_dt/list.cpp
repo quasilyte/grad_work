@@ -10,22 +10,26 @@ template<template<class> class T> void test_list() {
   const i32 value1 = 10;
   const i32 value2 = 12;
   const i32 nil_value{};
-  StrView key{"foo"};
+  StrView key1{"foo"};
+  StrView key2{"var"};
   T<i32> list;
 
-  list.Insert("bar", 25);
-  list.Insert(key, value1);
+  list.Insert(key2, 25);
+  list.Insert(key1, value1);
   TRUE(list.Size() == 2);
-  TRUE(list.Find(key) == value1);
+  TRUE(list.Find(key1) == value1);
 
-  list.Insert(key, value2);
-  TRUE(list.Find(key) == value2);
+  list.Insert(key1, value2);
+  TRUE(list.Find(key1) == value2);
+  TRUE(list.Find(key2, 3) == 25);
+  FALSE(list.Find(key2, 1) == 25);
+  FALSE(list.Find(key2, 2) == 25);
 
   list.Drop(1);
-  TRUE(list.Find(key) == value1);
+  TRUE(list.Find(key1) == value1);
 
   list.Drop(1);
-  TRUE(list.Find(key) == nil_value);
+  TRUE(list.Find(key1) == nil_value);
   TRUE(list.Size() == 1);
 }
 
