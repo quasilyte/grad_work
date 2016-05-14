@@ -9,6 +9,7 @@ namespace ast {
   class Sum;
   class SetGlobal;
   class DefLocal;
+  struct If;
 }
 
 class ast::Visitor {
@@ -20,6 +21,7 @@ public:
   virtual void Visit(Sum*) = 0;
   virtual void Visit(SetGlobal*) = 0;
   virtual void Visit(DefLocal*) = 0;
+  virtual void Visit(If*) = 0;
 };
 
 // 6

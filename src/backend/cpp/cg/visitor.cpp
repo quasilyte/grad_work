@@ -4,6 +4,7 @@
 #include "ast/defs.hpp"
 #include "ast/builtins.hpp"
 #include "ast/atoms.hpp"
+#include "ast/cond.hpp"
 #include "backend/cpp/cg/type_map.hpp"
 
 #include <cstdio>
@@ -57,4 +58,14 @@ void Visitor::Visit(ast::DefLocal* node) {
   node->Value()->Accept(this);
   fw.Write('}');
   fw.Write(';');
+}
+
+void Visitor::Visit(ast::If* node) {
+  fw.Write("(");
+  node->cond->Accept(this);
+  fw.Write(")?(");
+  node->on_true->Accept(this);
+  fw.Write("):(");
+  node->on_false->Accept(this);
+  fw.Write(")");
 }

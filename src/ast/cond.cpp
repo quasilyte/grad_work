@@ -1,10 +1,15 @@
 #include "ast/cond.hpp"
 
+#include "ast/visitor.hpp"
+
 using namespace ast;
 
 If::If(Node *cond, Node *on_true, Node *on_false):
 cond{cond}, on_true{on_true}, on_false{on_false} {}
 
+void If::Accept(Visitor* v) { v->Visit(this); }
+
+/*
 // `($cond)?($on_true):($on_false)`
 void If::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   fw.Write("(");
@@ -18,4 +23,4 @@ void If::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
 
 const sym::Type* If::Type() {
   return on_false->Type()->Merge(on_true->Type());
-}
+}*/

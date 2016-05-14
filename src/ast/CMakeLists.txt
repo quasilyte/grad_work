@@ -3,7 +3,7 @@ project(ast)
 set(
   ast_src
   node.cpp
-  # cond.cpp
+  cond.cpp
   atoms.cpp
   defs.cpp
   builtins.cpp

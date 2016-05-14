@@ -40,6 +40,7 @@ private:
   ast::Node* ParseSum(lex::TokenStream&);
   ast::Node* ParseSet(lex::TokenStream&);
   ast::Node* ParseDefLocal(lex::TokenStream&);
+  ast::Node* ParseIf(lex::TokenStream&);
 
   /*
 

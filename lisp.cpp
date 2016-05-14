@@ -16,8 +16,10 @@
 #include "ast/defs.hpp"
 #include "backend/cpp/cg/visitor.hpp"
 #include "backend/cpp/cg/translator.hpp"
+#include "ast/builtins.hpp"
 #include <fstream>
 #include <string>
+#include "dt/alist.hpp"
 
 std::string slurp(const char* path) {
   std::ifstream input{path};
@@ -40,17 +42,11 @@ int main() {
   using namespace cc;
   using namespace cpp_cg;
 
-  // lookup по одному и тому же имени
-  //
   try {
     const char* input = R"lisp(
         (#; testing)
-        (#def s "3rs")
-        (#def x (+ 1 4.5 3))
-        (set! x 3)
-        (def local 32)
-        (set! local 23.4)
-
+        (#def x (if 1 1 1.0))
+        (#def y x)
     )lisp";
 
     Translator::Run(Parser::Run(Classifier::Run(input)));

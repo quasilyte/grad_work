@@ -19,7 +19,7 @@ inline int errors_count(int value = -1) {
 
 #define FALSE(COND) \
   if (COND) { \
-    throw "not false: {" #COND __LINE__ "}"; \
+    throw "not false: {" #COND "}"; \
   }
 
 #define RUN(NAME) \

@@ -21,6 +21,11 @@ void Int::Accept(Visitor* v) { v->Visit(this); }
 void Real::Accept(Visitor* v) { v->Visit(this); }
 void Str::Accept(Visitor* v) { v->Visit(this); }
 
+Var::Var(const dt::StrView* name, const Type* type):
+name{name}, type{type} {}
+
+void Var::Accept(Visitor* v) { v->Visit(this); }
+
 /*
 Int::Int(lex::Token tok): tok{tok} {}
 

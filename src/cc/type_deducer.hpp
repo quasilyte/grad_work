@@ -18,6 +18,7 @@ public:
   void Visit(ast::Sum*) override;
   void Visit(ast::SetGlobal*) override;
   void Visit(ast::DefLocal*) override;
+  void Visit(ast::If*) override;
 
 private:
   sym::Type result;

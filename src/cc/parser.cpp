@@ -103,9 +103,13 @@ Node* Parser::ParseToken(Token tok) {
     return new Real{tok.Data(), tok.Len()};
   case Token::STR:
     return new Str{tok.Data(), tok.Len()};
+  // case Token::WORD:
+    // auto& id_info = module.Symbol(tok.AsStrView());
+    // return new Var{tok.AsStrView(), id_info};
 
   case Token::LIST:
     return ParseList(tok);
+
 
   /*
   case Token::WORD: {
@@ -133,6 +137,7 @@ Node* Parser::ParseList(Token tok) {
     case encode9("+"): return ParseSum(list);
     case encode9("set!"): return ParseSet(list);
     case encode9("def"): return ParseDefLocal(list);
+    case encode9("if"): return ParseIf(list);
 
     default:
       throw "cant parse funcall";
@@ -182,6 +187,14 @@ Node* Parser::ParseDefLocal(TokenStream& toks) {
   auto ty = TypeDeducer::Run(expr);
   auto id = module.DefineLocal(name.AsStrView(), ty);
   return new DefLocal{id, expr, ty};
+}
+
+Node* Parser::ParseIf(TokenStream& toks) {
+  auto cond = ParseToken(toks.NextToken());
+  auto on_true = ParseToken(toks.NextToken());
+  auto on_false = ParseToken(toks.NextToken());
+
+  return new If{cond, on_true, on_false};
 }
 
 /*

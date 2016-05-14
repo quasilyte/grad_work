@@ -2,6 +2,7 @@
 
 #include "ast/node.hpp"
 #include "ast/builtins.hpp"
+#include "ast/cond.hpp"
 
 using namespace cc;
 using namespace sym;
@@ -44,4 +45,13 @@ void TypeDeducer::Visit(ast::SetGlobal*) {
 
 void TypeDeducer::Visit(ast::DefLocal*) {
   throw "def is not an expression";
+}
+
+void TypeDeducer::Visit(ast::If* node) {
+  node->on_true->Accept(this);
+  auto ty1 = result;
+  node->on_false->Accept(this);
+  auto ty2 = result;
+
+  result = ty1.ExtendedWith(ty2);
 }

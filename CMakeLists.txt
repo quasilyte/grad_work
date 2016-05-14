@@ -5,8 +5,6 @@ project(Resembler)
 cmake_minimum_required(VERSION 2.8)
 
 ## Project-wide settings
-
-enable_testing()
 # -Wsign-conversion can be useful, but it is so annoying!
 # -Wshadow prohobits writing sane ctor signatures
 set(
@@ -44,10 +42,10 @@ set(
   CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${project_flags} ${clang_warn_flags}"
 )
 
-include_directories(src)
+include_directories("src" "tests")
 
 ## Hack to make QtCreator show headers inside project window
-file(GLOB_RECURSE header_files "src/*.hpp")
+file(GLOB_RECURSE header_files "src/*.hpp" "tests/*.hpp")
 add_custom_target(headers SOURCES ${header_files})
 
 add_subdirectory(src/lex)
@@ -59,6 +57,11 @@ add_subdirectory(src/sym)
 add_subdirectory(src/dt)
 add_subdirectory(src/fmt)
 add_subdirectory(src/backend/cpp/cg)
+
+## Tests
+enable_testing()
+add_subdirectory(tests/test_dt)
+add_subdirectory(tests/test_sym)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
