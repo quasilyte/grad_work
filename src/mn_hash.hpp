@@ -1,6 +1,7 @@
 #pragma once
 
 #include "typedefs.hpp"
+#include "dev_assert.hpp"
 
 namespace mn_hash {
   const int MAX_HASHABLE_LEN = 9;
@@ -27,6 +28,8 @@ constexpr u64 mn_hash::encode9(const char *cstr, u64 hash) {
 }
 
 inline u64 mn_hash::encode9(const char* bytes, u32 count) {
+  dev_assert(count < 10);
+
   u64 hash = bytes[0];
 
   for (uint i = 1; i != count; ++i) {
