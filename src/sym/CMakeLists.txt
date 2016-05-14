@@ -7,6 +7,7 @@ set(
   func.cpp
   module.cpp
   generator.cpp
+  scope.cpp
 )
 
 add_library(sym STATIC ${sym_src})

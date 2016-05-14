@@ -10,6 +10,10 @@ const dt::StrView& Module::Name() const noexcept {
   return name;
 }
 
+const Type* Module::Symbol(dt::StrView name) {
+  //  return
+}
+
 void Module::DefineGlobal(dt::StrView name, Type ty) {
   if (globals.Get(name).IsVoid()) {
     globals.Put(name, ty);

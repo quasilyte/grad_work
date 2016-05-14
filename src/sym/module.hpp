@@ -18,6 +18,8 @@ public:
 
   const dt::StrView& Name() const noexcept;
 
+  const Type* Symbol(dt::StrView name);
+
   void DefineGlobal(dt::StrView name, sym::Type);
   void UpdateGlobal(dt::StrView name, sym::Type);
   Type Global(dt::StrView name) const;
@@ -35,9 +37,23 @@ public:
 
 private:
   dt::StrView name;
+  // mutable dt::Dict<sym
   mutable dt::Dict<sym::Type> globals;
   mutable dt::Dict<sym::LocalVar> locals;
   // mutable dt::Dict<sym::Func> funcs;
   sym::Generator gensym;
-  // + globals
 };
+
+// symbol lookup rules:
+// 1) search inside all nested scopes
+// 2) search inside global funcs
+// 3) search inside global vars
+
+/*
+{
+  int x;
+  {
+    float x;
+  }
+}
+*/
