@@ -51,6 +51,12 @@ T& dt::Dict<T>::GetMut(StrView key) {
   return bag[key];
 }
 
-template class dt::Dict<sym::Type>;
-template class dt::Dict<sym::Func>;
+template<class T>
+i32 dt::Dict<T>::Size() const noexcept {
+  return bag.size();
+}
+
+template class dt::Dict<sym::Struct*>;
+template class dt::Dict<sym::Type*>;
+template class dt::Dict<sym::Func*>;
 template class dt::Dict<sym::LocalVar>;

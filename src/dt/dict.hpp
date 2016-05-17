@@ -23,6 +23,8 @@ public:
   T& GetMut(const char* key, u32 key_len);
   T& GetMut(StrView key);
 
+  i32 Size() const noexcept;
+
 private:
   std::unordered_map<StrView, T> bag;
 };
