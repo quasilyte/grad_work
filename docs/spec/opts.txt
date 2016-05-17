@@ -1,0 +1,11 @@
+(def points (list (list (point 0 10)
+                        (point 2 40))
+                  (list (point 1 20)
+                        (point 3 95))))
+(map (curry map (λ (pt) (get pt (' x)))) points)
+;; expected result: ((0 10) (1 3))
+;; facts
+;; 1) type of "points" is "(list-of point)"
+;; 2) lambda argument "pt" of type "point"
+;; 3) get key should be resolved at compile time
+;; 4) map invocation can be specialized to concrete types
