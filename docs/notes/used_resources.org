@@ -20,7 +20,7 @@
 | [[https://class.coursera.org/compilers-004/lecture][Coursera "compilers"]]              |
 |                                   |
 
-#+CAPTION: misc/temp
+#+CAPTION: misc/tempx
 | [[https://yoo2080.wordpress.com/2013/08/16/differences-between-common-lisp-and-emacs-lisp/][Differences between elisp & CL]] |
 
 #+CAPTION: wikipedia
@@ -30,6 +30,8 @@
 | [[https://en.wikipedia.org/wiki/Off-side_rule][Off-side rule]]           |
 | [[https://en.wikipedia.org/wiki/Van_Wijngaarden_grammar][Van_Wijngaarden_grammar]] |
 | [[https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form][Extended BNF]]            |
+| [[https://en.wikipedia.org/wiki/Self-organizing_list][Self-organizing list]]    |
+|                         |
 
 #+CAPTION: Rust docs and books
 | [[https://doc.rust-lang.org/book/][Rust book]]                     |
