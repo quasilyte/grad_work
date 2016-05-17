@@ -1,6 +1,7 @@
 #pragma once
 
 #include "typedefs.hpp"
+#include <limits>
 
 namespace sym {
   class Type;
@@ -8,16 +9,18 @@ namespace sym {
 
 class sym::Type {
 public:
-  enum Tag: i32 {
-    VOID,
-    BEGIN_ARITH,
-    ANY,
-    NUM,
-    REAL,
-    INT,
-    END_ARITH,
-    STR
-  };
+  typedef i32 Id;
+
+  static const Id VOID = std::numeric_limits<Id>::max();
+  static const Id END_ARITH = std::numeric_limits<Id>::max() - 1;
+  static const Id ANY = std::numeric_limits<Id>::max() - 2;
+  static const Id NUM = std::numeric_limits<Id>::max() - 3;
+  static const Id REAL = std::numeric_limits<Id>::max() - 4;
+  static const Id INT = std::numeric_limits<Id>::max() - 5;
+  static const Id BEGIN_ARITH = std::numeric_limits<Id>::max() - 6;
+  static const Id STR = std::numeric_limits<Id>::max() - 7;
+  static const Id SYM = std::numeric_limits<Id>::max() - 8;
+  static const Id END_STRUCT = std::numeric_limits<Id>::max() - 9;
 
   static Type Void();
   static Type Any();
@@ -25,11 +28,13 @@ public:
   static Type Real();
   static Type Int();
   static Type Str();
+  static Type Sym();
 
   Type();
-  Type(enum Tag);
+  Type(const Type&);
+  Type(Id Tag);
 
-  enum Tag Tag() const noexcept;
+  Id Tag() const noexcept;
 
   bool IsVoid() const noexcept;
   bool IsAny() const noexcept;
@@ -37,8 +42,10 @@ public:
   bool IsReal() const noexcept;
   bool IsNum() const noexcept;
   bool IsStr() const noexcept;
+  bool IsSym() const noexcept;
 
   bool IsArith() const noexcept;
+  bool IsStruct() const noexcept;
 
   Type ExtendedWith(Type);
   void ExtendWith(Type);
@@ -47,7 +54,7 @@ public:
   bool SameAs(Type) const noexcept;
 
 private:
-  enum Tag tag;
+  Id tag;
 };
 
 /*

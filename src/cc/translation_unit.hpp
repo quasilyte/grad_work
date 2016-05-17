@@ -1,10 +1,13 @@
 #pragma once
 
 #include "sym/module.hpp"
+#include "sym/struct.hpp"
 #include <vector>
 
 namespace ast {
-  class Node;
+  struct Node;
+  struct DefVar;
+  struct DefFunc;
 }
 
 namespace cc {
@@ -12,7 +15,9 @@ namespace cc {
 }
 
 struct cc::TranslationUnit {
-  std::vector<dt::StrView> globals;
+  std::vector<dt::StrView> structs;
+  std::vector<ast::DefVar*> globals;
+  std::vector<dt::StrView> funcs;
   std::vector<ast::Node*> exprs;
 
   sym::Module module;

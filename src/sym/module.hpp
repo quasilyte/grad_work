@@ -5,7 +5,9 @@
 #include "sym/type.hpp"
 #include "sym/func.hpp"
 #include "sym/local_var.hpp"
-#include "sym/generator.hpp"
+#include "sym/struct.hpp"
+// #include "sym/generator.hpp"
+#include "sym/scope.hpp"
 
 namespace sym {
   class Module;
@@ -18,19 +20,32 @@ public:
 
   const dt::StrView& Name() const noexcept;
 
-  const Type* Symbol(dt::StrView name);
+  sym::Type DefineStruct(dt::StrView name, sym::Struct*);
+  sym::Struct* Struct(dt::StrView name) const;
+  sym::Struct* Struct(sym::Type::Id) const;
 
-  void DefineGlobal(dt::StrView name, sym::Type);
-  void UpdateGlobal(dt::StrView name, sym::Type);
-  Type Global(dt::StrView name) const;
+  void DefineGlobalSymbol(dt::StrView name, sym::Type*);
+  void UpdateGlobalSymbol(dt::StrView name, sym::Type);
+  Type* GlobalSymbol(dt::StrView name) const;
 
   // Functions:
-  // void DefineFunc(dt::StrView name, int arity);
+  void CreateScopeLevel();
+  void DropScopeLevel();
+  void DefineFunc(dt::StrView name, sym::Func*);
+  sym::Func* Func(dt::StrView name) const;
   // const sym::Func& Func(dt::StrView name) const;
 
+  Type* DefineLocal(dt::StrView name, Type);
+  Type* LocalSymbol(dt::StrView name);
+
+  Type* Symbol(dt::StrView name);
+  // void UpdateSymbol(dt::StrView name, sym::Type);
+
+  /*
   const dt::StrView* DefineLocal(dt::StrView name, Type);
   const dt::StrView* RebindLocal(dt::StrView name, Type);
   sym::LocalVar Local(dt::StrView name) const;
+  */
 
   // #TODO: globals
   // void MergeSymbol(dt::StrView name, const Type*);
@@ -38,10 +53,16 @@ public:
 private:
   dt::StrView name;
   // mutable dt::Dict<sym
-  mutable dt::Dict<sym::Type> globals;
-  mutable dt::Dict<sym::LocalVar> locals;
-  // mutable dt::Dict<sym::Func> funcs;
-  sym::Generator gensym;
+
+  std::vector<sym::Struct*> type_id_map;
+  mutable dt::Dict<sym::Struct*> type_name_map;
+  mutable dt::Dict<sym::Type*> globals;
+  mutable dt::Dict<sym::Func*> funcs;
+  Scope scope;
+
+  // mutable dt::Dict<sym::LocalVar> locals;
+
+  // sym::Generator gensym;
 };
 
 // symbol lookup rules:

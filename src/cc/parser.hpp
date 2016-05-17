@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace ast {
-  class Node;
+  struct Node;
 }
 
 namespace cc {
@@ -17,7 +17,6 @@ namespace cc {
 
 class cc::Parser {
 public:
-
   static TranslationUnit Run(const TopLevel&);
 
 private:
@@ -31,16 +30,23 @@ private:
 
   TranslationUnit Parse();
 
+  void ParseDefStruct(lex::TokenStream&);
   void ParseGlobal(lex::TokenStream&);
+  void ParseSignature(lex::TokenStream&);
   void ParseExpr(lex::Token& tok);
 
   ast::Node* ParseToken(lex::Token);
   ast::Node* ParseList(lex::Token);
 
+  ast::Node* ParseFuncCall(lex::Token& name, lex::TokenStream& args);
   ast::Node* ParseSum(lex::TokenStream&);
   ast::Node* ParseSet(lex::TokenStream&);
-  ast::Node* ParseDefLocal(lex::TokenStream&);
+  ast::Node* ParseDef(lex::TokenStream&);
   ast::Node* ParseIf(lex::TokenStream&);
+  ast::Node* ParseFor(lex::TokenStream&);
+  ast::Node* ParseStruct(lex::TokenStream&);
+  ast::Node* ParseGet(lex::TokenStream&);
+  ast::Node* ParseQuote(lex::TokenStream&);
 
   /*
 

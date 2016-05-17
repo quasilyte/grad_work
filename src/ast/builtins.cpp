@@ -26,11 +26,12 @@ const sym::Type* FuncCall::Type() {
 
 Sum::Sum(std::vector<Node*>&& operands): operands{operands} {}
 
-const std::vector<Node*>& Sum::Operands() const noexcept {
-  return operands;
-}
-
 void Sum::Accept(Visitor* v) { v->Visit(this); }
+
+FuncCall::FuncCall(dt::StrView name, std::vector<Node*>&& args, sym::Type ty):
+name{name}, args{args}, ty{ty} {}
+
+void FuncCall::Accept(Visitor* v) { v->Visit(this); }
 
 /*
 void Sum::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {

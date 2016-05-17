@@ -14,7 +14,7 @@ public:
   void CreateLevel();
   void DropLevel();
 
-  void DefineSymbol(const dt::StrView& key, Type* val);
+  Type* DefineSymbol(const dt::StrView& key, Type val);
 
   Type* Symbol(const dt::StrView& key);
   Type* LocalSymbol(const dt::StrView& key);

@@ -7,5 +7,5 @@ namespace dt {
 }
 
 namespace cpp_cg {
-  dt::StrView& type_name(sym::Type);
+  dt::StrView& type_name(sym::Type*);
 }

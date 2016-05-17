@@ -10,6 +10,7 @@
 #include "dbg/dt.hpp"
 #include "dbg/sym.hpp"
 #include "cc/type_deducer.hpp"
+#include "echo.hpp"
 #include <cstring>
 #include <vector>
 
@@ -19,10 +20,7 @@ using namespace cc;
 using namespace lex;
 using namespace ast;
 using namespace dt;
-
-template<class T> T from_token(const lex::Token& tok) {
-  return T{tok.Data(), tok.Len()};
-}
+using namespace sym;
 
 std::vector<Token> eval_tokens(TokenStream& toks, uint min_count, uint max_count) {
   std::vector<Token> items;
@@ -46,6 +44,17 @@ std::vector<Token> eval_tokens(TokenStream toks, int count) {
   return eval_tokens(toks, count, count);
 }
 
+sym::Type type_by_name(dt::StrView name) {
+  using namespace mn_hash;
+
+  switch (encode9(name.Data(), name.Len())) {
+  case encode9("int"): return Type::Int();
+  case encode9("real"): return Type::Real();
+  case encode9("num"): return Type::Num();
+  default: throw "unexpected type";
+  }
+}
+
 TranslationUnit Parser::Run(const TopLevel& top) {
   Parser self{top};
   auto tu = self.Parse();
@@ -57,34 +66,68 @@ TranslationUnit Parser::Run(const TopLevel& top) {
 Parser::Parser(const TopLevel& top): top{top} {}
 
 TranslationUnit Parser::Parse() {
-  // (#def |x 1)
+  for (lex::TokenStream s : top.structs) {
+    ParseDefStruct(s);
+  }
+
   for (lex::TokenStream global : top.globals) {
     ParseGlobal(global);
+  }
+
+  for (lex::TokenStream func : top.funcs) {
+    ParseSignature(func);
   }
 
   for (lex::Token expr : top.exprs) {
     ParseExpr(expr);
   }
 
+  /*
+  for (lex::TokenStream func : top.funcs) {
+    dbg::dump_token(func.CurrentToken());
+  }*/
+
+  /*
+  sym::Func* fn = module.Func("sum");
+  printf("arity: %d\n", fn->Arity());
+  for (sym::Param param : fn->Params()) {
+    dbg::dump(param.type);
+  }
+  dbg::dump(fn->ret_type);*/
+
   return result;
 }
 
-lex::Token next(TokenStream& ts, enum Token::Tag tag, const char* msg) {
-  auto token = ts.NextToken();
-  if (token.Is(tag)) {
-    return token;
-  } else {
-    throw msg;
+void Parser::ParseDefStruct(TokenStream& toks) {
+  dt::StrView name = toks.NextToken();
+  std::vector<sym::Param> attrs;
+
+  while (!toks.NextToken().IsEof()) {
+    auto tok = toks.CurrentToken();
+
+    if (tok.IsList()) {
+      lex::TokenStream typed_list{tok};
+      auto type = type_by_name(typed_list.NextToken());
+
+      while (!typed_list.NextToken().IsEof()) {
+        attrs.push_back(Param{typed_list.CurrentToken(), type});
+      }
+    } else {
+      attrs.push_back(Param{tok, Type::Any()});
+    }
   }
+
+  module.DefineStruct(name, new Struct{name, attrs});
+  result.structs.push_back(name);
 }
 
 void Parser::ParseGlobal(TokenStream& args) {
-  auto name_tok = args.NextToken();
+  dt::StrView name = args.NextToken();
   auto expr = ParseToken(args.NextToken());
+  auto ty = new sym::Type{TypeDeducer::Run(expr)};
 
-  result.globals.push_back(name_tok.AsStrView());
-  result.exprs.push_back(expr);
-  module.DefineGlobal(name_tok.AsStrView(), TypeDeducer::Run(expr));
+  result.globals.push_back(new DefVar{name, expr, ty});
+  module.DefineGlobalSymbol(name, ty);
 }
 
 void Parser::ParseExpr(Token& tok) {
@@ -95,29 +138,49 @@ void Parser::ParseExpr(Token& tok) {
   }
 }
 
+void Parser::ParseSignature(TokenStream& toks) {
+  lex::TokenStream signature{toks.NextToken()};
+  std::vector<sym::Param> params;
+  auto name = signature.NextToken();
+
+  module.CreateScopeLevel();
+  while (!signature.NextToken().IsEof()) {
+    auto tok = signature.CurrentToken();
+
+    if (tok.IsList()) {
+      lex::TokenStream typed_list{tok};
+      auto type = type_by_name(typed_list.NextToken());
+
+      while (!typed_list.NextToken().IsEof()) {
+        dt::StrView param_name = typed_list.CurrentToken();
+        params.push_back(Param{param_name, type});
+        module.DefineLocal(param_name, type);
+      }
+    } else {
+      params.push_back(Param{tok, sym::Type::Any()});
+      module.DefineLocal(tok, sym::Type::Any());
+    }
+  }
+  auto expr = ParseToken(toks.NextToken());
+  module.DropScopeLevel();
+
+  auto func = new sym::Func{std::move(params), expr, TypeDeducer::Run(expr)};
+  module.DefineFunc(name, func);
+  result.funcs.push_back(name);
+}
+
 Node* Parser::ParseToken(Token tok) {
   switch (tok.Tag()) {
   case Token::INT:
-    return new Int{tok.Data(), tok.Len()};
+    return new Int{tok};
   case Token::REAL:
-    return new Real{tok.Data(), tok.Len()};
+    return new Real{tok};
   case Token::STR:
-    return new Str{tok.Data(), tok.Len()};
-  // case Token::WORD:
-    // auto& id_info = module.Symbol(tok.AsStrView());
-    // return new Var{tok.AsStrView(), id_info};
-
+    return new Str{tok};
+  case Token::WORD:
+    return new Var{tok, module.Symbol(tok)};
   case Token::LIST:
     return ParseList(tok);
-
-
-  /*
-  case Token::WORD: {
-    auto local = module.Local(tok.AsStrView());
-    return new Var{local.bound_name, local.type};
-  }
-
-    */
 
   default:
     throw "not implemented";
@@ -136,15 +199,43 @@ Node* Parser::ParseList(Token tok) {
     switch (name_hash) {
     case encode9("+"): return ParseSum(list);
     case encode9("set!"): return ParseSet(list);
-    case encode9("def"): return ParseDefLocal(list);
+    case encode9("def"): return ParseDef(list);
     case encode9("if"): return ParseIf(list);
+    case encode9("for"): return ParseFor(list);
+    case encode9("struct"): return ParseStruct(list);
+    case encode9("'"): return ParseQuote(list);
 
     default:
-      throw "cant parse funcall";
+      return ParseFuncCall(name_tok, list);
     }
 
   } else {
     throw "car(list) != symbol";
+  }
+}
+
+ast::Node* Parser::ParseFor(lex::TokenStream& toks) {
+  auto inductor = toks.NextToken();
+  auto iterator = ParseToken(toks.NextToken());
+  auto loop_expr = ParseToken(toks.NextToken());
+
+
+}
+
+ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
+  sym::Func* func = module.Func(name);
+  if (func) {
+    std::vector<Node*> nodes;
+    for (int i = 0; i < func->Arity(); ++i) {
+      nodes.push_back(ParseToken(args.NextToken()));
+    }
+    if (!args.NextToken().IsEof()) {
+      throw "too many args";
+    }
+
+    return new FuncCall{name, std::move(nodes), func->ret_type};
+  } else {
+    throw "called undefined function";
   }
 }
 
@@ -164,29 +255,22 @@ Node* Parser::ParseSet(TokenStream& toks) {
   auto name = toks.NextToken();
   auto expr = ParseToken(toks.NextToken());
 
-  auto local = module.Local(name.AsStrView());
-  if (local.type.IsVoid()) {
-    module.UpdateGlobal(name.AsStrView(), TypeDeducer::Run(expr));
-    return new SetGlobal{name.AsStrView(), expr};
-  } else {
-    auto ty = TypeDeducer::Run(expr);
-    auto id = module.RebindLocal(name.AsStrView(), ty);
-    return new DefLocal{id, expr, ty};
-  }
+  auto symbol = module.LocalSymbol(name);
 
-  // module.MergeSymbol(args[0].AsStrView(), expr->Type());
-  //auto name = module.RebindLocal(args[0].AsStrView(), expr->Type());
-  // return new DefLocal{name, expr};
-  // return new Set{args[0], expr};
+  if (symbol) {
+    symbol->ExtendWith(TypeDeducer::Run(expr));
+    return new SetVar{name, expr};
+  } else {
+    module.UpdateGlobalSymbol(name, TypeDeducer::Run(expr));
+    return new SetVar{name, expr};
+  }
 }
 
-Node* Parser::ParseDefLocal(TokenStream& toks) {
+Node* Parser::ParseDef(TokenStream& toks) {
   auto name = toks.NextToken();
   auto expr = ParseToken(toks.NextToken());
 
-  auto ty = TypeDeducer::Run(expr);
-  auto id = module.DefineLocal(name.AsStrView(), ty);
-  return new DefLocal{id, expr, ty};
+  return new DefVar{name, expr, module.DefineLocal(name, TypeDeducer::Run(expr))};
 }
 
 Node* Parser::ParseIf(TokenStream& toks) {
@@ -197,134 +281,43 @@ Node* Parser::ParseIf(TokenStream& toks) {
   return new If{cond, on_true, on_false};
 }
 
-/*
+// (struct range 0 1 2)
+// struct range _ = {0, 1, 2};
+Node* Parser::ParseStruct(TokenStream& toks) {
+  // 1) check if struct exist
+  // 2) validate init values
+  auto s = module.Struct(toks.NextToken());
 
-  LEGACY
-
-
-
-// (def (f a) x)
-Node* Parser::ParseDef(TokenStream toks) {
-  auto args = eval_tokens(toks, 2);
-  auto expr = ParseToken(args[1]);
-
-  if (args[0].IsList()) {
-    auto signature = eval_tokens(args[0], 1, 10);
-    auto name = signature[0];
-    std::vector<Token> params{signature.begin() + 1, signature.end()};
-    module.DefineFunc(name.AsStrView(), params.size());
-    auto result = new DefFunc{name, std::move(params), expr};
-    return result;
-  } else if (args[0].IsWord()) {
-    auto name = module.DefineLocal(args[0].AsStrView(), expr->Type());
-    // return new DefVar{args[0].AsStrView(), expr};
-    return new DefLocal{name, expr};
-  } else {
-    throw "unknown def form";
-  }
-}
-#include <cstdio>
-Node* Parser::ParseSet(TokenStream toks) {
-  auto args = eval_tokens(toks, 2);
-  auto expr = ParseToken(args[1]);
-
-
-
-  // module.MergeSymbol(args[0].AsStrView(), expr->Type());
-  auto name = module.RebindLocal(args[0].AsStrView(), expr->Type());
-  return new DefLocal{name, expr};
-  // return new Set{args[0], expr};
-}
-
-Node* Parser::ParseFuncCall(lex::Token name, TokenStream args) {
-  auto parsed_args = eval_tokens(args, 1, 10);
-  // auto& symbol = module.Func(args[0].AsStrView());
-
-  std::vector<Node*> xs;
-  xs.reserve(parsed_args.size());
-  for (auto arg : parsed_args) {
-    xs.push_back(ParseToken(arg));
+  std::vector<Node*> initializers;
+  while (!toks.NextToken().IsEof()) {
+    initializers.push_back(ParseToken(toks.CurrentToken()));
   }
 
-  return new FuncCall{&sym::Type::INT, name, std::move(xs)};
+  return new CompoundLiteral{std::move(initializers), sym::Type{0}};
 }
 
-Node* Parser::ParseSum(TokenStream toks) {
-  auto args = eval_tokens(toks, 1, 5);
+// (get x (' y))
+Node* Parser::ParseGet(TokenStream& toks) {
+  // auto
+}
 
-  std::vector<Node*> operands;
-  operands.reserve(args.size());
-  for (auto arg : args) {
-    operands.push_back(ParseToken(arg));
+Node* Parser::ParseQuote(TokenStream& toks) {
+  auto quotation = toks.NextToken();
+
+  if (!toks.NextToken().IsEof()) {
+    throw "can quote only 1 form";
   }
 
-  return new Sum{std::move(operands)};
-}
-
-Node* Parser::ParseIf(TokenStream toks) {
-  auto args = eval_tokens(toks, 3);
-  auto result = new If{
-    ParseToken(args[0]),
-    ParseToken(args[1]),
-    ParseToken(args[2]),
-  };
-  return result;
-}
-
-Node* Parser::ParseList(Token tok) {
-  using namespace mn_hash;
-
-  TokenStream list{tok};
-  if (list.NextToken().IsWord()) {
-    auto head = list.CurrentToken();
-    auto word_hash = encode9(head.Val(), head.Len());
-
-    switch (word_hash) {
-    case encode9("if"): return ParseIf(list);
-    case encode9("def"): return ParseDef(list);
-    case encode9("set!"): return ParseSet(list);
-    case encode9("+"): return ParseSum(list);
-
-    default:
-      return ParseFuncCall(head, list);
-    }
-
-  } else {
-    throw "car(list) != symbol";
-  }
-}
-
-void Parser::ExecDirective(Token tok) {
-  using namespace mn_hash;
-
-  TokenStream list{tok};
-
-  auto head = list.NextToken();
-  auto word_hash = encode9(head.Val() + 1, head.Len() - 1);
-
-  switch (word_hash) {
-  default:
-    throw "unknown directive";
-  }
-}
-
-Node* Parser::ParseToken(Token tok) {
-  switch (tok.Tag()) {
+  switch (quotation.Tag()) {
   case Token::INT:
-    return new Int{tok};
   case Token::REAL:
-    return new Real{tok};
   case Token::STR:
-    return new Str{tok};
-  case Token::WORD: {
-    auto local = module.Local(tok.AsStrView());
-    return new Var{local.bound_name, local.type};
-  }
+    return ParseToken(quotation);
+  case Token::WORD:
+    return new ast::Sym{quotation};
   case Token::LIST:
-    return ParseList(tok);
-
+    throw "no support for quoted lists yet";
   default:
-    throw "not implemented";
+    throw "quoting something unexpected";
   }
 }
-*/

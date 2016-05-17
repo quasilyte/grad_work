@@ -61,8 +61,11 @@ add_subdirectory(src/backend/cpp/cg)
 ## Tests
 enable_testing()
 add_subdirectory(tests/test_dt)
-add_subdirectory(tests/test_sym)
+# add_subdirectory(tests/test_sym)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
 target_link_libraries(${PROJECT_NAME} cc ast lex sym dt io fmt cpp_cg dbg)
+
+# add_executable(rt rt.cpp "src/backend/cpp/rt/array.cpp")
+# target_link_libraries(rt cpp_rt)

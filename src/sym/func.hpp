@@ -1,7 +1,13 @@
 #pragma once
 
 #include "sym/type.hpp"
+#include "dt/str_view.hpp"
+#include "sym/param.hpp"
 #include <vector>
+
+namespace ast {
+  struct Node;
+}
 
 namespace sym {
   class Func;
@@ -9,15 +15,14 @@ namespace sym {
 
 class sym::Func {
 public:
-  Func() = default; // #FIXME: should not exist
-  Func(int arity);
-  Func(sym::Type* ret_type, std::vector<sym::Type*>&& params);
+  Func(std::vector<Param>&& params, ast::Node* expr, sym::Type);
+  // Func(sym::Type* ret_type, std::vector<sym::Type>&& params);
 
-  // int MinArity() const noexcept;
-  // int MaxArity() const noexcept;
   int Arity() const noexcept;
+  const std::vector<Param>& Params() const noexcept;
 
+  ast::Node* expr;
+  Type ret_type;
 private:
-  Type* ret_type;
-  std::vector<Type*> params;
+  std::vector<Param> params;
 };

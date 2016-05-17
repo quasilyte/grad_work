@@ -28,8 +28,6 @@ public:
   const char* Data() const noexcept;
   u32 Len() const noexcept;
 
-  dt::StrView AsStrView() const noexcept;
-
   bool IsAtom() const noexcept;
   bool IsInt() const noexcept;
   bool IsReal() const noexcept;
@@ -39,6 +37,10 @@ public:
   bool IsEof() const noexcept;
 
   bool Is(enum Tag) const noexcept;
+
+  operator dt::StrView() const {
+    return dt::StrView{val, len};
+  }
 
 private:
   enum Tag tag;

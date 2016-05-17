@@ -1,8 +1,9 @@
 #include "backend/cpp/cg/translator.hpp"
 
-#include "backend/cpp/cg/visitor.hpp"
+#include "backend/cpp/cg/code_writer.hpp"
 #include "dbg/sym.hpp"
 #include "backend/cpp/cg/type_map.hpp"
+#include "ast/defs.hpp"
 
 using namespace cpp_cg;
 
@@ -15,20 +16,50 @@ Translator::Translator(const cc::TranslationUnit& tu, const io::FileWriter& fw):
 tu{tu}, fw{fw} {}
 
 void Translator::Translate() {
-  for (uint i = 0; i < tu.globals.size(); ++i) {
-    auto ty = tu.module.Global(tu.globals[i]);
-
-    fw.Write(type_name(ty));
-    fw.Write(' ');
-    fw.Write(tu.globals[i]);
+  for (dt::StrView struct_name : tu.structs) {
+    sym::Struct* s = tu.module.Struct(struct_name);
+    fw.Write("struct ", 7);
+    fw.Write(struct_name);
     fw.Write('{');
-    Visitor::Run(tu.exprs[i], fw);
-    fw.Write("};", 2);
+    for (sym::Param attr : s->attrs) {
+      fw.Write(type_name(&attr.type));
+      fw.Write(' ');
+      fw.Write(attr.name);
+      fw.Write(';');
+    }
+    fw.Write("};\n", 3);
+  }
+
+  for (ast::DefVar* global : tu.globals) {
+    CodeWriter::Run(global, tu.module, fw);
     fw.Write('\n');
   }
 
-  for (uint i = tu.globals.size(); i < tu.exprs.size(); ++i) {
-    Visitor::Run(tu.exprs[i], fw);
+  for (dt::StrView func_name : tu.funcs) {
+    auto func = tu.module.Func(func_name);
+
+    auto params = func->Params();
+    fw.Write(type_name(&func->ret_type));
+    fw.Write(' ');
+    fw.Write(func_name);
+    fw.Write('(');
+    for (uint i = 0; i < params.size() - 1; ++i) {
+      fw.Write(type_name(&params[i].type));
+      fw.Write(' ');
+      fw.Write(params[i].name);
+      fw.Write(',');
+    }
+    fw.Write(type_name(&params.back().type));
+    fw.Write(' ');
+    fw.Write(params.back().name);
+    fw.Write("){return ", 9);
+    CodeWriter::Run(func->expr, tu.module, fw);
+    fw.Write(';');
+    fw.Write("}\n", 2);
+  }
+
+  for (ast::Node* expr : tu.exprs) {
+    CodeWriter::Run(expr, tu.module, fw);
     fw.Write('\n');
   }
 }

@@ -1,15 +1,24 @@
 #pragma once
 
 #include "ast/visitor.hpp"
-#include "sym/type.hpp"
 
-namespace cc {
-  class TypeDeducer;
+namespace io {
+  class FileWriter;
 }
 
-class cc::TypeDeducer: public ast::Visitor {
+namespace sym {
+  class Module;
+}
+
+namespace cpp_cg {
+  class CodeWriter;
+}
+
+class cpp_cg::CodeWriter: public ast::Visitor {
 public:
-  static sym::Type Run(ast::Node*);
+  static void Run(ast::Node*, const sym::Module&, const io::FileWriter&);
+
+  CodeWriter(const sym::Module&, const io::FileWriter&);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;
@@ -25,5 +34,6 @@ public:
   void Visit(ast::CompoundLiteral*) override;
 
 private:
-  sym::Type result;
+  const sym::Module& module;
+  const io::FileWriter& fw;
 };

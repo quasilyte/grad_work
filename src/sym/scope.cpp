@@ -1,12 +1,16 @@
 #include "sym/scope.hpp"
 
+#include <cstdio>
+
 using namespace sym;
 
 void Scope::CreateLevel() {
+  puts("create level");
   levels.push_back(Level{});
 }
 
 void Scope::DropLevel() {
+  puts("drop level");
   Level level = levels.back();
 
   hlist.Drop(level.h_syms);
@@ -15,16 +19,19 @@ void Scope::DropLevel() {
   levels.pop_back();
 }
 
-void Scope::DefineSymbol(const dt::StrView& key, Type* val) {
+Type* Scope::DefineSymbol(const dt::StrView& key, Type val) {
   auto& level = levels.back();
+  auto ty = new Type{val};
 
   if (key.Len() > 9) {
     level.a_syms += 1;
-    alist.Insert(key, val);
+    alist.Insert(key, ty);
   } else {
     level.h_syms += 1;
-    hlist.Insert(key, val);
+    hlist.Insert(key, ty);
   }
+
+  return ty;
 }
 
 Type* Scope::Symbol(const dt::StrView& key) {

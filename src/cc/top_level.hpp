@@ -11,4 +11,5 @@ struct cc::TopLevel {
   std::vector<lex::Token> exprs;
   std::vector<lex::TokenStream> funcs;
   std::vector<lex::TokenStream> globals;
+  std::vector<lex::TokenStream> structs;
 };

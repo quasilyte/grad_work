@@ -1,27 +1,26 @@
 #pragma once
 
 #include "ast/node.hpp"
-#include "lex/token.hpp"
 #include "io/file_writer.hpp"
+#include "dt/str_view.hpp"
+#include "sym/type.hpp"
+#include <vector>
 
 namespace ast {
-  class Atom;
-  class Int;
-  class Real;
-  class Str;
+  struct Atom;
+  struct Int;
+  struct Real;
+  struct Str;
+  struct Sym;
+  // The structs below are not atoms and must be moved from this file:
+  struct CompoundLiteral;
   struct Var;
 }
 
-class ast::Atom: public Node {
-public:
-  Atom(const char* data, u32 data_len);
+struct ast::Atom: public Node {
+  Atom(dt::StrView);
 
-  const char* Data() const noexcept;
-  u32 Len() const noexcept;
-
-protected:
-  const char* data;
-  u32 data_len;
+  dt::StrView datum;
 };
 
 static_assert(
@@ -29,39 +28,41 @@ static_assert(
   "type size expectations failed"
 );
 
-class ast::Int: public Atom {
-public:
+struct ast::Int: public Atom {
   using Atom::Atom;
-
   void Accept(Visitor*);
 };
 
-class ast::Real: public Atom {
-public:
+struct ast::Real: public Atom {
   using Atom::Atom;
-
   void Accept(Visitor*);
 };
 
-class ast::Str: public Atom {
-public:
+struct ast::Str: public Atom {
   using Atom::Atom;
+  void Accept(Visitor*);
+};
 
+struct ast::Sym: public Atom {
+  using Atom::Atom;
   void Accept(Visitor*);
 };
 
 struct ast::Var: public Node {
-public:
-  Var(const dt::StrView*, const sym::Type*);
+  Var(dt::StrView, const sym::Type*);
 
   void Accept(Visitor*);
 
-  const dt::StrView* name;
+  const dt::StrView name;
   const sym::Type* type;
 };
 
-static_assert(
-  sizeof(ast::Var) == 24,
-  "type size expectations failed"
-);
+struct ast::CompoundLiteral: public Node {
+  CompoundLiteral(std::vector<Node*>&&, sym::Type);
+
+  void Accept(Visitor*);
+
+  std::vector<Node*> initializers;
+  sym::Type type;
+};
 

@@ -22,10 +22,6 @@ u32 Token::Len() const noexcept {
   return len;
 }
 
-dt::StrView Token::AsStrView() const noexcept {
-  return dt::StrView{val, len};
-}
-
 bool Token::IsAtom() const noexcept {
   return tag > BEGIN_ATOM && tag < END_ATOM;
 }
@@ -57,3 +53,4 @@ bool Token::IsEof() const noexcept {
 bool Token::Is(enum Tag tag) const noexcept {
   return this->tag == tag;
 }
+

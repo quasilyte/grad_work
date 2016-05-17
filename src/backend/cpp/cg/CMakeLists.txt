@@ -3,7 +3,7 @@ project(cpp_cg)
 set(
   cpp_cg_src
   type_map.cpp
-  visitor.cpp
+  code_writer.cpp
   translator.cpp
 )
 

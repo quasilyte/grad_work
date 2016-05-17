@@ -48,15 +48,16 @@ void Classifier::ClassifyDirective(const lex::Token& directive) {
   auto name_hash = encode9(name_tok.Data() + 1, name_tok.Len() - 1);
 
   switch (name_hash) {
-  case encode9("def"): ClassifyDef(list);
+  case encode9("def"): ClassifyDef(list); break;
   case encode9(";"): return; // Comment lists are just ignored
+  case encode9("struct"): ClassifyStruct(list); break;
 
   default:
     throw "unknown directive";
   }
 }
 
-void Classifier::ClassifyDef(TokenStream toks) {
+void Classifier::ClassifyDef(TokenStream& toks) {
   auto toks_copy = toks;
   auto target = toks.NextToken();
 
@@ -67,4 +68,8 @@ void Classifier::ClassifyDef(TokenStream toks) {
   } else {
     throw "only {word, list} are valid targets for #def";
   }
+}
+
+void Classifier::ClassifyStruct(TokenStream& toks) {
+  result.structs.push_back(toks);
 }

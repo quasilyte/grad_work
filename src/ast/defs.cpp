@@ -57,32 +57,12 @@ void DefFunc::GenerateCode(const sym::Module* module, const io::FileWriter& fw) 
 }
 */
 
-SetGlobal::SetGlobal(dt::StrView name, Node* value):
+SetVar::SetVar(dt::StrView name, Node* value):
 name{name}, value{value} {}
 
-void SetGlobal::Accept(Visitor* v) { v->Visit(this); }
+void SetVar::Accept(Visitor* v) { v->Visit(this); }
 
-const dt::StrView& SetGlobal::Name() const noexcept {
-  return name;
-}
-
-Node* SetGlobal::Value() const noexcept {
-  return value;
-}
-
-DefLocal::DefLocal(const dt::StrView* name, Node* value, sym::Type ty):
+DefVar::DefVar(dt::StrView name, Node* value, sym::Type* ty):
 name{name}, value{value}, type{ty} {}
 
-void DefLocal::Accept(Visitor* v) { v->Visit(this); }
-
-const dt::StrView* DefLocal::Name() const noexcept {
-  return name;
-}
-
-Node* DefLocal::Value() const noexcept {
-  return value;
-}
-
-sym::Type DefLocal::Type() const noexcept {
-  return type;
-}
+void DefVar::Accept(Visitor* v) { v->Visit(this); }

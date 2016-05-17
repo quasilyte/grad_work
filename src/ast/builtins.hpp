@@ -1,22 +1,31 @@
 #pragma once
 
 #include "ast/node.hpp"
+#include "dt/str_view.hpp"
+#include "sym/type.hpp"
 #include <vector>
 
 namespace ast {
-  class Sum;
+  struct Sum;
+  struct FuncCall;
 }
 
-class ast::Sum: public Node {
-public:
+struct ast::Sum: public Node {
   Sum(std::vector<Node*>&&);
-
-  const std::vector<Node*>& Operands() const noexcept;
 
   void Accept(Visitor*);
 
-private:
   std::vector<Node*> operands;
+};
+
+struct ast::FuncCall: public Node {
+  FuncCall(dt::StrView name, std::vector<Node*>&& args, sym::Type);
+
+  void Accept(Visitor*);
+
+  dt::StrView name;
+  std::vector<Node*> args;
+  sym::Type ty;
 };
 
 /*

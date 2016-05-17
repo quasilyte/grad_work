@@ -14,7 +14,7 @@
 #include "dt/dict.hpp"
 #include "ast/atoms.hpp"
 #include "ast/defs.hpp"
-#include "backend/cpp/cg/visitor.hpp"
+#include "backend/cpp/cg/code_writer.hpp"
 #include "backend/cpp/cg/translator.hpp"
 #include "ast/builtins.hpp"
 #include <fstream>
@@ -29,12 +29,13 @@ std::string slurp(const char* path) {
   );
 }
 
-// 16 + 4
-
-// +: 1~n args (each <- numeric)
-// 1) called with apply -- expand to real function
-// 2) stored in variable -- expand to real function
-// 3) called inline -- series or "+"
+// quote can yield:
+// * symbol
+// * self-quoting value (int, real, etc.)
+// * list of quoted values (symbols, ints, etc.)
+// so, basically, the only "magical" value is symbol.
+// also, quote of quote is, of course, results in list
+// which car is "quote".
 
 // int main(int argc, char* argv[]) {
 int main() {
@@ -45,11 +46,16 @@ int main() {
   try {
     const char* input = R"lisp(
         (#; testing)
-        (#def x (if 1 1 1.0))
-        (#def y x)
+
+        (#def x (' foo))
+        (#; def x (' y))
+        (#; struct range (int low high step))
+        (#; def r (struct range (+ 1 0) 1 2))
+        (#; def low (get r low))
     )lisp";
 
     Translator::Run(Parser::Run(Classifier::Run(input)));
+    // Parser::Run(Classifier::Run(input));
   } catch (const char* msg) {
     std::fprintf(stderr, "error: %s\n", msg);
   }
