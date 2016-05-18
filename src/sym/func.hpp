@@ -21,11 +21,12 @@ public:
   Func(dt::StrView name, ParamList&&, ExprList&&, sym::Type);
 
   int Arity() const noexcept;
+
   const ParamList& Params() const noexcept;
 
   dt::StrView name;
   ExprList exprs;
-  sym::Type ret_type;
-private:
   ParamList params;
+  sym::Type ret_type;
+  bool variadic = false;
 };
