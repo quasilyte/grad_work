@@ -9,3 +9,5 @@ Compilation perfomance:
 Fix:
 - Want to use StrView inside token and other structs with {char*,len}, 
   but it increases total size due to padding. Maybe something like trait can work?
+- New types get Id of 1..N, instead of 0..N, because operator[] for map returns
+  entry if it exists OR create a new, so after it misses, new entry is created.
