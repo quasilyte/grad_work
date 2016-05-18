@@ -44,15 +44,19 @@ void Translator::Translate() {
     fw.Write(' ');
     fw.Write(func_name);
     fw.Write('(');
-    for (uint i = 0; i < params.size() - 1; ++i) {
-      write_type(&tu.module, params[i].type, &fw);
+    if (params.size()) {
+      for (uint i = 0; i < params.size() - 1; ++i) {
+        write_type(&tu.module, params[i].type, &fw);
+        fw.Write(' ');
+        fw.Write(params[i].name);
+        fw.Write(',');
+      }
+      write_type(&tu.module, params.back().type, &fw);
       fw.Write(' ');
-      fw.Write(params[i].name);
-      fw.Write(',');
+      fw.Write(params.back().name);
+    } else {
+      fw.Write("void", 4);
     }
-    write_type(&tu.module, params.back().type, &fw);
-    fw.Write(' ');
-    fw.Write(params.back().name);
     fw.Write("){return ", 9);
     CodeWriter::Run(func->expr, tu.module, fw);
     fw.Write(';');
