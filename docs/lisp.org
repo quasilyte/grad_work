@@ -19,22 +19,23 @@ Special types
 |              |                                                   |
 
 Collections
-| Name    | Constructor               | Description                    |
-|---------+---------------------------+--------------------------------|
-| List    | (list elt:ANY...)         | Singly linked list             |
-| Arr     | (arr size:INT [init:INT]) | Fixed size array               |
-| Vec     | (vec size:INT [init:INT]) | Dynamically sized array        |
-| Dict    | (dict <?>)                | Key-value storage (hash table) |
-| Set<?>  | (set <?>)                 | Optimized map<KEY, bool>       |
+| Name     | Constructor               | Description                    |
+|----------+---------------------------+--------------------------------|
+| List     | (list elt:ANY...)         | Singly linked list             |
+| Arr      | (arr size:INT [init:INT]) | Fixed size array               |
+| Vec      | (vec size:INT [init:INT]) | Dynamically sized array        |
+| Dict     | (dict <?>)                | Key-value storage (hash table) |
+| Set<?>   | (set <?>)                 | Optimized map<KEY, bool>       |
+| Tuple<?> | (tuple <?>)               | Anonymous record               |
 
 Basic API:
-| Signature          | Types                               | Description                     |
-|--------------------+-------------------------------------+---------------------------------|
-| (. rec $attr)      | Rec                                 | Constant-time element access(1) |
-| ([] obj idx:INT)   | Str, Arr, Vec,                      | Constant-time element access(1) |
-| (get obj key)      | Str, Rec, List, Arr, Vec, Dict, Set | Generic element access          |
-| (push obj val)     | Str, List, Arr, Vec, Set(1)         | Push value at the end           |
-| (pop obj)          | Str, List, Arr, Vec, Set(2)         | Pop value from the end          |
+| Signature        | Types                                      | Description                     |
+|------------------+--------------------------------------------+---------------------------------|
+| (. rec $attr)    | Rec                                        | Constant-time element access(1) |
+| ([] obj idx:INT) | Str, Arr, Vec, Tuple                       | Constant-time element access(1) |
+| (get obj key)    | Str, Rec, List, Arr, Vec, Dict, Set, Tuple | Generic element access          |
+| (push obj val)   | Str, List, Arr, Vec, Set(1)                | Push value at the end           |
+| (pop obj)        | Str, List, Arr, Vec, Set(2)                | Pop value from the end          |
 
 Remarks(*)
 (1) - for some cases even a function call is not needed 

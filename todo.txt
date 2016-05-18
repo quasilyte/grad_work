@@ -23,6 +23,7 @@ Implement (delayed):
 - optimizations phase
 - support command line flags
 - nested struct attr lookup (like embedding in Go)
+- tuples
 
 Compilation perfomance:
 - how much times Type is evaluated for same nodes. Maybe it can be improved
