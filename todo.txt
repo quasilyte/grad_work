@@ -15,6 +15,7 @@ Implement (high priority):
 - runtime generation based on usage
 - nested function definitions
 - lambdas
+- pattern matching
 
 Implement (delayed):
 - closures
