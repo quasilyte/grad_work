@@ -1,6 +1,18 @@
 Implement:
-- better type inference
 - assignment of builtin functions to a variable
+- recursive functions
+- mutually recursive functions
+- all basic operations (< = + - / * ...)
+- name mangling for produced C++
+- function overloading
+- dynamic multi dispatch (multimethod)
+- boxing/unboxing of Any_
+- arrays
+- lists
+- macro
+- map, filter, reduce/fold, ...
+- i/o functions
+- runtime generation based on usage
 
 Compilation perfomance:
 - how much times Type is evaluated for same nodes. Maybe it can be improved
