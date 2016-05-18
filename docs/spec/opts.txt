@@ -9,3 +9,8 @@
 ;; 2) lambda argument "pt" of type "point"
 ;; 3) get key should be resolved at compile time
 ;; 4) map invocation can be specialized to concrete types
+
+Structures:
+because lisp has no pointers, I can optimize structure layout to
+achieve most compact shape (and still be properly aligned to avoid
+run time overhead).
