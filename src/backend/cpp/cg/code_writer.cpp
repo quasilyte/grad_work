@@ -10,8 +10,6 @@
 #include "backend/cpp/cg/type_map.hpp"
 #include "backend/cpp/cg/utils.hpp"
 
-#include <cstdio>
-
 using namespace cpp_cg;
 
 void CodeWriter::Run(ast::Node* node, const sym::Module& module, const io::FileWriter& fw) {
@@ -91,11 +89,7 @@ void CodeWriter::Visit(ast::Var* node) {
 void CodeWriter::Visit(ast::FuncCall* node) {
   fw.Write(node->func->name);
   fw.Write('(');
-  for (uint i = 0; i < node->args.size() - 1; ++i) {
-    node->args[i]->Accept(this);
-    fw.Write(',');
-  }
-  node->args.back()->Accept(this);
+  VisitList(',', node->args);
   fw.Write(')');
 }
 
@@ -105,12 +99,7 @@ void CodeWriter::Visit(ast::CompoundLiteral* node) {
   fw.Write("(struct ", 8);
   fw.Write(s->name);
   fw.Write("){", 2);
-  // WriteList(',', node->initializers);
-  for (uint i = 0; i < node->initializers.size() - 1; ++i) {
-    node->initializers[i]->Accept(this);
-    fw.Write(',');
-  }
-  node->initializers.back()->Accept(this);
+  VisitList(',', node->initializers);
   fw.Write('}');
 }
 
