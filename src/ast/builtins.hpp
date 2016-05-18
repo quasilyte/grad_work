@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace sym {
-  class Func;
+  struct Func;
 }
 
 namespace ast {
@@ -47,7 +47,6 @@ struct ast::FuncCall: public Node {
   std::vector<Node*> args;
 };
 
-// foo.bar
 struct ast::AttrAccess: public Node {
   AttrAccess(dt::StrView, sym::Param*);
 
@@ -56,30 +55,3 @@ struct ast::AttrAccess: public Node {
   dt::StrView obj_name;
   sym::Param* attr;
 };
-
-/*
-#include "ast/node.hpp"
-#include "lex/token.hpp"
-#include <vector>
-
-namespace ast {
-  struct FuncCall;
-  struct Sum;
-}
-
-struct ast::FuncCall: public Node {
-  FuncCall(const sym::Type*, lex::Token name, std::vector<Node*>&& args);
-  void GenerateCode(const sym::Module*, const io::FileWriter&) override;
-  const sym::Type* Type() override;
-  const sym::Type* type;
-  lex::Token name;
-  std::vector<Node*> args;
-};
-
-struct ast::Sum: public Node {
-  Sum(std::vector<Node*>&& operands);
-  void GenerateCode(const sym::Module*, const io::FileWriter&) override;
-  const sym::Type* Type() override;
-  std::vector<Node*> operands;
-};
-*/
