@@ -213,6 +213,7 @@ Node* Parser::ParseList(Token tok) {
     case encode9("struct"): return ParseStruct(list);
     case encode9("'"): return ParseQuote(list);
     case encode9("get"): return ParseGet(list);
+    case encode9("."): return ParseAttrAccess(list);
 
     default:
       return ParseFuncCall(name_tok, list);
@@ -309,11 +310,9 @@ Node* Parser::ParseStruct(TokenStream& toks) {
   }
 }
 
-// (get x (' y))
 Node* Parser::ParseGet(TokenStream& toks) {
-  // auto
   dt::StrView obj_name = toks.NextToken();
-  auto var = module.GlobalSymbol(obj_name);
+  auto var = module.Symbol(obj_name);
   auto key = ParseToken(toks.NextToken());
   auto key_ty = TypeDeducer::Run(key);
 
@@ -344,4 +343,14 @@ Node* Parser::ParseQuote(TokenStream& toks) {
   default:
     throw "quoting something unexpected";
   }
+}
+
+Node* Parser::ParseAttrAccess(TokenStream& toks) {
+  dt::StrView obj_name = toks.NextToken();
+  dt::StrView attr_name = toks.NextToken();
+
+  auto var = module.Symbol(obj_name);
+  auto attr = module.Struct(var->Tag())->Attr(attr_name);
+
+  return new AttrAccess{obj_name, attr};
 }
