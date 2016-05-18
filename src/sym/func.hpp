@@ -15,13 +15,17 @@ namespace sym {
 
 class sym::Func {
 public:
-  Func(std::vector<Param>&& params, std::vector<ast::Node*>&& exprs, sym::Type);
+  typedef std::vector<sym::Param> ParamList;
+  typedef std::vector<ast::Node*> ExprList;
+
+  Func(dt::StrView name, ParamList&&, ExprList&&, sym::Type);
 
   int Arity() const noexcept;
-  const std::vector<Param>& Params() const noexcept;
+  const ParamList& Params() const noexcept;
 
-  std::vector<ast::Node*> exprs;
-  Type ret_type;
+  dt::StrView name;
+  ExprList exprs;
+  sym::Type ret_type;
 private:
-  std::vector<Param> params;
+  ParamList params;
 };
