@@ -32,6 +32,8 @@
 | [[https://en.wikipedia.org/wiki/Van_Wijngaarden_grammar][Van_Wijngaarden_grammar]] |
 | [[https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form][Extended BNF]]            |
 | [[https://en.wikipedia.org/wiki/Self-organizing_list][Self-organizing list]]    |
+| [[https://en.wikipedia.org/wiki/Decision_tree][Decision trees]]          |
+| [[https://en.wikipedia.org/wiki/Expression_problem][expression problem]]      |
 |                         |
 
 #+CAPTION: Rust docs and books
