@@ -8,6 +8,7 @@ Primitive types
 | Real | Single or double precision floating point number |
 | Num  | Optimized Either<Int, Real>                      |
 | Str  | Immutable array of characters                    |
+| Sym  | Symbol (evaluates to itself)                     |
 
 Special types
 | Name         | Description                                       |
