@@ -223,6 +223,8 @@ Node* Parser::ParseList(Token tok) {
     auto name_hash = encode9(name_tok.Data(), name_tok.Len());
 
     switch (name_hash) {
+    case encode9("<"): return ParseLt(list);
+    case encode9(">"): return ParseGt(list);
     case encode9("+"): return ParseSum(list);
     case encode9("-"): return ParseSub(list);
     case encode9("set!"): return ParseSet(list);
@@ -275,6 +277,14 @@ Node* Parser::ParseSum(TokenStream& toks) {
 
 Node* Parser::ParseSub(TokenStream& toks) {
   return new Sub{std::move(CollectParsed(toks))};
+}
+
+Node* Parser::ParseLt(TokenStream& toks) {
+  return new Lt{std::move(CollectParsed(toks))};
+}
+
+Node* Parser::ParseGt(TokenStream& toks) {
+  return new Gt{std::move(CollectParsed(toks))};
 }
 
 // (set! obj val)

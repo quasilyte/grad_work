@@ -36,7 +36,7 @@ void TypeDeducer::Visit(ast::Sym*) {
   result = Type::Sym();
 }
 
-sym::Type deduce_arith_type(ast::ArithOp* op) {
+sym::Type deduce_arith_type(ast::Operation* op) {
   auto ty = Type::Int();
 
   for (ast::Node* operand : op->operands) {
@@ -62,6 +62,15 @@ void TypeDeducer::Visit(ast::Sub* sub) {
   result = deduce_arith_type(sub);
 }
 
+// #FIXME: those can be refactored in 1 visit of base BoolOp node,
+// but perfomance should be tested.
+void TypeDeducer::Visit(ast::Lt*) {
+  result = Type::Int();
+}
+
+void TypeDeducer::Visit(ast::Gt*) {
+  result = Type::Int();
+}
 
 void TypeDeducer::Visit(ast::SetVar*) {
   throw "set! is not an expression";

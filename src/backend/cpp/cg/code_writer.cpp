@@ -36,17 +36,24 @@ void CodeWriter::Visit(ast::Str* node) {
   fw.Write(node->datum);
 }
 
-void CodeWriter::Visit(ast::Sym* node) {
-  // fw.Write(node->datum);
+void CodeWriter::Visit(ast::Sym*) {
   fw.Write("SYM", 3);
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
-  VisitList('+', node->operands);
+  VisitGroupedList('+', node->operands);
 }
 
 void CodeWriter::Visit(ast::Sub* node) {
-  VisitList('-', node->operands);
+  VisitGroupedList('-', node->operands);
+}
+
+void CodeWriter::Visit(ast::Lt* node) {
+  VisitGroupedList('<', node->operands);
+}
+
+void CodeWriter::Visit(ast::Gt* node) {
+  VisitGroupedList('>', node->operands);
 }
 
 void CodeWriter::Visit(ast::SetVar* node) {
@@ -116,4 +123,10 @@ void CodeWriter::VisitList(char delimiter, const std::vector<ast::Node*>& list) 
   }
 
   list.back()->Accept(this);
+}
+
+void CodeWriter::VisitGroupedList(char delimiter, const std::vector<ast::Node*>& list) {
+  fw.Write('(');
+  VisitList(delimiter, list);
+  fw.Write(')');
 }

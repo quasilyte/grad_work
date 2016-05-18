@@ -11,30 +11,44 @@ namespace sym {
 }
 
 namespace ast {
-  struct ArithOp;
+  struct Operation;
   struct Sum;
   struct Sub;
+  struct Lt;
+  struct Gt;
   struct FuncCall;
   struct AttrAccess;
 }
 
-struct ast::ArithOp: public Node {
+struct ast::Operation: public Node {
   typedef std::vector<Node*> ArgList;
 
-  ArithOp(ArgList&&);
+  Operation(ArgList&&);
 
   ArgList operands;
 };
 
-struct ast::Sum: public ArithOp {
-  using ArithOp::ArithOp;
+struct ast::Sum: public Operation {
+  using Operation::Operation;
   void Accept(Visitor*);
 };
 
-struct ast::Sub: public ArithOp {
-  using ArithOp::ArithOp;
+struct ast::Sub: public Operation {
+  using Operation::Operation;
   void Accept(Visitor*);
 };
+
+struct ast::Lt: public Operation {
+  using Operation::Operation;
+  void Accept(Visitor*);
+};
+
+struct ast::Gt: public Operation {
+  using Operation::Operation;
+  void Accept(Visitor*);
+};
+
+// struct ast::Eq
 
 struct ast::FuncCall: public Node {
   typedef std::vector<Node*> ArgList;
