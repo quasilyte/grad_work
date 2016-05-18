@@ -5,12 +5,10 @@
 using namespace sym;
 
 void Scope::CreateLevel() {
-  puts("create level");
   levels.push_back(Level{});
 }
 
 void Scope::DropLevel() {
-  puts("drop level");
   Level level = levels.back();
 
   hlist.Drop(level.h_syms);
