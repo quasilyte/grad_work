@@ -36,13 +36,8 @@ struct ast::AttrAccess: public Node {
 
   void Accept(Visitor*);
 
-  // #FIXME: check if this increase perfomance:
-  // 1) remove "type". It can be accesed from struct info in module.
-  // 2) change obj_name to pointer.
   dt::StrView obj_name;
   sym::Param* attr;
-  // dt::StrView attr_name;
-  // sym::Type ty;
 };
 
 /*

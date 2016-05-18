@@ -56,7 +56,14 @@ void CodeWriter::Visit(ast::SetVar* node) {
   fw.Write(node->name);
   fw.Write('=');
   node->value->Accept(this);
-  // fw.Write(';');
+}
+
+void CodeWriter::Visit(ast::SetAttr* node) {
+  fw.Write(node->obj_name);
+  fw.Write('.');
+  fw.Write(node->attr->name);
+  fw.Write('=');
+  node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::DefVar* node) {
@@ -66,7 +73,6 @@ void CodeWriter::Visit(ast::DefVar* node) {
   fw.Write(node->name);
   fw.Write('=');
   node->value->Accept(this);
-  // fw.Write(';');
 }
 
 void CodeWriter::Visit(ast::If* node) {

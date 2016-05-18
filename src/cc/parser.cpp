@@ -22,6 +22,16 @@ using namespace ast;
 using namespace dt;
 using namespace sym;
 
+int length(TokenStream toks) {
+  int size = 0;
+
+  while (!toks.NextToken().IsEof()) {
+    size += 1;
+  }
+
+  return size;
+}
+
 std::vector<Token> eval_tokens(TokenStream& toks, uint min_count, uint max_count) {
   std::vector<Token> items;
   items.reserve(min_count);
@@ -268,18 +278,34 @@ Node* Parser::ParseSum(TokenStream& toks) {
   return new Sum{std::move(operands)};
 }
 
-Node* Parser::ParseSet(TokenStream& toks) {
-  auto name = toks.NextToken();
-  auto expr = ParseToken(toks.NextToken());
+// (set! obj val)
+// (set! obj attr val)
+Node* Parser::ParseSet(TokenStream& toks) {  
+  switch (length(toks)) {
+  case 2: {
+    auto name = toks.NextToken();
+    auto expr = ParseToken(toks.NextToken());
+    auto var = module.LocalSymbol(name);
 
-  auto symbol = module.LocalSymbol(name);
+    if (var) {
+      var->ExtendWith(TypeDeducer::Run(expr));
+      return new SetVar{name, expr};
+    } else {
+      module.UpdateGlobalSymbol(name, TypeDeducer::Run(expr));
+      return new SetVar{name, expr};
+    }
+  }
+  case 3: {
+    auto obj_name = toks.NextToken();
+    auto attr_name = toks.NextToken();
+    auto expr = ParseToken(toks.NextToken());
+    auto var = module.Symbol(obj_name);
+    auto attr = module.Struct(var->Tag())->Attr(attr_name);
 
-  if (symbol) {
-    symbol->ExtendWith(TypeDeducer::Run(expr));
-    return new SetVar{name, expr};
-  } else {
-    module.UpdateGlobalSymbol(name, TypeDeducer::Run(expr));
-    return new SetVar{name, expr};
+    return new SetAttr{obj_name, attr, expr};
+  }
+  default:
+    throw "set! invalid number of arguments";
   }
 }
 

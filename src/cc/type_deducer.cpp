@@ -56,6 +56,10 @@ void TypeDeducer::Visit(ast::SetVar*) {
   throw "set! is not an expression";
 }
 
+void TypeDeducer::Visit(ast::SetAttr*) {
+  throw "set! is not an expression";
+}
+
 void TypeDeducer::Visit(ast::DefVar*) {
   throw "def is not an expression";
 }

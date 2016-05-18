@@ -9,6 +9,7 @@ namespace ast {
   struct Sym;
   struct Sum;
   struct SetVar;
+  struct SetAttr;
   struct DefVar;
   struct If;
   struct Var;
@@ -26,6 +27,7 @@ public:
   virtual void Visit(Sym*) = 0;
   virtual void Visit(Sum*) = 0;
   virtual void Visit(SetVar*) = 0;
+  virtual void Visit(SetAttr*) = 0;
   virtual void Visit(DefVar*) = 0;
   virtual void Visit(If*) = 0;
   virtual void Visit(Var*) = 0;

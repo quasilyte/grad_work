@@ -54,13 +54,13 @@ int main() {
                         (. r step)))
 
         (#def (current (range r))
-          (. r step))
+          (. r step)))
 
-        (#def (test a) 1))
-        (#def (test)
-          (def x 10)
-          (set! x 2.0)
-          x)
+        (#struct range (int low high step))
+
+        (#def (next! (range r))
+          (set! r low 3)
+          r)
     )lisp";
 
     Translator::Run(Parser::Run(Classifier::Run(input)));
