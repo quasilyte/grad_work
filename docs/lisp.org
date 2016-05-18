@@ -1,19 +1,41 @@
-Directives
-| Signature           |
-|---------------------|
-| (#type <ID> <TYPE>) |
+<?> means "questionable"
+$ means argument is not evaluated (seen by parses "as is")
 
-Special forms
-| Signature                      |
-|--------------------------------|
-| (define <ID> <ANY>)            |
-| (define (<ID> <ID> ...) <ANY>) |
+Primitive types
+| Name | Description                                      |
+|------+--------------------------------------------------|
+| Int  | Fixed width integer                              |
+| Real | Single or double precision floating point number |
+| Num  | Optimized Either<Int, Real>                      |
+| Str  | Immutable array of characters                    |
 
+Special types
+| Name         | Description                                       |
+|--------------+---------------------------------------------------|
+| Either<A, B> | Type that can represent both A and B              |
+| Any          | Type that can represent anything                  |
+| Func{}       | Callable value. Identified by arguments list      |
+| Rec{}        | User defined types. Identified by attributes list |
+|              |                                                   |
 
-Builtin functions
-| Signature     |
-|---------------|
-| (+ <NUM> ...) |
-| (- <NUM> ...) |
-|               |
-|               |
+Collections
+| Name    | Constructor               | Description                    |
+|---------+---------------------------+--------------------------------|
+| List    | (list elt:ANY...)         | Singly linked list             |
+| Arr     | (arr size:INT [init:INT]) | Fixed size array               |
+| Vec     | (vec size:INT [init:INT]) | Dynamically sized array        |
+| Dict    | (dict <?>)                | Key-value storage (hash table) |
+| Set<?>  | (set <?>)                 | Optimized map<KEY, bool>       |
+
+Basic API:
+| Signature          | Types                               | Description                     |
+|--------------------+-------------------------------------+---------------------------------|
+| (. rec $attr)      | Rec                                 | Constant-time element access(1) |
+| ([] obj idx:INT)   | Str, Arr, Vec,                      | Constant-time element access(1) |
+| (get obj key)      | Str, Rec, List, Arr, Vec, Dict, Set | Generic element access          |
+| (push obj val)     | Str, List, Arr, Vec, Set(1)         | Push value at the end           |
+| (pop obj)          | Str, List, Arr, Vec, Set(2)         | Pop value from the end          |
+
+Remarks(*)
+(1) - for some cases even a function call is not needed 
+(2) - if Set is implemented with order preservation.
