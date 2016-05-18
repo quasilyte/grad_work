@@ -44,14 +44,20 @@ std::vector<Token> eval_tokens(TokenStream toks, int count) {
   return eval_tokens(toks, count, count);
 }
 
-sym::Type type_by_name(dt::StrView name) {
+sym::Type Parser::TypeByName(dt::StrView name) const {
   using namespace mn_hash;
 
   switch (encode9(name.Data(), name.Len())) {
   case encode9("int"): return Type::Int();
   case encode9("real"): return Type::Real();
   case encode9("num"): return Type::Num();
-  default: throw "unexpected type";
+  default:
+    auto type_info = module.Struct(name);
+    if (type_info) {
+      return type_info->type;
+    } else {
+      throw "unknown type";
+    }
   }
 }
 
@@ -107,7 +113,7 @@ void Parser::ParseDefStruct(TokenStream& toks) {
 
     if (tok.IsList()) {
       lex::TokenStream typed_list{tok};
-      auto type = type_by_name(typed_list.NextToken());
+      auto type = TypeByName(typed_list.NextToken());
 
       while (!typed_list.NextToken().IsEof()) {
         attrs.push_back(Param{typed_list.CurrentToken(), type});
@@ -117,7 +123,9 @@ void Parser::ParseDefStruct(TokenStream& toks) {
     }
   }
 
-  module.DefineStruct(name, new Struct{name, attrs});
+  // #FIXME: return value (type_id) unused
+  // module.DefineStruct(name, new Struct{name, attrs});
+  module.DefineStruct(name, std::move(attrs));
   result.structs.push_back(name);
 }
 
@@ -149,7 +157,7 @@ void Parser::ParseSignature(TokenStream& toks) {
 
     if (tok.IsList()) {
       lex::TokenStream typed_list{tok};
-      auto type = type_by_name(typed_list.NextToken());
+      auto type = TypeByName(typed_list.NextToken());
 
       while (!typed_list.NextToken().IsEof()) {
         dt::StrView param_name = typed_list.CurrentToken();
@@ -201,9 +209,10 @@ Node* Parser::ParseList(Token tok) {
     case encode9("set!"): return ParseSet(list);
     case encode9("def"): return ParseDef(list);
     case encode9("if"): return ParseIf(list);
-    case encode9("for"): return ParseFor(list);
+    // case encode9("for"): return ParseFor(list);
     case encode9("struct"): return ParseStruct(list);
     case encode9("'"): return ParseQuote(list);
+    case encode9("get"): return ParseGet(list);
 
     default:
       return ParseFuncCall(name_tok, list);
@@ -214,13 +223,14 @@ Node* Parser::ParseList(Token tok) {
   }
 }
 
+/*
 ast::Node* Parser::ParseFor(lex::TokenStream& toks) {
   auto inductor = toks.NextToken();
   auto iterator = ParseToken(toks.NextToken());
   auto loop_expr = ParseToken(toks.NextToken());
 
 
-}
+}*/
 
 ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
   sym::Func* func = module.Func(name);
@@ -287,18 +297,32 @@ Node* Parser::ParseStruct(TokenStream& toks) {
   // 1) check if struct exist
   // 2) validate init values
   auto s = module.Struct(toks.NextToken());
+  if (s) {
+    std::vector<Node*> initializers;
+    while (!toks.NextToken().IsEof()) {
+      initializers.push_back(ParseToken(toks.CurrentToken()));
+    }
 
-  std::vector<Node*> initializers;
-  while (!toks.NextToken().IsEof()) {
-    initializers.push_back(ParseToken(toks.CurrentToken()));
+    return new CompoundLiteral{std::move(initializers), s->type};
+  } else {
+    throw "type not exist";
   }
-
-  return new CompoundLiteral{std::move(initializers), sym::Type{0}};
 }
 
 // (get x (' y))
 Node* Parser::ParseGet(TokenStream& toks) {
   // auto
+  dt::StrView obj_name = toks.NextToken();
+  auto var = module.GlobalSymbol(obj_name);
+  auto key = ParseToken(toks.NextToken());
+  auto key_ty = TypeDeducer::Run(key);
+
+  if (key_ty.IsSym()) {
+    auto attr = module.Struct(var->Tag())->Attr(static_cast<Sym*>(key)->datum);
+    return new AttrAccess{obj_name, attr};
+  } else {
+    throw "dynamic lookup is not supported yet";
+  }
 }
 
 Node* Parser::ParseQuote(TokenStream& toks) {

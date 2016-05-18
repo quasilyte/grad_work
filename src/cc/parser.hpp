@@ -48,6 +48,7 @@ private:
   ast::Node* ParseGet(lex::TokenStream&);
   ast::Node* ParseQuote(lex::TokenStream&);
 
+  sym::Type TypeByName(dt::StrView) const;
   /*
 
   void ParseFuncDecls();

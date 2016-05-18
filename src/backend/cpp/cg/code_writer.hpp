@@ -32,6 +32,7 @@ public:
   void Visit(ast::Var*) override;
   void Visit(ast::FuncCall*) override;
   void Visit(ast::CompoundLiteral*) override;
+  void Visit(ast::AttrAccess*) override;
 
 private:
   const sym::Module& module;

@@ -8,6 +8,7 @@
 #include "sym/module.hpp"
 #include "sym/struct.hpp"
 #include "backend/cpp/cg/type_map.hpp"
+#include "backend/cpp/cg/utils.hpp"
 
 #include <cstdio>
 
@@ -59,12 +60,8 @@ void CodeWriter::Visit(ast::SetVar* node) {
 }
 
 void CodeWriter::Visit(ast::DefVar* node) {
-  if (node->type->IsStruct()) {
-    fw.Write("struct ", 7);
-    fw.Write(module.Struct(node->type->Tag())->name);
-  } else {
-    fw.Write(type_name(node->type));
-  }
+  write_type(&module, *node->type, &fw);
+
   fw.Write(' ');
   fw.Write(node->name);
   fw.Write('=');
@@ -109,4 +106,10 @@ void CodeWriter::Visit(ast::CompoundLiteral* node) {
   }
   node->initializers.back()->Accept(this);
   fw.Write('}');
+}
+
+void CodeWriter::Visit(ast::AttrAccess* node) {
+  fw.Write(node->obj_name);
+  fw.Write('.');
+  fw.Write(node->attr->name);
 }

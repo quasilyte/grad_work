@@ -3,11 +3,13 @@
 #include "ast/node.hpp"
 #include "dt/str_view.hpp"
 #include "sym/type.hpp"
+#include "sym/param.hpp"
 #include <vector>
 
 namespace ast {
   struct Sum;
   struct FuncCall;
+  struct AttrAccess;
 }
 
 struct ast::Sum: public Node {
@@ -26,6 +28,21 @@ struct ast::FuncCall: public Node {
   dt::StrView name;
   std::vector<Node*> args;
   sym::Type ty;
+};
+
+// foo.bar
+struct ast::AttrAccess: public Node {
+  AttrAccess(dt::StrView, sym::Param*);
+
+  void Accept(Visitor*);
+
+  // #FIXME: check if this increase perfomance:
+  // 1) remove "type". It can be accesed from struct info in module.
+  // 2) change obj_name to pointer.
+  dt::StrView obj_name;
+  sym::Param* attr;
+  // dt::StrView attr_name;
+  // sym::Type ty;
 };
 
 /*

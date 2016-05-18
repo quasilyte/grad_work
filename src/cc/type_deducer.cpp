@@ -78,3 +78,7 @@ void TypeDeducer::Visit(ast::FuncCall* node) {
 void TypeDeducer::Visit(ast::CompoundLiteral* node) {
   result = node->type;
 }
+
+void TypeDeducer::Visit(ast::AttrAccess* node) {
+  result = node->attr->type;
+}

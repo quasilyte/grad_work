@@ -46,12 +46,12 @@ int main() {
   try {
     const char* input = R"lisp(
         (#; testing)
-
-        (#def x (' foo))
-        (#; def x (' y))
-        (#; struct range (int low high step))
-        (#; def r (struct range (+ 1 0) 1 2))
-        (#; def low (get r low))
+        (#struct range (int low high step))
+        (#struct foo a b)
+        (#def (next (range r)) r)
+        (#; def r (struct range 0 10 1))
+        (#def (f (foo x)) x)
+        (#; def low (get r (' low)))
     )lisp";
 
     Translator::Run(Parser::Run(Classifier::Run(input)));

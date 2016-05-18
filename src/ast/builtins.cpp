@@ -33,6 +33,11 @@ name{name}, args{args}, ty{ty} {}
 
 void FuncCall::Accept(Visitor* v) { v->Visit(this); }
 
+AttrAccess::AttrAccess(dt::StrView obj_name, sym::Param* attr):
+obj_name{obj_name}, attr{attr} {}
+
+void AttrAccess::Accept(Visitor* v) { v->Visit(this); }
+
 /*
 void Sum::GenerateCode(const sym::Module* module, const io::FileWriter& fw) {
   if (operands.size() == 1) {

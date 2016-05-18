@@ -3,6 +3,7 @@
 #include "backend/cpp/cg/code_writer.hpp"
 #include "dbg/sym.hpp"
 #include "backend/cpp/cg/type_map.hpp"
+#include "backend/cpp/cg/utils.hpp"
 #include "ast/defs.hpp"
 
 using namespace cpp_cg;
@@ -22,7 +23,7 @@ void Translator::Translate() {
     fw.Write(struct_name);
     fw.Write('{');
     for (sym::Param attr : s->attrs) {
-      fw.Write(type_name(&attr.type));
+      write_type(&tu.module, attr.type, &fw);
       fw.Write(' ');
       fw.Write(attr.name);
       fw.Write(';');
@@ -39,17 +40,17 @@ void Translator::Translate() {
     auto func = tu.module.Func(func_name);
 
     auto params = func->Params();
-    fw.Write(type_name(&func->ret_type));
+    write_type(&tu.module, func->ret_type, &fw);
     fw.Write(' ');
     fw.Write(func_name);
     fw.Write('(');
     for (uint i = 0; i < params.size() - 1; ++i) {
-      fw.Write(type_name(&params[i].type));
+      write_type(&tu.module, params[i].type, &fw);
       fw.Write(' ');
       fw.Write(params[i].name);
       fw.Write(',');
     }
-    fw.Write(type_name(&params.back().type));
+    write_type(&tu.module, params.back().type, &fw);
     fw.Write(' ');
     fw.Write(params.back().name);
     fw.Write("){return ", 9);

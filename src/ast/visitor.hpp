@@ -14,6 +14,7 @@ namespace ast {
   struct Var;
   struct FuncCall;
   struct CompoundLiteral;
+  struct AttrAccess;
 }
 
 class ast::Visitor {
@@ -30,5 +31,6 @@ public:
   virtual void Visit(Var*) = 0;
   virtual void Visit(FuncCall*) = 0;
   virtual void Visit(CompoundLiteral*) = 0;
+  virtual void Visit(AttrAccess*) = 0;
 };
 
