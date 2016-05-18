@@ -16,6 +16,7 @@ Implement (high priority):
 - nested function definitions
 - lambdas
 - pattern matching
+- stack of errors
 
 Implement (delayed):
 - closures
