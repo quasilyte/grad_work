@@ -16,7 +16,6 @@ namespace sym {
 class sym::Module {
 public:
   Module();
-  Module(const char* name);
 
   const dt::StrView& Name() const noexcept;
 

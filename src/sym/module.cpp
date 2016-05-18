@@ -2,9 +2,9 @@
 
 using namespace sym;
 
-Module::Module(): name{dt::StrView{"global"}} {}
-
-Module::Module(const char *name): name{dt::StrView{name}} {}
+Module::Module(): name{dt::StrView{"global"}} {
+  // Init builtins here
+}
 
 const dt::StrView& Module::Name() const noexcept {
   return name;

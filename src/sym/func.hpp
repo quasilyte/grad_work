@@ -10,11 +10,10 @@ namespace ast {
 }
 
 namespace sym {
-  class Func;
+  struct Func;
 }
 
-class sym::Func {
-public:
+struct sym::Func {
   typedef std::vector<sym::Param> ParamList;
   typedef std::vector<ast::Node*> ExprList;
 
