@@ -10,15 +10,14 @@ const dt::StrView& Module::Name() const noexcept {
   return name;
 }
 
-
-Type Module::DefineStruct(dt::StrView name, sym::Struct* s) {
+void Module::DefineStruct(dt::StrView name, std::vector<sym::Param>&& attrs) {
   if (type_name_map.Get(name)) {
     throw "redefinition of struct";
   } else {
     auto type_id = Type{type_name_map.Size()};
+    auto s = new sym::Struct{name, std::move(attrs), sym::Type{type_id}};
     type_name_map.Put(name, s);
     type_id_map.push_back(s);
-    return type_id;
   }
 }
 
@@ -27,7 +26,7 @@ sym::Struct* Module::Struct(dt::StrView name) const {
 }
 
 sym::Struct* Module::Struct(sym::Type::Id type_id) const {
-  return type_id_map[type_id];
+  return type_id_map[type_id -  1];
 }
 
 void Module::DefineGlobalSymbol(dt::StrView name, Type* ty) {
@@ -48,12 +47,6 @@ void Module::UpdateGlobalSymbol(dt::StrView name, Type ty) {
   }
 }
 
-/*
-void Module::UpdateSymbol(dt::StrView name, Type ty) {
-  auto local = scope.Symbol(name);
-}
-*/
-
 Type* Module::GlobalSymbol(dt::StrView name) const {
   return globals.Get(name);
 }
@@ -67,30 +60,6 @@ Type* Module::DefineLocal(dt::StrView name, Type ty) {
     return scope.DefineSymbol(name, ty);
   }
 }
-
-/*
-const dt::StrView* Module::DefineLocal(dt::StrView name, Type ty) {
-  if (locals.Get(name).type.IsVoid()) {
-    auto interned_name = gensym.Next();
-    locals.Put(name, sym::LocalVar{ty, interned_name});
-    return interned_name;
-  } else {
-    throw "already defined";
-  }
-}
-
-const dt::StrView* Module::RebindLocal(dt::StrView name, Type ty) {
-  auto local = locals.Get(name);
-
-  if (local.type.IsVoid()) {
-    throw "rebind of undefined";
-  } else {
-    auto new_name = gensym.Next();
-    locals.Put(name, sym::LocalVar{ty, new_name});
-    return new_name;
-  }
-}
-*/
 
 Type* Module::Symbol(dt::StrView name) {
   auto local = scope.Symbol(name);
@@ -127,60 +96,3 @@ void Module::DropScopeLevel() {
   scope.DropLevel();
 }
 
-/*
-#include "dbg/dt.hpp"
-#include "sym/sym.hpp"
-
-using namespace sym;
-
-Module::Module(const char *name): name{dt::StrView{name}} {}
-
-void Module::DefineFunc(dt::StrView name, int arity) {
-  // if (funcs.Get(name))
-  funcs.Put(name, sym::Func{arity});
-}
-
-const dt::StrView* Module::DefineLocal(dt::StrView name, const Type* type) {
-  if (nullptr == locals.Get(name).type) {
-    auto interned_name = gensym.Next();
-    locals.Put(name, sym::LocalVar{type, interned_name});
-    return interned_name;
-  } else {
-    throw "already defined";
-  }
-}
-
-void Module::MergeSymbol(dt::StrView name, const Type* type) {
-  auto symbol = locals.Get(name);
-
-  if (nullptr == symbol.type) {
-    throw "update of undefined";
-  } else {
-    // locals.Put(name, sym::Local{name, symbol.type->Merge(type)});
-  }
-}
-
-const dt::StrView* Module::RebindLocal(dt::StrView name, const Type* type) {
-  auto local = locals.Get(name);
-
-  if (nullptr == local.type) {
-    throw "rebind of undefined";
-  } else {
-    auto new_name = gensym.Next();
-    locals.Put(name, sym::LocalVar{type, new_name});
-    return new_name;
-  }
-}
-
-sym::LocalVar Module::Local(dt::StrView name) const {
-  return locals.Get(name);
-}
-
-const sym::Func& Module::Func(dt::StrView name) const {
-  return funcs.Get(name);
-}
-
-const dt::StrView& Module::Name() const noexcept {
-  return name;
-}
-*/
