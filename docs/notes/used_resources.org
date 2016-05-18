@@ -18,6 +18,7 @@
 | [[https://habrahabr.ru/post/247843/][Python Dict]]                       |
 | [[https://en.wikibooks.org/wiki/Optimizing_C%2B%2B][Optimizing C++]]                    |
 | [[https://class.coursera.org/compilers-004/lecture][Coursera "compilers"]]              |
+| [[http://www.stroustrup.com/OOPSLA-typeswitch-draft.pdf][OOPSLA-typeswitch]]                 |
 |                                   |
 
 #+CAPTION: misc/tempx
