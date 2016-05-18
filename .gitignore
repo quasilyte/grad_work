@@ -6,3 +6,5 @@ lib/
 build/
 CMakeFiles
 CMakeLists.txt.user
+lisp.cpp
+rt.cpp
