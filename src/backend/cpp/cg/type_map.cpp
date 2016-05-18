@@ -1,6 +1,7 @@
 #include "backend/cpp/cg/type_map.hpp"
 
 #include "dt/str_view.hpp"
+#include "sym/type.hpp"
 
 using namespace sym;
 
@@ -12,8 +13,8 @@ dt::StrView sym_name{"sym_", 4};
 dt::StrView any_name{"any_", 4};
 dt::StrView void_name{"void", 4};
 
-dt::StrView& cpp_cg::type_name(sym::Type* ty) {
-  switch (ty->Tag()) {
+dt::StrView& cpp_cg::type_name(sym::Type ty) {
+  switch (ty.Tag()) {
   case Type::INT: return int_name;
   case Type::REAL: return real_name;
   case Type::NUM: return num_name;
@@ -23,6 +24,6 @@ dt::StrView& cpp_cg::type_name(sym::Type* ty) {
   case Type::VOID: return void_name;
 
   default:
-    throw "cant map type to name";
+    throw "type_name: unknown type";
   }
 }
