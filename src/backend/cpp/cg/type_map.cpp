@@ -5,12 +5,12 @@
 
 using namespace sym;
 
-dt::StrView int_name{"int_", 4};
-dt::StrView real_name{"real_", 5};
-dt::StrView num_name{"num_", 4};
-dt::StrView str_name{"str_", 4};
-dt::StrView sym_name{"sym_", 4};
-dt::StrView any_name{"any_", 4};
+dt::StrView int_name{"Int_", 4};
+dt::StrView real_name{"Real_", 5};
+dt::StrView num_name{"Num_", 4};
+dt::StrView str_name{"Str_", 4};
+dt::StrView sym_name{"Sym_", 4};
+dt::StrView any_name{"Any_", 4};
 dt::StrView void_name{"void", 4};
 
 dt::StrView& cpp_cg::type_name(sym::Type ty) {
