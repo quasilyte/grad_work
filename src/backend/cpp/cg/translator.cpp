@@ -57,8 +57,14 @@ void Translator::Translate() {
     } else {
       fw.Write("void", 4);
     }
-    fw.Write("){return ", 9);
-    CodeWriter::Run(func->expr, tu.module, fw);
+    fw.Write("){", 2);
+
+    for (uint i = 0; i < func->exprs.size() - 1; ++i) {
+      CodeWriter::Run(func->exprs[i], tu.module, fw);
+      fw.Write(';');
+    }
+    fw.Write("return ", 7);
+    CodeWriter::Run(func->exprs.back(), tu.module, fw);
     fw.Write(';');
     fw.Write("}\n", 2);
   }

@@ -148,10 +148,11 @@ void Parser::ParseExpr(Token& tok) {
 
 void Parser::ParseSignature(TokenStream& toks) {
   lex::TokenStream signature{toks.NextToken()};
-  std::vector<sym::Param> params;
   auto name = signature.NextToken();
 
   module.CreateScopeLevel();
+
+  std::vector<sym::Param> params;
   while (!signature.NextToken().IsEof()) {
     auto tok = signature.CurrentToken();
 
@@ -169,10 +170,15 @@ void Parser::ParseSignature(TokenStream& toks) {
       module.DefineLocal(tok, sym::Type::Any());
     }
   }
-  auto expr = ParseToken(toks.NextToken());
+
+  std::vector<Node*> exprs;
+  while (!toks.NextToken().IsEof()) {
+    exprs.push_back(ParseToken(toks.CurrentToken()));
+  }
+
   module.DropScopeLevel();
 
-  auto func = new sym::Func{std::move(params), expr, TypeDeducer::Run(expr)};
+  auto func = new sym::Func{std::move(params), std::move(exprs), TypeDeducer::Run(exprs.back())};
   module.DefineFunc(name, func);
   result.funcs.push_back(name);
 }

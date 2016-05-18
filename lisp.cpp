@@ -45,6 +45,7 @@ int main() {
 
   try {
     const char* input = R"lisp(
+                        (#;
         (#struct range (int low high step))
 
         (#def (next (range r))
@@ -55,7 +56,11 @@ int main() {
         (#def (current (range r))
           (. r step))
 
-
+        (#def (test a) 1))
+        (#def (test)
+          (def x 10)
+          (set! x 2.0)
+          x)
     )lisp";
 
     Translator::Run(Parser::Run(Classifier::Run(input)));
