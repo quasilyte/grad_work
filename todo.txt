@@ -1,4 +1,4 @@
-Implement:
+Implement (high priority):
 - assignment of builtin functions to a variable
 - recursive functions
 - mutually recursive functions
@@ -13,10 +13,23 @@ Implement:
 - map, filter, reduce/fold, ...
 - i/o functions
 - runtime generation based on usage
+- nested function definitions
+- lambdas
+
+Implement (delayed):
+- closures
+- better error reporting
+- emit warnings
+- optimizations phase
+- support command line flags
 
 Compilation perfomance:
 - how much times Type is evaluated for same nodes. Maybe it can be improved
 - check if we can gain benefits from object pool/arena for ast nodes
+
+To check:
+- measure perfomance of ReMatch switch vs nested switch.
+  http://www.stroustrup.com/OOPSLA-typeswitch-draft.pdf
 
 Fix:
 - Want to use StrView inside token and other structs with {char*,len}, 
