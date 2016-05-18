@@ -17,6 +17,7 @@ public:
   void Visit(ast::Str*) override;
   void Visit(ast::Sym*) override;
   void Visit(ast::Sum*) override;
+  void Visit(ast::Sub*) override;
   void Visit(ast::SetVar*) override;
   void Visit(ast::SetAttr*) override;
   void Visit(ast::DefVar*) override;

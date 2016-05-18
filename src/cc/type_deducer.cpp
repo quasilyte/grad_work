@@ -4,6 +4,7 @@
 #include "ast/builtins.hpp"
 #include "ast/cond.hpp"
 #include "ast/atoms.hpp"
+#include "sym/func.hpp"
 
 using namespace cc;
 using namespace sym;
@@ -35,22 +36,32 @@ void TypeDeducer::Visit(ast::Sym*) {
   result = Type::Sym();
 }
 
-void TypeDeducer::Visit(ast::Sum* sum) {
-  for (ast::Node* operand : sum->operands) {
-    result = TypeDeducer::Run(operand);
-    if (result.IsArith()) {
-      if (result.IsReal()) {
-        return;
+sym::Type deduce_arith_type(ast::ArithOp* op) {
+  auto ty = Type::Int();
+
+  for (ast::Node* operand : op->operands) {
+    ty = TypeDeducer::Run(operand);
+
+    if (ty.IsArith()) {
+      if (ty.IsReal()) {
+        return ty;
       }
     } else {
-      throw "not arith in sum";
+      throw "invalid operand type in arith expression";
     }
   }
 
-  if (!result.IsInt()) {
-    result = Type::Num();
-  }
+  return ty.IsInt() ? ty : Type::Num();
 }
+
+void TypeDeducer::Visit(ast::Sum* sum) {
+  result = deduce_arith_type(sum);
+}
+
+void TypeDeducer::Visit(ast::Sub* sub) {
+  result = deduce_arith_type(sub);
+}
+
 
 void TypeDeducer::Visit(ast::SetVar*) {
   throw "set! is not an expression";
@@ -76,7 +87,7 @@ void TypeDeducer::Visit(ast::Var* node) {
 }
 
 void TypeDeducer::Visit(ast::FuncCall* node) {
-  result = node->ty;
+  result = node->func->ret_type;
 }
 
 void TypeDeducer::Visit(ast::CompoundLiteral* node) {

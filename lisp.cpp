@@ -29,6 +29,12 @@ std::string slurp(const char* path) {
   );
 }
 
+struct Foo: public ast::Node {
+  dt::StrView* name;
+  std::vector<ast::Node*> args;
+  // sym::Type ty;
+};
+
 // quote can yield:
 // * symbol
 // * self-quoting value (int, real, etc.)
@@ -37,30 +43,23 @@ std::string slurp(const char* path) {
 // also, quote of quote is, of course, results in list
 // which car is "quote".
 
+// (and x y) -> either<x, y>
+// (or x y) -> either<x, y>
+// (< x y) -> int
+// (= x y) -> int
+
 // int main(int argc, char* argv[]) {
 int main() {
   using namespace lex;
   using namespace cc;
   using namespace cpp_cg;
-
+  printf("%ld\n", sizeof(sym::Func));
   try {
-    const char* input = R"lisp(
-                        (#;
-        (#struct range (int low high step))
+    const char* input =
+        R"lisp(
+        (#def y (if 1 1 1.0))
+        (#def x (- 1 3 5))
 
-        (#def (next (range r))
-          (struct range (+ (. r low) (. r step))
-                        (. r high)
-                        (. r step)))
-
-        (#def (current (range r))
-          (. r step)))
-
-        (#struct range (int low high step))
-
-        (#def (next! (range r))
-          (set! r low 3)
-          r)
     )lisp";
 
     Translator::Run(Parser::Run(Classifier::Run(input)));

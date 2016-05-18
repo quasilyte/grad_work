@@ -6,28 +6,45 @@
 #include "sym/param.hpp"
 #include <vector>
 
+namespace sym {
+  class Func;
+}
+
 namespace ast {
+  struct ArithOp;
   struct Sum;
+  struct Sub;
   struct FuncCall;
   struct AttrAccess;
 }
 
-struct ast::Sum: public Node {
-  Sum(std::vector<Node*>&&);
+struct ast::ArithOp: public Node {
+  typedef std::vector<Node*> ArgList;
 
+  ArithOp(ArgList&&);
+
+  ArgList operands;
+};
+
+struct ast::Sum: public ArithOp {
+  using ArithOp::ArithOp;
   void Accept(Visitor*);
+};
 
-  std::vector<Node*> operands;
+struct ast::Sub: public ArithOp {
+  using ArithOp::ArithOp;
+  void Accept(Visitor*);
 };
 
 struct ast::FuncCall: public Node {
-  FuncCall(dt::StrView name, std::vector<Node*>&& args, sym::Type);
+  typedef std::vector<Node*> ArgList;
+
+  FuncCall(sym::Func*, ArgList&& args);
 
   void Accept(Visitor*);
 
-  dt::StrView name;
+  sym::Func* func;
   std::vector<Node*> args;
-  sym::Type ty;
 };
 
 // foo.bar

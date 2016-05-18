@@ -8,6 +8,7 @@ namespace ast {
   struct Str;
   struct Sym;
   struct Sum;
+  struct Sub;
   struct SetVar;
   struct SetAttr;
   struct DefVar;
@@ -26,6 +27,7 @@ public:
   virtual void Visit(Str*) = 0;
   virtual void Visit(Sym*) = 0;
   virtual void Visit(Sum*) = 0;
+  virtual void Visit(Sub*) = 0;
   virtual void Visit(SetVar*) = 0;
   virtual void Visit(SetAttr*) = 0;
   virtual void Visit(DefVar*) = 0;

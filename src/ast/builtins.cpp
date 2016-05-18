@@ -24,12 +24,13 @@ const sym::Type* FuncCall::Type() {
 }
 */
 
-Sum::Sum(std::vector<Node*>&& operands): operands{operands} {}
+ArithOp::ArithOp(ArgList&& operands): operands{operands} {}
 
 void Sum::Accept(Visitor* v) { v->Visit(this); }
+void Sub::Accept(Visitor* v) { v->Visit(this); }
 
-FuncCall::FuncCall(dt::StrView name, std::vector<Node*>&& args, sym::Type ty):
-name{name}, args{args}, ty{ty} {}
+FuncCall::FuncCall(sym::Func* func, ArgList&& args):
+func{func}, args{args} {}
 
 void FuncCall::Accept(Visitor* v) { v->Visit(this); }
 

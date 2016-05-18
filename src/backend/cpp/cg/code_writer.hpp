@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ast/visitor.hpp"
+#include <vector>
 
 namespace io {
   class FileWriter;
@@ -26,6 +27,7 @@ public:
   void Visit(ast::Str*) override;
   void Visit(ast::Sym*) override;
   void Visit(ast::Sum*) override;
+  void Visit(ast::Sub*) override;
   void Visit(ast::SetVar*) override;
   void Visit(ast::SetAttr*) override;
   void Visit(ast::DefVar*) override;
@@ -38,4 +40,6 @@ public:
 private:
   const sym::Module& module;
   const io::FileWriter& fw;
+
+  void VisitList(char delimiter, const std::vector<ast::Node*>&);
 };

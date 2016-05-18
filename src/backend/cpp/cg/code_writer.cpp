@@ -44,12 +44,11 @@ void CodeWriter::Visit(ast::Sym* node) {
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
-  auto operands = node->operands;
-  for (uint i = 0; i < operands.size() - 1; ++i) {
-    operands[i]->Accept(this);
-    fw.Write('+');
-  }
-  operands.back()->Accept(this);
+  VisitList('+', node->operands);
+}
+
+void CodeWriter::Visit(ast::Sub* node) {
+  VisitList('-', node->operands);
 }
 
 void CodeWriter::Visit(ast::SetVar* node) {
@@ -90,7 +89,7 @@ void CodeWriter::Visit(ast::Var* node) {
 }
 
 void CodeWriter::Visit(ast::FuncCall* node) {
-  fw.Write(node->name);
+  fw.Write(node->func->name);
   fw.Write('(');
   for (uint i = 0; i < node->args.size() - 1; ++i) {
     node->args[i]->Accept(this);
@@ -106,6 +105,7 @@ void CodeWriter::Visit(ast::CompoundLiteral* node) {
   fw.Write("(struct ", 8);
   fw.Write(s->name);
   fw.Write("){", 2);
+  // WriteList(',', node->initializers);
   for (uint i = 0; i < node->initializers.size() - 1; ++i) {
     node->initializers[i]->Accept(this);
     fw.Write(',');
@@ -118,4 +118,13 @@ void CodeWriter::Visit(ast::AttrAccess* node) {
   fw.Write(node->obj_name);
   fw.Write('.');
   fw.Write(node->attr->name);
+}
+
+void CodeWriter::VisitList(char delimiter, const std::vector<ast::Node*>& list) {
+  for (uint i = 0; i < list.size() - 1; ++i) {
+    list[i]->Accept(this);
+    fw.Write(delimiter);
+  }
+
+  list.back()->Accept(this);
 }

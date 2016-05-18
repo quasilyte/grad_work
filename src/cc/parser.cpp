@@ -188,7 +188,9 @@ void Parser::ParseSignature(TokenStream& toks) {
 
   module.DropScopeLevel();
 
-  auto func = new sym::Func{std::move(params), std::move(exprs), TypeDeducer::Run(exprs.back())};
+  auto func = new sym::Func{
+    name, std::move(params), std::move(exprs), TypeDeducer::Run(exprs.back())
+  };
   module.DefineFunc(name, func);
   result.funcs.push_back(name);
 }
@@ -222,6 +224,7 @@ Node* Parser::ParseList(Token tok) {
 
     switch (name_hash) {
     case encode9("+"): return ParseSum(list);
+    case encode9("-"): return ParseSub(list);
     case encode9("set!"): return ParseSet(list);
     case encode9("def"): return ParseDef(list);
     case encode9("if"): return ParseIf(list);
@@ -260,22 +263,18 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
       throw "too many args";
     }
 
-    return new FuncCall{name, std::move(nodes), func->ret_type};
+    return new FuncCall{func, std::move(nodes)};
   } else {
     throw "called undefined function";
   }
 }
 
 Node* Parser::ParseSum(TokenStream& toks) {
-  auto args = eval_tokens(toks, 1, LONGEST_ARG_LIST);
+  return new Sum{std::move(CollectParsed(toks))};
+}
 
-  std::vector<Node*> operands;
-  operands.reserve(args.size());
-  for (auto arg : args) {
-    operands.push_back(ParseToken(arg));
-  }
-
-  return new Sum{std::move(operands)};
+Node* Parser::ParseSub(TokenStream& toks) {
+  return new Sub{std::move(CollectParsed(toks))};
 }
 
 // (set! obj val)
@@ -385,4 +384,14 @@ Node* Parser::ParseAttrAccess(TokenStream& toks) {
   auto attr = module.Struct(var->Tag())->Attr(attr_name);
 
   return new AttrAccess{obj_name, attr};
+}
+
+std::vector<ast::Node*> Parser::CollectParsed(TokenStream& toks) {
+  std::vector<Node*> nodes;
+
+  while (!toks.NextToken().IsEof()) {
+    nodes.push_back(ParseToken(toks.CurrentToken()));
+  }
+
+  return nodes;
 }
