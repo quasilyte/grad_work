@@ -1,0 +1,9 @@
+#+BEGIN_SRC C
+  // globals declarations
+  // functions declarations
+  // functions definitions
+  void init() {
+    // globals definitions
+    // top level expressions
+  }
+#+END_SRC
