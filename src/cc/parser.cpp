@@ -127,12 +127,25 @@ void Parser::ParseDefStruct(TokenStream& toks) {
 }
 
 void Parser::ParseGlobal(TokenStream& args) {
-  dt::StrView name = args.NextToken();
+  auto name = args.NextToken();
   auto expr = ParseToken(args.NextToken());
-  auto ty = new sym::Type{TypeDeducer::Run(expr)};
+  auto ty = new Type{TypeDeducer::Run(expr)};
 
-  result.globals.push_back(new DefVar{name, expr, ty});
-  module.DefineGlobalSymbol(name, ty);
+  if (name.IsList()) {
+    lex::TokenStream typed_pair{name};
+    auto explicit_ty = new Type{TypeByName(typed_pair.NextToken())};
+    name = typed_pair.NextToken();
+
+    if (explicit_ty->CompatibleWith(*ty)) {
+      result.globals.push_back(new DefVar{name, expr, explicit_ty});
+      module.DefineGlobalSymbol(name, explicit_ty);
+    } else {
+      throw "not compatible assignment";
+    }
+  } else {
+    result.globals.push_back(new DefVar{name, expr, ty});
+    module.DefineGlobalSymbol(name, ty);
+  }
 }
 
 void Parser::ParseExpr(Token& tok) {
