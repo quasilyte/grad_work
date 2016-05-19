@@ -20,8 +20,6 @@ public:
   static TranslationUnit Run(const TopLevel&);
 
 private:
-  const int LONGEST_ARG_LIST = 32;
-
   sym::Module module;
   const TopLevel& top;
   TranslationUnit result;
