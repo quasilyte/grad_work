@@ -283,10 +283,13 @@ Node* Parser::ParseSet(TokenStream& toks) {
   case 2: {
     auto name = toks.NextToken();
     auto expr = ParseToken(toks.NextToken());
-    // auto var = module.Symbol(name);
+    auto var = module.Symbol(name);
 
-    // #FIXME: make type checks
-    return new SetVar{name, expr};
+    if (var.CompatibleWith(TypeDeducer::Run(expr))) {
+      return new SetVar{name, expr};
+    } else {
+      throw "set: incompatible types";
+    }
   }
   case 3: {
     auto obj_name = toks.NextToken();
