@@ -21,7 +21,8 @@ private:
   TopLevel Classify();
 
   void ClassifyDirective(const lex::Token& directive);
-  void ClassifyDef(lex::TokenStream&);
+  void ClassifyFn(lex::TokenStream&);
+  void ClassifyVar(lex::TokenStream&);
   void ClassifyStruct(lex::TokenStream&);
 };
 
