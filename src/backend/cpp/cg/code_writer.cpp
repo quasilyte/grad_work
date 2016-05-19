@@ -117,12 +117,14 @@ void CodeWriter::Visit(ast::AttrAccess* node) {
 }
 
 void CodeWriter::VisitList(char delimiter, const std::vector<ast::Node*>& list) {
-  for (uint i = 0; i < list.size() - 1; ++i) {
-    list[i]->Accept(this);
-    fw.Write(delimiter);
-  }
+  if (list.size()) {
+    for (uint i = 0; i < list.size() - 1; ++i) {
+      list[i]->Accept(this);
+      fw.Write(delimiter);
+    }
 
-  list.back()->Accept(this);
+    list.back()->Accept(this);
+  }
 }
 
 void CodeWriter::VisitGroupedList(char delimiter, const std::vector<ast::Node*>& list) {
