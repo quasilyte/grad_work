@@ -1,0 +1,7 @@
+All globals have zero value even _before_ initializer expression
+is evaluated. This resolves the situation where a global initialized 
+by a function which uses that global variable to calculate return value.
+So, the function will see zero value for variable, making it possible
+to execute function before the global variable fully defined.
+Note: global variable is fully defined when its initializer expression
+is evaluated (always at run time).
