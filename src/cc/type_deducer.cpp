@@ -9,7 +9,7 @@
 using namespace cc;
 using namespace sym;
 
-Type TypeDeducer::Run(ast::Node* root) {
+Type* TypeDeducer::Run(ast::Node* root) {
   TypeDeducer self;
   self.Visit(root);
 
@@ -35,15 +35,16 @@ void TypeDeducer::Visit(ast::Str*) {
 void TypeDeducer::Visit(ast::Sym*) {
   result = Type::Sym();
 }
-
-sym::Type deduce_arith_type(ast::Operation* op) {
-  Type ty;
+#include "dbg/sym.hpp"
+sym::Type* deduce_arith_type(ast::Operation* op) {
+  Type* ty;
 
   for (ast::Node* operand : op->operands) {
     ty = TypeDeducer::Run(operand);
+    dbg::dump(*ty);
 
-    if (ty.IsArith()) {
-      if (ty.IsReal()) {
+    if (ty->IsArith()) {
+      if (ty->IsReal()) {
         return ty;
       }
     } else {
@@ -51,7 +52,7 @@ sym::Type deduce_arith_type(ast::Operation* op) {
     }
   }
 
-  return ty.IsInt() || ty.IsUnknown() ? Type::Int() : Type::Num();
+  return ty->IsInt() || ty->IsUnknown() ? Type::Int() : Type::Num();
 }
 
 void TypeDeducer::Visit(ast::Sum* sum) {
@@ -89,27 +90,28 @@ void TypeDeducer::Visit(ast::If* node) {
   auto ty2 = TypeDeducer::Run(node->on_false);
 
   // #FIXME: maybe this "Unknown" handling should be moved to ExtendedWith()
-  if (ty1.IsUnknown()) {
+  if (ty1->IsUnknown()) {
     result = ty2;
-  } else if (ty2.IsUnknown()) {
+  } else if (ty2->IsUnknown()) {
     result = ty1;
   } else {
-    result = ty1.ExtendedWith(ty2);
+    result = ty1->ExtendedWith(ty2);
   }
 }
 
 void TypeDeducer::Visit(ast::Var* node) {
-  result = *node->type;
-}
-
-void TypeDeducer::Visit(ast::FuncCall* node) {
-  result = node->func->ret_type;
-}
-
-void TypeDeducer::Visit(ast::CompoundLiteral* node) {
   result = node->type;
 }
 
+void TypeDeducer::Visit(ast::FuncCall* node) {
+  result = &node->func->ret_type;
+  printf("funcall %p\n", &node->func->ret_type);
+}
+
+void TypeDeducer::Visit(ast::CompoundLiteral* node) {
+  result = &node->type;
+}
+
 void TypeDeducer::Visit(ast::AttrAccess* node) {
-  result = node->attr->type;
+  result = &node->attr->type;
 }

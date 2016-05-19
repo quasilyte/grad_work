@@ -31,6 +31,14 @@ Type* Scope::DefineSymbol(const dt::StrView& key, Type* ty) {
   return ty;
 }
 
+void Scope::UpdateSymbol(const dt::StrView& key, Type* ty) {
+  if (key.Len() > 9) {
+    alist.Replace(key, ty);
+  } else {
+    hlist.Replace(key, ty);
+  }
+}
+
 Type* Scope::Symbol(const dt::StrView& key) {
   if (key.Len() > 9) {
     return alist.Find(key, alist.Size());

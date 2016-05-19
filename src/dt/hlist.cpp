@@ -43,5 +43,16 @@ T Hlist<T>::Find(const StrView& key) const noexcept {
   return Find(key, Size());
 }
 
+template<class T>
+void Hlist<T>::Replace(const StrView& key, T val) {
+  auto hashed_key = mn_hash::encode9(key.Data(), key.Len());
+
+  for (auto it = nodes.rbegin(); it != nodes.rend(); ++it) {
+    if (it->hashed_key == hashed_key) {
+      it->val = val;
+    }
+  }
+}
+
 template class dt::Hlist<i32>; // For tests
 template class dt::Hlist<sym::Type*>;

@@ -36,12 +36,15 @@ void Module::DefineGlobalSymbol(dt::StrView name, Type* ty) {
     globals.Put(name, ty);
   }
 }
-
-void Module::UpdateGlobalSymbol(dt::StrView name, Type ty) {
+#include "dbg/sym.hpp"
+#include "dbg/dt.hpp"
+void Module::UpdateGlobalSymbol(dt::StrView name, Type* ty) {
   auto global = globals.Get(name);
 
   if (global) {
-    global->ExtendWith(ty);
+    // #FIXME: maybe returning iterator from GetMut can help
+    // eliminate 2-nd hash lookup.
+    globals.Put(name, global->ExtendedWith(ty));
   } else {
     throw "update of undefined global";
   }
@@ -51,13 +54,23 @@ Type* Module::GlobalSymbol(dt::StrView name) const {
   return globals.Get(name);
 }
 
-Type* Module::DefineLocal(dt::StrView name, Type ty) {
+Type* Module::DefineLocal(dt::StrView name, Type* ty) {
   auto local = scope.LocalSymbol(name);
 
   if (local) {
     throw "local already defined";
   } else {
-    return scope.DefineSymbol(name, new Type{ty});
+    return scope.DefineSymbol(name, new Type{ty->Tag()});
+  }
+}
+
+void Module::UpdateLocal(dt::StrView name, Type* ty) {
+  auto local = scope.Symbol(name);
+
+  if (local) {
+    *local = *local->ExtendedWith(ty);
+  } else {
+    throw "update of undefined global";
   }
 }
 
@@ -83,10 +96,11 @@ Type* Module::LocalSymbol(dt::StrView name) {
 void Module::DeclareFunc(dt::StrView name, sym::Func* func) {
   funcs.Put(name, func);
 }
-
+#include <cstdio>
 void Module::DefineFunc(dt::StrView name, ExprList&& exprs, Type ty) {
   auto func = funcs.Get(name);
   func->ret_type = ty;
+  printf("defn %p\n", &func->ret_type);
   func->exprs = exprs;
 }
 

@@ -23,6 +23,7 @@ public:
   void DropLevel();
 
   Type* DefineSymbol(const dt::StrView& key, Type* ty);
+  void UpdateSymbol(const dt::StrView& key, Type* ty);
 
   Type* Symbol(const dt::StrView& key);
   Type* LocalSymbol(const dt::StrView& key);

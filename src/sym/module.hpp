@@ -28,7 +28,7 @@ public:
 
   // Globals:
   void DefineGlobalSymbol(dt::StrView name, sym::Type*);
-  void UpdateGlobalSymbol(dt::StrView name, sym::Type);
+  void UpdateGlobalSymbol(dt::StrView name, sym::Type*);
   Type* GlobalSymbol(dt::StrView name) const;
 
   // Functions:
@@ -39,7 +39,8 @@ public:
   sym::Func* Func(dt::StrView name) const;
 
   // Locals:
-  Type* DefineLocal(dt::StrView name, Type);
+  Type* DefineLocal(dt::StrView name, Type*);
+  void UpdateLocal(dt::StrView name, Type*);
   Type* LocalSymbol(dt::StrView name);
 
   Type* Symbol(dt::StrView name);

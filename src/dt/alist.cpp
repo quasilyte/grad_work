@@ -40,5 +40,14 @@ T Alist<T>::Find(const StrView& key) const noexcept {
   return Find(key, Size());
 }
 
+template<class T>
+void Alist<T>::Replace(const StrView& key, T val) {
+  for (auto it = nodes.rbegin(); it != nodes.rend(); ++it) {
+    if (it->key == key) {
+      it->val = val;
+    }
+  }
+}
+
 template class dt::Alist<i32>; // For tests
 template class dt::Alist<sym::Type*>;

@@ -54,7 +54,7 @@ std::vector<Token> eval_tokens(TokenStream toks, int count) {
   return eval_tokens(toks, count, count);
 }
 
-sym::Type Parser::TypeByName(dt::StrView name) const {
+sym::Type* Parser::TypeByName(dt::StrView name) const {
   using namespace mn_hash;
 
   switch (encode9(name.Data(), name.Len())) {
@@ -64,7 +64,7 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
   default:
     auto type_info = module.Struct(name);
     if (type_info) {
-      return type_info->type;
+      return &type_info->type;
     } else {
       throw "unknown type";
     }
@@ -98,18 +98,13 @@ TranslationUnit Parser::Parse() {
     ParseExpr(expr);
   }
 
-  /*
-  for (lex::TokenStream func : top.funcs) {
-    dbg::dump_token(func.CurrentToken());
-  }*/
-
-  /*
-  sym::Func* fn = module.Func("sum");
-  printf("arity: %d\n", fn->Arity());
-  for (sym::Param param : fn->Params()) {
-    dbg::dump(param.type);
+  // Types for globals could change; rebind them.
+  for (DefVar* global : result.globals) {
+    auto g_sym = module.GlobalSymbol(global->name);
+    if (!g_sym->SameAs(global->type)) {
+      global->type = g_sym;
+    }
   }
-  dbg::dump(fn->ret_type);*/
 
   return result;
 }
@@ -126,15 +121,15 @@ void Parser::ParseDefStruct(TokenStream& toks) {
       auto type = TypeByName(typed_list.NextToken());
 
       while (!typed_list.NextToken().IsEof()) {
-        attrs.push_back(Param{typed_list.CurrentToken(), type});
+        // #FIXME: this is suspicious. Will it work?
+        attrs.push_back(Param{typed_list.CurrentToken(), *type});
       }
     } else {
-      attrs.push_back(Param{tok, Type::Any()});
+      attrs.push_back(Param{tok, *Type::Any()});
     }
   }
 
   // #FIXME: return value (type_id) unused
-  // module.DefineStruct(name, new Struct{name, attrs});
   module.DefineStruct(name, std::move(attrs));
   result.structs.push_back(name);
 }
@@ -142,7 +137,7 @@ void Parser::ParseDefStruct(TokenStream& toks) {
 void Parser::ParseGlobal(TokenStream& args) {
   dt::StrView name = args.NextToken();
   auto expr = ParseToken(args.NextToken());
-  auto ty = new sym::Type{TypeDeducer::Run(expr)};
+  auto ty = TypeDeducer::Run(expr);
 
   result.globals.push_back(new DefVar{name, expr, ty});
   module.DefineGlobalSymbol(name, ty);
@@ -172,16 +167,17 @@ void Parser::ParseSignature(TokenStream& toks) {
 
       while (!typed_list.NextToken().IsEof()) {
         dt::StrView param_name = typed_list.CurrentToken();
-        params.push_back(Param{param_name, type});
+        // #FIXME: taking value of type
+        params.push_back(Param{param_name, *type});
         module.DefineLocal(param_name, type);
       }
     } else {
-      params.push_back(Param{tok, sym::Type::Any()});
+      params.push_back(Param{tok, *sym::Type::Any()});
       module.DefineLocal(tok, sym::Type::Any());
     }
   }
 
-  module.DeclareFunc(name, new sym::Func{name, std::move(params), Type::Unknown()});
+  module.DeclareFunc(name, new sym::Func{name, std::move(params), *Type::Unknown()});
 
   std::vector<Node*> exprs;
   while (!toks.NextToken().IsEof()) {
@@ -190,7 +186,8 @@ void Parser::ParseSignature(TokenStream& toks) {
 
   module.DropScopeLevel();
 
-  module.DefineFunc(name, std::move(exprs), TypeDeducer::Run(exprs.back()));
+  // #FIXME: type value
+  module.DefineFunc(name, std::move(exprs), *TypeDeducer::Run(exprs.back()));
   result.funcs.push_back(name);
 }
 
@@ -296,7 +293,7 @@ Node* Parser::ParseSet(TokenStream& toks) {
     auto var = module.LocalSymbol(name);
 
     if (var) {
-      var->ExtendWith(TypeDeducer::Run(expr));
+      module.UpdateLocal(name, TypeDeducer::Run(expr));
       return new SetVar{name, expr};
     } else {
       module.UpdateGlobalSymbol(name, TypeDeducer::Run(expr));
@@ -356,7 +353,7 @@ Node* Parser::ParseGet(TokenStream& toks) {
   auto key = ParseToken(toks.NextToken());
   auto key_ty = TypeDeducer::Run(key);
 
-  if (key_ty.IsSym()) {
+  if (key_ty->IsSym()) {
     auto attr = module.Struct(var->Tag())->Attr(static_cast<Sym*>(key)->datum);
     return new AttrAccess{obj_name, attr};
   } else {

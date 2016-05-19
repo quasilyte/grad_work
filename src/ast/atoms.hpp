@@ -49,12 +49,12 @@ struct ast::Sym: public Atom {
 };
 
 struct ast::Var: public Node {
-  Var(dt::StrView, const sym::Type*);
+  Var(dt::StrView, sym::Type*);
 
   void Accept(Visitor*);
 
   const dt::StrView name;
-  const sym::Type* type;
+  sym::Type* type;
 };
 
 struct ast::CompoundLiteral: public Node {

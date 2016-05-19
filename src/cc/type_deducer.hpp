@@ -9,7 +9,7 @@ namespace cc {
 
 class cc::TypeDeducer: public ast::Visitor {
 public:
-  static sym::Type Run(ast::Node*);
+  static sym::Type* Run(ast::Node*);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;
@@ -30,5 +30,5 @@ public:
   void Visit(ast::AttrAccess*) override;
 
 private:
-  sym::Type result;
+  sym::Type* result;
 };

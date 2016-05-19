@@ -11,30 +11,31 @@ class sym::Type {
 public:
   typedef i32 Id;
 
-  static const Id VOID = std::numeric_limits<Id>::max();
-  static const Id END_ARITH = std::numeric_limits<Id>::max() - 1;
-  static const Id ANY = std::numeric_limits<Id>::max() - 2;
-  static const Id NUM = std::numeric_limits<Id>::max() - 3;
-  static const Id REAL = std::numeric_limits<Id>::max() - 4;
-  static const Id INT = std::numeric_limits<Id>::max() - 5;
-  static const Id UNKNOWN = std::numeric_limits<Id>::max() - 6;
-  static const Id BEGIN_ARITH = std::numeric_limits<Id>::max() - 7;
-  static const Id STR = std::numeric_limits<Id>::max() - 8;
-  static const Id SYM = std::numeric_limits<Id>::max() - 9;
-  static const Id END_STRUCT = std::numeric_limits<Id>::max() - 10;
-
-  static Type Void();
-  static Type Any();
-  static Type Num();
-  static Type Real();
-  static Type Int();
-  static Type Unknown();
-  static Type Str();
-  static Type Sym();
+  // Builtin type ids
+  static const Id VOID_ID = std::numeric_limits<Id>::max();
+  static const Id END_ARITH_ID = std::numeric_limits<Id>::max() - 1;
+  static const Id ANY_ID = std::numeric_limits<Id>::max() - 2;
+  static const Id NUM_ID = std::numeric_limits<Id>::max() - 3;
+  static const Id REAL_ID = std::numeric_limits<Id>::max() - 4;
+  static const Id INT_ID = std::numeric_limits<Id>::max() - 5;
+  static const Id UNKNOWN_ID = std::numeric_limits<Id>::max() - 6;
+  static const Id BEGIN_ARITH_ID = std::numeric_limits<Id>::max() - 7;
+  static const Id STR_ID = std::numeric_limits<Id>::max() - 8;
+  static const Id SYM_ID = std::numeric_limits<Id>::max() - 9;
+  static const Id END_STRUCT_ID = std::numeric_limits<Id>::max() - 10;
 
   Type();
   Type(const Type&);
   Type(Id Tag);
+
+  static Type* Void() noexcept;
+  static Type* Any() noexcept;
+  static Type* Num() noexcept;
+  static Type* Real() noexcept;
+  static Type* Int() noexcept;
+  static Type* Unknown() noexcept;
+  static Type* Str() noexcept;
+  static Type* Sym() noexcept;
 
   Id Tag() const noexcept;
 
@@ -50,12 +51,21 @@ public:
   bool IsArith() const noexcept;
   bool IsStruct() const noexcept;
 
-  Type ExtendedWith(Type);
-  void ExtendWith(Type);
+  Type* ExtendedWith(Type*);
 
-  bool CompatibleWith(Type) const noexcept;
-  bool SameAs(Type) const noexcept;
+  bool CompatibleWith(Type*) const noexcept;
+  bool SameAs(Type*) const noexcept;
 
 private:
   Id tag;
+
+  // Builtin type identities
+  static Type VOID;
+  static Type ANY;
+  static Type NUM;
+  static Type REAL;
+  static Type INT;
+  static Type UNKNOWN;
+  static Type STR;
+  static Type SYM;
 };

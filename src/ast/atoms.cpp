@@ -13,7 +13,7 @@ void Real::Accept(Visitor* v) { v->Visit(this); }
 void Str::Accept(Visitor* v) { v->Visit(this); }
 void Sym::Accept(Visitor* v) { v->Visit(this); }
 
-Var::Var(dt::StrView name, const Type* type):
+Var::Var(dt::StrView name, Type* type):
 name{name}, type{type} {}
 
 void Var::Accept(Visitor* v) { v->Visit(this); }

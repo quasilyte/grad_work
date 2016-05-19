@@ -23,7 +23,9 @@ public:
   void Drop(int n);
 
   T Find(const StrView& key, int limit) const noexcept;
-  T Find(const StrView &key) const noexcept;
+  T Find(const StrView& key) const noexcept;
+
+  void Replace(const StrView&, T val);
 
   uint Size() const noexcept;
 

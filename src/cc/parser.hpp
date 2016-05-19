@@ -54,7 +54,7 @@ private:
 
   std::vector<ast::Node*> CollectParsed(lex::TokenStream&);
 
-  sym::Type TypeByName(dt::StrView) const;
+  sym::Type* TypeByName(dt::StrView) const;
   /*
 
   void ParseFuncDecls();
