@@ -19,6 +19,7 @@
 | [[https://en.wikibooks.org/wiki/Optimizing_C%2B%2B][Optimizing C++]]                    |
 | [[https://class.coursera.org/compilers-004/lecture][Coursera "compilers"]]              |
 | [[http://www.stroustrup.com/OOPSLA-typeswitch-draft.pdf][OOPSLA-typeswitch]]                 |
+| [[http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf][C11 spec draft]]                    |
 |                                   |
 
 #+CAPTION: misc/tempx
