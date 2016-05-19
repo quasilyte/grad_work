@@ -14,6 +14,7 @@ namespace ast {
   struct Operation;
   struct Sum;
   struct Sub;
+  struct Mul;
   struct Lt;
   struct Gt;
   struct FuncCall;
@@ -29,6 +30,11 @@ struct ast::Operation: public Node {
 };
 
 struct ast::Sum: public Operation {
+  using Operation::Operation;
+  void Accept(Visitor*);
+};
+
+struct ast::Mul: public Operation {
   using Operation::Operation;
   void Accept(Visitor*);
 };

@@ -8,6 +8,7 @@ Operation::Operation(ArgList&& operands): operands{operands} {}
 
 void Sum::Accept(Visitor* v) { v->Visit(this); }
 void Sub::Accept(Visitor* v) { v->Visit(this); }
+void Mul::Accept(Visitor* v) { v->Visit(this); }
 void Lt::Accept(Visitor* v) { v->Visit(this); }
 void Gt::Accept(Visitor* v) { v->Visit(this); }
 

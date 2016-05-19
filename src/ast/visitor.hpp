@@ -9,6 +9,7 @@ namespace ast {
   struct Sym;
   struct Sum;
   struct Sub;
+  struct Mul;
   struct Eq;
   struct Lt;
   struct Gt;
@@ -30,6 +31,7 @@ public:
   virtual void Visit(Str*) = 0;
   virtual void Visit(Sym*) = 0;
   virtual void Visit(Sum*) = 0;
+  virtual void Visit(Mul*) = 0;
   virtual void Visit(Lt*) = 0;
   virtual void Visit(Gt*) = 0;
   virtual void Visit(Sub*) = 0;

@@ -39,6 +39,7 @@ private:
   ast::Node* ParseFuncCall(lex::Token& name, lex::TokenStream& args);
   ast::Node* ParseSum(lex::TokenStream&);
   ast::Node* ParseSub(lex::TokenStream&);
+  ast::Node* ParseMul(lex::TokenStream&);
   ast::Node* ParseLt(lex::TokenStream&);
   ast::Node* ParseGt(lex::TokenStream&);
   ast::Node* ParseSet(lex::TokenStream&);

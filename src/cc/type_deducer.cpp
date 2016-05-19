@@ -58,6 +58,10 @@ void TypeDeducer::Visit(ast::Sum* sum) {
   result = deduce_arith_type(sum);
 }
 
+void TypeDeducer::Visit(ast::Mul* mul) {
+  result = deduce_arith_type(mul);
+}
+
 void TypeDeducer::Visit(ast::Sub* sub) {
   result = deduce_arith_type(sub);
 }

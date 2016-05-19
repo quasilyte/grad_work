@@ -208,7 +208,7 @@ Node* Parser::ParseToken(Token tok) {
     return ParseList(tok);
 
   default:
-    throw "not implemented";
+    throw "parse token: not implemented";
   }
 }
 
@@ -226,6 +226,7 @@ Node* Parser::ParseList(Token tok) {
     case encode9(">"): return ParseGt(list);
     case encode9("+"): return ParseSum(list);
     case encode9("-"): return ParseSub(list);
+    case encode9("*"): return ParseMul(list);
     case encode9("set!"): return ParseSet(list);
     case encode9("def"): return ParseDef(list);
     case encode9("if"): return ParseIf(list);
@@ -266,6 +267,10 @@ Node* Parser::ParseSum(TokenStream& toks) {
 
 Node* Parser::ParseSub(TokenStream& toks) {
   return new Sub{std::move(CollectParsed(toks))};
+}
+
+Node* Parser::ParseMul(TokenStream& toks) {
+  return new Mul{std::move(CollectParsed(toks))};
 }
 
 Node* Parser::ParseLt(TokenStream& toks) {

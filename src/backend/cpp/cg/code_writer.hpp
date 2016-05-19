@@ -30,6 +30,7 @@ public:
   void Visit(ast::Sym*) override;
   void Visit(ast::Sum*) override;
   void Visit(ast::Sub*) override;
+  void Visit(ast::Mul*) override;
   void Visit(ast::Lt*) override;
   void Visit(ast::Gt*) override;
   void Visit(ast::SetVar*) override;

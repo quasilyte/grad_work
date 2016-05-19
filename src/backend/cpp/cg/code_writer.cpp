@@ -48,6 +48,10 @@ void CodeWriter::Visit(ast::Sub* node) {
   VisitGroupedList('-', node->operands);
 }
 
+void CodeWriter::Visit(ast::Mul* node) {
+  VisitGroupedList('*', node->operands);
+}
+
 void CodeWriter::Visit(ast::Lt* node) {
   VisitGroupedList('<', node->operands);
 }
