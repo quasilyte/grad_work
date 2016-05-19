@@ -99,7 +99,7 @@ void TypeDeducer::Visit(ast::If* node) {
 }
 
 void TypeDeducer::Visit(ast::Var* node) {
-  result = *node->type;
+  result = node->type;
 }
 
 void TypeDeducer::Visit(ast::FuncCall* node) {

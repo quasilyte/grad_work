@@ -17,7 +17,7 @@ void Scope::DropLevel() {
   levels.pop_back();
 }
 
-Type* Scope::DefineSymbol(const dt::StrView& key, Type* ty) {
+Type Scope::DefineSymbol(const dt::StrView& key, Type ty) {
   auto& level = levels.back();
 
   if (key.Len() > 9) {
@@ -31,7 +31,7 @@ Type* Scope::DefineSymbol(const dt::StrView& key, Type* ty) {
   return ty;
 }
 
-Type* Scope::Symbol(const dt::StrView& key) {
+Type Scope::Symbol(const dt::StrView& key) {
   if (key.Len() > 9) {
     return alist.Find(key, alist.Size());
   } else {
@@ -39,7 +39,7 @@ Type* Scope::Symbol(const dt::StrView& key) {
   }
 }
 
-Type* Scope::LocalSymbol(const dt::StrView& key) {
+Type Scope::LocalSymbol(const dt::StrView& key) {
   auto level = levels.back();
 
   if (key.Len() > 9) {

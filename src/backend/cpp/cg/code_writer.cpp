@@ -71,7 +71,7 @@ void CodeWriter::Visit(ast::SetAttr* node) {
 }
 
 void CodeWriter::Visit(ast::DefVar* node) {
-  write_type(&module, *node->type, &fw);
+  write_type(&module, node->type, &fw);
 
   fw.Write(' ');
   fw.Write(node->name);

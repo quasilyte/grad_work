@@ -15,7 +15,7 @@ obj_name{obj_name}, attr{attr}, value{value} {}
 
 void SetAttr::Accept(Visitor* v) { v->Visit(this); }
 
-DefVar::DefVar(dt::StrView name, Node* value, sym::Type* ty):
+DefVar::DefVar(dt::StrView name, Node* value, sym::Type ty):
 name{name}, value{value}, type{ty} {}
 
 void DefVar::Accept(Visitor* v) { v->Visit(this); }

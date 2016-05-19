@@ -33,11 +33,11 @@ struct ast::SetAttr: public Node {
 };
 
 struct ast::DefVar: public Node {
-  DefVar(dt::StrView name, Node* value, sym::Type*);
+  DefVar(dt::StrView name, Node* value, sym::Type);
 
   void Accept(Visitor*) override;
 
   dt::StrView name;
   Node* value;
-  sym::Type* type;
+  sym::Type type;
 };

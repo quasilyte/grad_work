@@ -29,44 +29,44 @@ sym::Struct* Module::Struct(sym::Type::Id type_id) const {
   return type_id_map[type_id -  1];
 }
 
-void Module::DefineGlobalSymbol(dt::StrView name, Type* ty) {
-  if (globals.Get(name)) {
-    throw "redefinition of global";
-  } else {
+void Module::DefineGlobalSymbol(dt::StrView name, Type ty) {
+  if (globals.Get(name).IsVoid()) {
     globals.Put(name, ty);
+  } else {
+    throw "redefinition of global";
   }
 }
 
-Type* Module::GlobalSymbol(dt::StrView name) const {
+Type Module::GlobalSymbol(dt::StrView name) const {
   return globals.Get(name);
 }
 
-Type* Module::DefineLocal(dt::StrView name, Type ty) {
+void Module::DefineLocal(dt::StrView name, Type ty) {
   auto local = scope.LocalSymbol(name);
 
-  if (local) {
-    throw "local already defined";
+  if (local.IsVoid()) {
+    scope.DefineSymbol(name, Type{ty});
   } else {
-    return scope.DefineSymbol(name, new Type{ty});
+    throw "local already defined";
   }
 }
 
-Type* Module::Symbol(dt::StrView name) {
+Type Module::Symbol(dt::StrView name) {
   auto local = scope.Symbol(name);
 
-  if (local) {
-    return local;
-  } else {
+  if (local.IsVoid()) {
     auto global = globals.Get(name);
-    if (global) {
-      return global;
-    } else {
+    if (global.IsVoid()) {
       throw "unbound var referenced";
+    } else {
+      return global;
     }
+  } else {
+    return local;
   }
 }
 
-Type* Module::LocalSymbol(dt::StrView name) {
+Type Module::LocalSymbol(dt::StrView name) {
   return scope.Symbol(name);
 }
 

@@ -22,10 +22,10 @@ public:
   void CreateLevel();
   void DropLevel();
 
-  Type* DefineSymbol(const dt::StrView& key, Type* ty);
+  Type DefineSymbol(const dt::StrView& key, Type ty);
 
-  Type* Symbol(const dt::StrView& key);
-  Type* LocalSymbol(const dt::StrView& key);
+  Type Symbol(const dt::StrView& key);
+  Type LocalSymbol(const dt::StrView& key);
 
 private:
   struct Level {
@@ -35,6 +35,6 @@ private:
   };
 
   std::vector<Level> levels;
-  dt::Hlist<Type*> hlist;
-  dt::Alist<Type*> alist;
+  dt::Hlist<Type> hlist;
+  dt::Alist<Type> alist;
 };

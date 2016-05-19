@@ -129,14 +129,14 @@ void Parser::ParseDefStruct(TokenStream& toks) {
 void Parser::ParseGlobal(TokenStream& args) {
   auto name = args.NextToken();
   auto expr = ParseToken(args.NextToken());
-  auto ty = new Type{TypeDeducer::Run(expr)};
+  auto ty = TypeDeducer::Run(expr);
 
   if (name.IsList()) {
     lex::TokenStream typed_pair{name};
-    auto explicit_ty = new Type{TypeByName(typed_pair.NextToken())};
+    auto explicit_ty = TypeByName(typed_pair.NextToken());
     name = typed_pair.NextToken();
 
-    if (explicit_ty->CompatibleWith(*ty)) {
+    if (explicit_ty.CompatibleWith(ty)) {
       result.globals.push_back(new DefVar{name, expr, explicit_ty});
       module.DefineGlobalSymbol(name, explicit_ty);
     } else {
@@ -283,21 +283,17 @@ Node* Parser::ParseSet(TokenStream& toks) {
   case 2: {
     auto name = toks.NextToken();
     auto expr = ParseToken(toks.NextToken());
-    auto var = module.LocalSymbol(name);
+    // auto var = module.Symbol(name);
 
     // #FIXME: make type checks
-    if (var) {
-      return new SetVar{name, expr};
-    } else {
-      return new SetVar{name, expr};
-    }
+    return new SetVar{name, expr};
   }
   case 3: {
     auto obj_name = toks.NextToken();
     auto attr_name = toks.NextToken();
     auto expr = ParseToken(toks.NextToken());
     auto var = module.Symbol(obj_name);
-    auto attr = module.Struct(var->Tag())->Attr(attr_name);
+    auto attr = module.Struct(var.Tag())->Attr(attr_name);
 
     return new SetAttr{obj_name, attr, expr};
   }
@@ -309,8 +305,10 @@ Node* Parser::ParseSet(TokenStream& toks) {
 Node* Parser::ParseDef(TokenStream& toks) {
   auto name = toks.NextToken();
   auto expr = ParseToken(toks.NextToken());
+  auto ty = TypeDeducer::Run(expr);
 
-  return new DefVar{name, expr, module.DefineLocal(name, TypeDeducer::Run(expr))};
+  module.DefineLocal(name, ty);
+  return new DefVar{name, expr, ty};
 }
 
 Node* Parser::ParseIf(TokenStream& toks) {
@@ -346,7 +344,7 @@ Node* Parser::ParseGet(TokenStream& toks) {
   auto key_ty = TypeDeducer::Run(key);
 
   if (key_ty.IsSym()) {
-    auto attr = module.Struct(var->Tag())->Attr(static_cast<Sym*>(key)->datum);
+    auto attr = module.Struct(var.Tag())->Attr(static_cast<Sym*>(key)->datum);
     return new AttrAccess{obj_name, attr};
   } else {
     throw "dynamic lookup is not supported yet";
@@ -379,7 +377,7 @@ Node* Parser::ParseAttrAccess(TokenStream& toks) {
   dt::StrView attr_name = toks.NextToken();
 
   auto var = module.Symbol(obj_name);
-  auto attr = module.Struct(var->Tag())->Attr(attr_name);
+  auto attr = module.Struct(var.Tag())->Attr(attr_name);
 
   return new AttrAccess{obj_name, attr};
 }
