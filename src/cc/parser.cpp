@@ -216,7 +216,6 @@ Node* Parser::ParseList(Token tok) {
     case encode9("set!"): return ParseSet(list);
     case encode9("def"): return ParseDef(list);
     case encode9("if"): return ParseIf(list);
-    // case encode9("for"): return ParseFor(list);
     case encode9("struct"): return ParseStruct(list);
     case encode9("'"): return ParseQuote(list);
     case encode9("get"): return ParseGet(list);
@@ -230,15 +229,6 @@ Node* Parser::ParseList(Token tok) {
     throw "car(list) != symbol";
   }
 }
-
-/*
-ast::Node* Parser::ParseFor(lex::TokenStream& toks) {
-  auto inductor = toks.NextToken();
-  auto iterator = ParseToken(toks.NextToken());
-  auto loop_expr = ParseToken(toks.NextToken());
-
-
-}*/
 
 ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
   sym::Func* func = module.Func(name);
