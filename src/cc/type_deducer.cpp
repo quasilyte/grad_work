@@ -37,7 +37,7 @@ void TypeDeducer::Visit(ast::Sym*) {
 }
 
 sym::Type deduce_arith_type(ast::Operation* op) {
-  auto ty = Type::Int();
+  Type ty;
 
   for (ast::Node* operand : op->operands) {
     ty = TypeDeducer::Run(operand);
@@ -51,7 +51,7 @@ sym::Type deduce_arith_type(ast::Operation* op) {
     }
   }
 
-  return ty.IsInt() ? ty : Type::Num();
+  return ty.IsInt() || ty.IsUnknown() ? Type::Int() : Type::Num();
 }
 
 void TypeDeducer::Visit(ast::Sum* sum) {
@@ -88,7 +88,14 @@ void TypeDeducer::Visit(ast::If* node) {
   auto ty1 = TypeDeducer::Run(node->on_true);
   auto ty2 = TypeDeducer::Run(node->on_false);
 
-  result = ty1.ExtendedWith(ty2);
+  // #FIXME: maybe this "Unknown" handling should be moved to ExtendedWith()
+  if (ty1.IsUnknown()) {
+    result = ty2;
+  } else if (ty2.IsUnknown()) {
+    result = ty1;
+  } else {
+    result = ty1.ExtendedWith(ty2);
+  }
 }
 
 void TypeDeducer::Visit(ast::Var* node) {
