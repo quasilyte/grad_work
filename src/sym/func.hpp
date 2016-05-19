@@ -17,6 +17,7 @@ struct sym::Func {
   typedef std::vector<sym::Param> ParamList;
   typedef std::vector<ast::Node*> ExprList;
 
+  Func(dt::StrView name, ParamList&&, sym::Type);
   Func(dt::StrView name, ParamList&&, ExprList&&, sym::Type);
 
   int Arity() const noexcept;

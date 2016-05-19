@@ -181,6 +181,8 @@ void Parser::ParseSignature(TokenStream& toks) {
     }
   }
 
+  module.DeclareFunc(name, new sym::Func{name, std::move(params), Type::Unknown()});
+
   std::vector<Node*> exprs;
   while (!toks.NextToken().IsEof()) {
     exprs.push_back(ParseToken(toks.CurrentToken()));
@@ -188,10 +190,7 @@ void Parser::ParseSignature(TokenStream& toks) {
 
   module.DropScopeLevel();
 
-  auto func = new sym::Func{
-    name, std::move(params), std::move(exprs), TypeDeducer::Run(exprs.back())
-  };
-  module.DefineFunc(name, func);
+  module.DefineFunc(name, std::move(exprs), TypeDeducer::Run(exprs.back()));
   result.funcs.push_back(name);
 }
 

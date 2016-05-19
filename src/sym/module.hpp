@@ -15,6 +15,8 @@ namespace sym {
 
 class sym::Module {
 public:
+  typedef std::vector<ast::Node*> ExprList;
+
   Module();
 
   const dt::StrView& Name() const noexcept;
@@ -32,7 +34,8 @@ public:
   // Functions:
   void CreateScopeLevel();
   void DropScopeLevel();
-  void DefineFunc(dt::StrView name, sym::Func*);
+  void DeclareFunc(dt::StrView name, sym::Func*);
+  void DefineFunc(dt::StrView name, ExprList&&, sym::Type);
   sym::Func* Func(dt::StrView name) const;
 
   // Locals:

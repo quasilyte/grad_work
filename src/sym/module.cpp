@@ -57,7 +57,7 @@ Type* Module::DefineLocal(dt::StrView name, Type ty) {
   if (local) {
     throw "local already defined";
   } else {
-    return scope.DefineSymbol(name, ty);
+    return scope.DefineSymbol(name, new Type{ty});
   }
 }
 
@@ -80,8 +80,14 @@ Type* Module::LocalSymbol(dt::StrView name) {
   return scope.Symbol(name);
 }
 
-void Module::DefineFunc(dt::StrView name, sym::Func* func) {
+void Module::DeclareFunc(dt::StrView name, sym::Func* func) {
   funcs.Put(name, func);
+}
+
+void Module::DefineFunc(dt::StrView name, ExprList&& exprs, Type ty) {
+  auto func = funcs.Get(name);
+  func->ret_type = ty;
+  func->exprs = exprs;
 }
 
 Func* Module::Func(dt::StrView name) const {
