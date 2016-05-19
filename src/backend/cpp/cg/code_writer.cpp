@@ -116,18 +116,23 @@ void CodeWriter::Visit(ast::AttrAccess* node) {
   fw.Write(node->attr->name);
 }
 
-void CodeWriter::VisitList(char delimiter, const std::vector<ast::Node*>& list) {
-  if (list.size()) {
-    for (uint i = 0; i < list.size() - 1; ++i) {
-      list[i]->Accept(this);
+void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {
+  if (nodes.size()) {
+    for (uint i = 0; i < nodes.size() - 1; ++i) {
+      nodes[i]->Accept(this);
       fw.Write(delimiter);
     }
-
-    list.back()->Accept(this);
   }
 }
 
-void CodeWriter::VisitGroupedList(char delimiter, const std::vector<ast::Node*>& list) {
+void CodeWriter::VisitList(char delimiter, const NodeList& nodes) {
+  if (nodes.size()) {
+    VisitButLast(delimiter, nodes);
+    nodes.back()->Accept(this);
+  }
+}
+
+void CodeWriter::VisitGroupedList(char delimiter, const NodeList& list) {
   fw.Write('(');
   VisitList(delimiter, list);
   fw.Write(')');

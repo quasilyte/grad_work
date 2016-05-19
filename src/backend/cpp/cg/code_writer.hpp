@@ -17,6 +17,8 @@ namespace cpp_cg {
 
 class cpp_cg::CodeWriter: public ast::Visitor {
 public:
+  typedef std::vector<ast::Node*> NodeList;
+
   static void Run(ast::Node*, const sym::Module&, const io::FileWriter&);
 
   CodeWriter(const sym::Module&, const io::FileWriter&);
@@ -43,6 +45,7 @@ private:
   const sym::Module& module;
   const io::FileWriter& fw;
 
-  void VisitList(char delimiter, const std::vector<ast::Node*>&);
-  void VisitGroupedList(char delimiter, const std::vector<ast::Node*>&);
+  void VisitButLast(char delimiter, const NodeList&);
+  void VisitList(char delimiter, const NodeList&);
+  void VisitGroupedList(char delimiter, const NodeList&);
 };
