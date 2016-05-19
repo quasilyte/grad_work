@@ -17,9 +17,8 @@ void Scope::DropLevel() {
   levels.pop_back();
 }
 
-Type* Scope::DefineSymbol(const dt::StrView& key, Type val) {
+Type* Scope::DefineSymbol(const dt::StrView& key, Type* ty) {
   auto& level = levels.back();
-  auto ty = new Type{val};
 
   if (key.Len() > 9) {
     level.a_syms += 1;

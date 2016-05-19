@@ -9,12 +9,20 @@ namespace sym {
   class Scope;
 }
 
+// Note:
+// Scope "leaks" resources because it leaves
+// defined types on the free store even then they are
+// not accessible from the hlist & alist.
+// This is on purpose.
+// We need to save those values for the code generator backend.
+// Variables are bound to those pointers of types,
+// this means that their type should exist until the end.
 class sym::Scope {
 public:
   void CreateLevel();
   void DropLevel();
 
-  Type* DefineSymbol(const dt::StrView& key, Type val);
+  Type* DefineSymbol(const dt::StrView& key, Type* ty);
 
   Type* Symbol(const dt::StrView& key);
   Type* LocalSymbol(const dt::StrView& key);
