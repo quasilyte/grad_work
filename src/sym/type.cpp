@@ -7,6 +7,7 @@ Type Type::Any() { return Type{ANY}; }
 Type Type::Num() { return Type{NUM}; }
 Type Type::Real() { return Type{REAL}; }
 Type Type::Int() { return Type{INT}; }
+Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
 
@@ -21,6 +22,7 @@ Type::Id Type::Tag() const noexcept {
 bool Type::IsVoid() const noexcept { return tag == VOID; }
 bool Type::IsAny() const noexcept { return tag == ANY; }
 bool Type::IsInt() const noexcept { return tag == INT; }
+bool Type::IsUnknown() const noexcept { return tag == UNKNOWN; }
 bool Type::IsReal() const noexcept { return tag == REAL; }
 bool Type::IsNum() const noexcept { return tag == NUM; }
 bool Type::IsStr() const noexcept { return tag == STR; }
