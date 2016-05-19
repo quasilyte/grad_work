@@ -66,10 +66,6 @@ Type Type::ExtendedWith(Type other) {
   return Type::Any();
 }
 
-void Type::ExtendWith(Type other) {
-  tag = ExtendedWith(other).Tag();
-}
-
 bool Type::CompatibleWith(Type other) const noexcept {
   if (SameAs(other)
       || (IsArith() && other.IsArith())

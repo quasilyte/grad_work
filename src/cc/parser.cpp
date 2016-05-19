@@ -285,11 +285,10 @@ Node* Parser::ParseSet(TokenStream& toks) {
     auto expr = ParseToken(toks.NextToken());
     auto var = module.LocalSymbol(name);
 
+    // #FIXME: make type checks
     if (var) {
-      var->ExtendWith(TypeDeducer::Run(expr));
       return new SetVar{name, expr};
     } else {
-      module.UpdateGlobalSymbol(name, TypeDeducer::Run(expr));
       return new SetVar{name, expr};
     }
   }

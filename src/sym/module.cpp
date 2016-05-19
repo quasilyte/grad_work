@@ -37,16 +37,6 @@ void Module::DefineGlobalSymbol(dt::StrView name, Type* ty) {
   }
 }
 
-void Module::UpdateGlobalSymbol(dt::StrView name, Type ty) {
-  auto global = globals.Get(name);
-
-  if (global) {
-    global->ExtendWith(ty);
-  } else {
-    throw "update of undefined global";
-  }
-}
-
 Type* Module::GlobalSymbol(dt::StrView name) const {
   return globals.Get(name);
 }

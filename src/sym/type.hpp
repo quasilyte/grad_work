@@ -51,7 +51,6 @@ public:
   bool IsStruct() const noexcept;
 
   Type ExtendedWith(Type);
-  void ExtendWith(Type);
 
   bool CompatibleWith(Type) const noexcept;
   bool SameAs(Type) const noexcept;

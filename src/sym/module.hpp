@@ -28,7 +28,6 @@ public:
 
   // Globals:
   void DefineGlobalSymbol(dt::StrView name, sym::Type*);
-  void UpdateGlobalSymbol(dt::StrView name, sym::Type);
   Type* GlobalSymbol(dt::StrView name) const;
 
   // Functions:
