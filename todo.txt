@@ -1,6 +1,6 @@
 Implement (high priority):
 - assignment of builtin functions to a variable
-- recursive functions
++ recursive functions
 - mutually recursive functions
 - all basic operations (< = + - / * ...)
 - name mangling for produced C++
@@ -17,6 +17,7 @@ Implement (high priority):
 - lambdas
 - pattern matching
 - stack of errors
+- generate correct code for C (based on template)
 
 Implement (delayed):
 - closures
