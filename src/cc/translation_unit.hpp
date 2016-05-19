@@ -21,8 +21,4 @@ struct cc::TranslationUnit {
   std::vector<ast::Node*> exprs;
 
   sym::Module module;
-
-  /*std::vector<ast::Node*> vars;
-  std::vector<ast::Node*> tree;
-  const sym::Module* module;*/
 };

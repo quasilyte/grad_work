@@ -98,19 +98,6 @@ TranslationUnit Parser::Parse() {
     ParseExpr(expr);
   }
 
-  /*
-  for (lex::TokenStream func : top.funcs) {
-    dbg::dump_token(func.CurrentToken());
-  }*/
-
-  /*
-  sym::Func* fn = module.Func("sum");
-  printf("arity: %d\n", fn->Arity());
-  for (sym::Param param : fn->Params()) {
-    dbg::dump(param.type);
-  }
-  dbg::dump(fn->ret_type);*/
-
   return result;
 }
 
