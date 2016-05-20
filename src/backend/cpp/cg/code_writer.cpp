@@ -148,16 +148,12 @@ void CodeWriter::Visit(ast::Var* node) {
 
 void CodeWriter::Visit(ast::FuncCall* node) {
   write_func_name(node->func, &fw.module);
-  fw.module.Write('(');
-  VisitList(',', node->args);
-  fw.module.Write(')');
+  VisitGroupedList(',', node->args);
 }
 
 void CodeWriter::Visit(ast::VarCall* node) {
   fw.module.Write(node->name);
-  fw.module.Write('(');
-  VisitList(',', node->args);
-  fw.module.Write(')');
+  VisitGroupedList(',', node->args);
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
