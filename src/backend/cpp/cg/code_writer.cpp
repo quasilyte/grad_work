@@ -98,10 +98,29 @@ void CodeWriter::Visit(ast::DefVar* node) {
         write_type(&module, intrinsic::param_of(ty, arity - 1), &fw.module);
         fw.module.Write(')');
       } else {
-        fw.module.Write("()");
+        fw.module.Write("()", 2);
       }
     } else {
-      throw "DefVar: no assignments for user defined funcs yet";
+      auto func = module.Func(node->type.Tag());
+      auto arity = func->Arity();
+      auto ret_ty = func->ret_type;
+
+      write_type(&module, ret_ty, &fw.module);
+      fw.module.Write("(*", 2);
+      fw.module.Write(node->name);
+      fw.module.Write(')');
+
+      if (arity) {
+        fw.module.Write('(');
+        for (uint i = 0; i < arity - 1; ++i) {
+          write_type(&module, func->params[i].type, &fw.module);
+          fw.module.Write(',');
+        }
+        write_type(&module, func->params.back().type, &fw.module);
+        fw.module.Write(')');
+      } else {
+        fw.module.Write("()", 2);
+      }
     }
   } else {
     write_type(&module, node->type, &fw.module);

@@ -77,7 +77,17 @@ Type Module::SymbolOrFunc(dt::StrView name) {
   auto maybe_void = MaybeVoidSymbol(name);
 
   if (maybe_void.IsVoid()) {
-    throw "symbol or func: unbound var referenced";
+    auto multifunc = func_name_map.Get(name);
+
+    if (multifunc) {
+      if (1 == multifunc->funcs.size()) { // Precise type exists
+        return multifunc->funcs.begin()->second->type;
+      } else {
+        throw "symbol or func: duck typing for func not implemented";
+      }
+    } else {
+      throw "symbol or func: unbound var referenced";
+    }
   } else {
     return maybe_void;
   }

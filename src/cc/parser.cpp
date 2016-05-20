@@ -267,7 +267,7 @@ ast::Node* Parser::ParseWord(Token word) {
   case encode9("int"): return new Intrinsic{Type::ANY_TO_INT};
 
   default:
-    return new Var{word, module.Symbol(word)};
+    return new Var{word, module.SymbolOrFunc(word)};
   }
 }
 
