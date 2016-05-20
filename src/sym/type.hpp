@@ -7,21 +7,44 @@ namespace sym {
   class Type;
 }
 
+/**
+  Type ladder:
+  min(int): intrinsics ++
+  max(int): builtin types --
+  1..max(int)-count(builtin types): user defined types ++
+  min(int)+count(intrinsics)..0: user defined functions --
+
+  functions |     types
+  [min]><[0]|[1]><[max]
+*/
+
 class sym::Type {
 public:
   typedef i32 Id;
 
-  static const Id VOID = std::numeric_limits<Id>::max();
-  static const Id END_ARITH = std::numeric_limits<Id>::max() - 1;
-  static const Id ANY = std::numeric_limits<Id>::max() - 2;
-  static const Id NUM = std::numeric_limits<Id>::max() - 3;
-  static const Id REAL = std::numeric_limits<Id>::max() - 4;
-  static const Id INT = std::numeric_limits<Id>::max() - 5;
-  static const Id UNKNOWN = std::numeric_limits<Id>::max() - 6;
-  static const Id BEGIN_ARITH = std::numeric_limits<Id>::max() - 7;
-  static const Id STR = std::numeric_limits<Id>::max() - 8;
-  static const Id SYM = std::numeric_limits<Id>::max() - 9;
-  static const Id END_STRUCT = std::numeric_limits<Id>::max() - 10;
+  enum: Id {
+    // Never forget to increase this constant int literal.
+    // If you will forget, compiler error will rise anyway (overflow).
+    END_STRUCT = std::numeric_limits<Id>::max() - 10,
+    SYM,
+    STR,
+    BEGIN_ARITH,
+    UNKNOWN,
+    INT,
+    REAL,
+    NUM,
+    ANY,
+    END_ARITH,
+    VOID,
+  };
+
+  enum: Id {
+    ANY_TO_INT = std::numeric_limits<Id>::min(),
+    REAL_TO_INT,
+    ANY_TO_REAL,
+    INT_TO_REAL,
+    END_INTRINSIC
+  };
 
   static const Id BEGIN_STRUCT = 0;
 
@@ -49,6 +72,7 @@ public:
   bool IsStr() const noexcept;
   bool IsSym() const noexcept;
 
+  bool IsIntrinsic() const noexcept;
   bool IsFunc() const noexcept;
   bool IsArith() const noexcept;
   bool IsStruct() const noexcept;

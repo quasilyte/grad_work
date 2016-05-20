@@ -28,6 +28,10 @@ bool Type::IsNum() const noexcept { return tag == NUM; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
 
+bool Type::IsIntrinsic() const noexcept {
+  return tag < END_INTRINSIC;
+}
+
 bool Type::IsFunc() const noexcept {
   return tag <= 0;
 }
