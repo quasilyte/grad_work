@@ -53,18 +53,33 @@ void Module::DefineLocal(dt::StrView name, Type ty) {
   }
 }
 
-Type Module::Symbol(dt::StrView name) {
+Type Module::MaybeVoidSymbol(dt::StrView name) {
   auto local = scope.Symbol(name);
 
   if (local.IsVoid()) {
-    auto global = globals.Get(name);
-    if (global.IsVoid()) {
-      throw "unbound var referenced";
-    } else {
-      return global;
-    }
+    return globals.Get(name);
   } else {
     return local;
+  }
+}
+
+Type Module::Symbol(dt::StrView name) {
+  auto maybe_void = MaybeVoidSymbol(name);
+
+  if (maybe_void.IsVoid()) {
+    throw "symbol: unbound var referenced";
+  } else {
+    return maybe_void;
+  }
+}
+
+Type Module::SymbolOrFunc(dt::StrView name) {
+  auto maybe_void = MaybeVoidSymbol(name);
+
+  if (maybe_void.IsVoid()) {
+    throw "symbol or func: unbound var referenced";
+  } else {
+    return maybe_void;
   }
 }
 

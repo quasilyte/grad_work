@@ -41,7 +41,9 @@ public:
   Type LocalSymbol(dt::StrView name);
   int LocalsCount() const noexcept;
 
+  Type MaybeVoidSymbol(dt::StrView name);
   Type Symbol(dt::StrView name);
+  Type SymbolOrFunc(dt::StrView name);
 
   auto Funcs() const noexcept -> typename dt::DictIter<sym::MultiFunc*>;
 
