@@ -18,6 +18,10 @@ struct Num_ {
   };
 };
 
+inline Int_ real_to_int_(Real_ x) { return (Int_)x; }
+
+inline Real_ int_to_real_(Int_ x) { return (Real_)x; }
+
 inline Int_ num_to_int_(Num_ x) {
   return x.is_int ? x.int_datum : (Int_)x.real_datum;
 }
