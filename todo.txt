@@ -1,4 +1,5 @@
 Implement (high priority):
+- rework some special forms into functions (maybe type casts should be functions)
 - higher order functions (function as a type)
 - assignment of builtin functions to a variable
 - mutually recursive functions
