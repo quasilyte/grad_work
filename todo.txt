@@ -49,3 +49,5 @@ Fix:
 - new types get Id of 1..N, instead of 0..N, because operator[] for map returns
   entry if it exists OR create a new, so after it misses, new entry is created.
 - merge alist & hlist into single class, if possible
+- sig_matcher should be reused in memory, but beware of nested keys;
+  for example, function call inside function call may also need overloading lookup.

@@ -163,6 +163,7 @@ void Parser::ParseExpr(Token& tok) {
 
 void Parser::ParseSignature(TokenStream& toks) {
   lex::TokenStream signature{toks.NextToken()};
+  MultiFunc::Key sig_matcher;
   auto name = signature.NextToken();
 
   module.CreateScopeLevel();
@@ -199,8 +200,6 @@ void Parser::ParseSignature(TokenStream& toks) {
   module.DropScopeLevel();
 
   func->Define(std::move(exprs), TypeDeducer::Run(exprs.back()));
-
-  sig_matcher.clear();
 }
 
 Node* Parser::ParseToken(Token tok) {
@@ -273,8 +272,10 @@ ast::Node* Parser::ParseWord(Token word) {
 
 ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
   sym::MultiFunc* multifunc = module.MultiFunc(name);
+
   if (multifunc) {
     std::vector<Node*> nodes;
+    MultiFunc::Key sig_matcher;
 
     while (!args.NextToken().IsEof()) {
       auto node = ParseToken(args.CurrentToken());
@@ -282,8 +283,7 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
       nodes.push_back(node);
     }
 
-    auto func = multifunc->funcs[sig_matcher];
-    sig_matcher.clear();
+    auto func = multifunc->Func(sig_matcher);
 
     return new FuncCall{func, std::move(nodes)};
   } else {

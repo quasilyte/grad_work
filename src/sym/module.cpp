@@ -13,10 +13,10 @@ const dt::StrView& Module::Name() const noexcept {
 }
 
 void Module::DefineStruct(dt::StrView name, std::vector<sym::Param>&& attrs) {
-  if (type_name_map.Get(name)) {
+  if (type_name_map.Find(name)) {
     throw "redefinition of struct";
   } else {
-    auto type_id = Type{type_name_map.Size()};
+    auto type_id = Type{type_name_map.Size() + 1};
     auto s = new sym::Struct{name, std::move(attrs), sym::Type{type_id}};
     type_name_map.Put(name, s);
     type_id_map.push_back(s);
@@ -24,7 +24,7 @@ void Module::DefineStruct(dt::StrView name, std::vector<sym::Param>&& attrs) {
 }
 
 sym::Struct* Module::Struct(dt::StrView name) const {
-  return type_name_map.Get(name);
+  return type_name_map.Find(name);
 }
 
 sym::Struct* Module::Struct(Type::Id type_id) const {
@@ -32,7 +32,7 @@ sym::Struct* Module::Struct(Type::Id type_id) const {
 }
 
 void Module::DefineGlobalSymbol(dt::StrView name, Type ty) {
-  if (globals.Get(name).IsVoid()) {
+  if (globals.Find(name).IsVoid()) {
     globals.Put(name, ty);
   } else {
     throw "redefinition of global";
@@ -40,7 +40,7 @@ void Module::DefineGlobalSymbol(dt::StrView name, Type ty) {
 }
 
 Type Module::GlobalSymbol(dt::StrView name) const {
-  return globals.Get(name);
+  return globals.Find(name);
 }
 
 void Module::DefineLocal(dt::StrView name, Type ty) {
@@ -57,7 +57,7 @@ Type Module::MaybeVoidSymbol(dt::StrView name) {
   auto local = scope.Symbol(name);
 
   if (local.IsVoid()) {
-    return globals.Get(name);
+    return globals.Find(name);
   } else {
     return local;
   }
@@ -77,7 +77,7 @@ Type Module::SymbolOrFunc(dt::StrView name) {
   auto maybe_void = MaybeVoidSymbol(name);
 
   if (maybe_void.IsVoid()) {
-    auto multifunc = func_name_map.Get(name);
+    auto multifunc = func_name_map.Find(name);
 
     if (multifunc) {
       if (1 == multifunc->funcs.size()) { // Precise type exists
@@ -106,7 +106,7 @@ int Module::LocalsCount() const noexcept {
 }
 
 void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::Func* func) {
-  auto multifunc = func_name_map.Get(name);
+  auto multifunc = func_name_map.Find(name);
 
   if (multifunc) { // Has at least 1 definition
     if (multifunc->arity != func->Arity()) {

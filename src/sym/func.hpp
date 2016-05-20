@@ -18,6 +18,8 @@ namespace sym {
 struct sym::MultiFunc {
   typedef std::vector<sym::Type> Key;
 
+  sym::Func* Func(Key);
+
   uint arity;
   std::map<Key, sym::Func*> funcs;
 };

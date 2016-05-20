@@ -14,6 +14,10 @@ void dbg::dump(sym::Type ty) {
   case Type::STR: puts("<STR>"); break;
 
   default:
-    puts("<UNKNOWN>");
+    if (ty.IsStruct()) {
+      puts("<STRUCT>");
+    } else {
+      puts("<UNKNOWN>");
+    }
   }
 }
