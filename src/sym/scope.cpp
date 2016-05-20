@@ -48,3 +48,8 @@ Type Scope::LocalSymbol(const dt::StrView& key) {
     return hlist.Find(key, level.h_syms);
   }
 }
+
+int Scope::LevelSize() const noexcept {
+  auto level = levels.back();
+  return level.a_syms + level.h_syms;
+}

@@ -27,6 +27,8 @@ public:
   Type Symbol(const dt::StrView& key);
   Type LocalSymbol(const dt::StrView& key);
 
+  int LevelSize() const noexcept;
+
 private:
   struct Level {
     int h_syms = 0;
