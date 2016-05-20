@@ -439,7 +439,6 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
     if (target_ty.SameAs(expr_ty)) {
       return std::make_tuple(name, expr, target_ty);
     } else if (target_ty.CompatibleWith(expr_ty)) {
-      puts("coerce!");
       auto coerced_expr =
           new IntrinsicCall1{intrinsic::cast(expr_ty, target_ty), expr};
 
