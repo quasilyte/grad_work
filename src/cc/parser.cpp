@@ -288,6 +288,7 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
     return new FuncCall{func, std::move(nodes)};
   } else {
     auto callable = module.Symbol(name);
+
     if (callable.IsCallable()) {
       auto func = module.Func(callable.Tag());
 
@@ -361,12 +362,9 @@ Node* Parser::ParseIf(TokenStream& toks) {
   return new If{cond, on_true, on_false};
 }
 
-// (struct range 0 1 2)
-// struct range _ = {0, 1, 2};
 Node* Parser::ParseStruct(TokenStream& toks) {
-  // 1) check if struct exist
-  // 2) validate init values
   auto s = module.Struct(toks.NextToken());
+
   if (s) {
     std::vector<Node*> initializers;
     while (!toks.NextToken().IsEof()) {
