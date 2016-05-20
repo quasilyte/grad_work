@@ -7,10 +7,15 @@
 
 namespace dt {
   template<class T> class Dict;
+  template<class T> class DictIter;
 }
 
 template<class T> class dt::Dict {
 public:
+  typedef std::unordered_map<StrView, T> Bag;
+
+  auto Iter() const noexcept -> const dt::DictIter<T>;
+
   void Put(const char* key, T value);
   void Put(const char* key, u32 key_len, T value);
   void Put(StrView key, T value);
@@ -26,11 +31,22 @@ public:
   i32 Size() const noexcept;
 
 private:
-  std::unordered_map<StrView, T> bag;
+  Bag bag;
 };
 
 template<> struct std::hash<dt::StrView> {
   usize operator()(const dt::StrView& key) const {
     return djb2_hash::encode(key.Data(), key.Len());
   }
+};
+
+template<class T> class dt::DictIter {
+public:
+  typename Dict<T>::Bag::const_iterator begin() const;
+  typename Dict<T>::Bag::const_iterator end() const;
+
+  DictIter(const typename Dict<T>::Bag&);
+
+private:
+  const typename Dict<T>::Bag& bag;
 };

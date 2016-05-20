@@ -6,6 +6,11 @@
 using namespace dt;
 
 template<class T>
+auto dt::Dict<T>::Iter() const noexcept -> const DictIter<T> {
+  return DictIter<T>{bag};
+}
+
+template<class T>
 void dt::Dict<T>::Put(const char *key, T value) {
   bag[StrView{key}] = value;
 }
@@ -57,4 +62,19 @@ i32 dt::Dict<T>::Size() const noexcept {
 
 template class dt::Dict<sym::Struct*>;
 template class dt::Dict<sym::Type>;
-template class dt::Dict<sym::Func*>;
+template class dt::Dict<sym::MultiFunc*>;
+
+template<class T>
+dt::DictIter<T>::DictIter(const typename Dict<T>::Bag& bag): bag{bag} {}
+
+template<class T>
+typename Dict<T>::Bag::const_iterator DictIter<T>::begin() const {
+  return bag.begin();
+}
+
+template<class T>
+typename Dict<T>::Bag::const_iterator DictIter<T>::end() const {
+  return bag.end();
+}
+
+template class dt::DictIter<sym::MultiFunc*>;
