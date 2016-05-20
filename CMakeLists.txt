@@ -45,7 +45,7 @@ set(
 include_directories("src" "tests")
 
 ## Hack to make QtCreator show headers inside project window
-file(GLOB_RECURSE header_files "src/*.hpp" "tests/*.hpp")
+file(GLOB_RECURSE header_files "src/*.hpp" "tests/*.hpp" "src/backend/cpp/rt/*.h")
 add_custom_target(headers SOURCES ${header_files})
 
 add_subdirectory(src/lex)
@@ -67,5 +67,5 @@ add_subdirectory(tests/test_dt)
 add_executable(${PROJECT_NAME} lisp.cpp)
 target_link_libraries(${PROJECT_NAME} cpp_cg cc ast lex sym dt io fmt dbg)
 
-# add_executable(rt rt.cpp "src/backend/cpp/rt/array.cpp")
-# target_link_libraries(rt cpp_rt)
+add_executable(rt rt.cpp)
+target_link_libraries(rt)
