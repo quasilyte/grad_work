@@ -20,6 +20,7 @@ namespace ast {
   struct FuncCall;
   struct AttrAccess;
   struct TypeCast;
+  struct Intrinsic;
 }
 
 struct ast::Operation: public Node {
@@ -85,4 +86,12 @@ struct ast::TypeCast: public Node {
   Node* expr;
   sym::Type from;
   sym::Type to;
+};
+
+struct ast::Intrinsic: public Node {
+  Intrinsic(sym::Type);
+
+  void Accept(Visitor*);
+
+  sym::Type type;
 };

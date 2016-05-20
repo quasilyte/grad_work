@@ -26,3 +26,7 @@ TypeCast::TypeCast(Node* expr, sym::Type from, sym::Type to):
 expr{expr}, from{from}, to{to} {}
 
 void TypeCast::Accept(Visitor* v) { v->Visit(this); }
+
+Intrinsic::Intrinsic(sym::Type ty): type{ty} {}
+
+void Intrinsic::Accept(Visitor* v) { v->Visit(this); }
