@@ -18,6 +18,7 @@ Implement (high priority):
 - pattern matching
 - stack of errors
 - generate correct code for C (based on template)
+- call with apply (list or args)
 
 Implement (delayed):
 - closures
@@ -35,9 +36,11 @@ Compilation perfomance:
 To check:
 - measure perfomance of ReMatch switch vs nested switch.
   http://www.stroustrup.com/OOPSLA-typeswitch-draft.pdf
+- check generator vs name mangling perfomance impact.
 
 Fix:
-- Want to use StrView inside token and other structs with {char*,len}, 
+- want to use StrView inside token and other structs with {char*,len}, 
   but it increases total size due to padding. Maybe something like trait can work?
-- New types get Id of 1..N, instead of 0..N, because operator[] for map returns
+- new types get Id of 1..N, instead of 0..N, because operator[] for map returns
   entry if it exists OR create a new, so after it misses, new entry is created.
+- merge alist & hlist into single class, if possible

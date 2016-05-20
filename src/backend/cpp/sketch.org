@@ -1,4 +1,5 @@
 #+BEGIN_SRC C
+  // structs declarations
   // globals declarations
   // functions declarations
   // functions definitions
