@@ -66,21 +66,41 @@ Type Module::Symbol(dt::StrView name) {
   }
 }
 
+auto Module::Funcs() const noexcept -> dt::DictIter<MultiFunc*> {
+  return funcs.Iter();
+}
+
 Type Module::LocalSymbol(dt::StrView name) {
   return scope.Symbol(name);
 }
 
-void Module::DeclareFunc(dt::StrView name, sym::Func* func) {
-  funcs.Put(name, func);
+int Module::LocalsCount() const noexcept {
+  return scope.LevelSize();
 }
 
-void Module::DefineFunc(dt::StrView name, ExprList&& exprs, Type ty) {
-  auto func = funcs.Get(name);
-  func->ret_type = ty;
-  func->exprs = exprs;
+void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::Func* func) {
+  auto multifunc = funcs.Get(name);
+
+  if (multifunc) { // Has at least 1 definition
+    // Has definition with same signature
+    auto found_dup = multifunc->funcs.find(key) != multifunc->funcs.end();
+
+    if (found_dup) {
+      throw "func already defined";
+    } else {
+      multifunc->funcs[key] = func;
+    }
+
+
+  } else { // First declaration, no overloadings yet
+    multifunc = new sym::MultiFunc{};
+    multifunc->funcs[key] = func;
+
+    funcs.Put(name, multifunc);
+  }
 }
 
-Func* Module::Func(dt::StrView name) const {
+MultiFunc* Module::Func(dt::StrView name) const {
   return funcs.Get(name);
 }
 

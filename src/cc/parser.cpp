@@ -174,14 +174,17 @@ void Parser::ParseSignature(TokenStream& toks) {
         dt::StrView param_name = typed_list.CurrentToken();
         params.push_back(Param{param_name, type});
         module.DefineLocal(param_name, type);
+        sig_matcher.push_back(type);
       }
     } else {
       params.push_back(Param{tok, sym::Type::Any()});
       module.DefineLocal(tok, sym::Type::Any());
+      sig_matcher.push_back(sym::Type::Any());
     }
   }
 
-  module.DeclareFunc(name, new sym::Func{name, std::move(params), Type::Unknown()});
+  auto func = new sym::Func{name, std::move(params), Type::Unknown()};
+  module.DeclareFunc(name, sig_matcher, func);
 
   std::vector<Node*> exprs;
   while (!toks.NextToken().IsEof()) {
@@ -190,8 +193,9 @@ void Parser::ParseSignature(TokenStream& toks) {
 
   module.DropScopeLevel();
 
-  module.DefineFunc(name, std::move(exprs), TypeDeducer::Run(exprs.back()));
-  result.funcs.push_back(name);
+  func->Define(std::move(exprs), TypeDeducer::Run(exprs.back()));
+
+  sig_matcher.clear();
 }
 
 Node* Parser::ParseToken(Token tok) {
@@ -245,15 +249,18 @@ Node* Parser::ParseList(Token tok) {
 }
 
 ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
-  sym::Func* func = module.Func(name);
-  if (func) {
+  sym::MultiFunc* multifunc = module.Func(name);
+  if (multifunc) {
     std::vector<Node*> nodes;
-    for (int i = 0; i < func->Arity(); ++i) {
-      nodes.push_back(ParseToken(args.NextToken()));
+
+    while (!args.NextToken().IsEof()) {
+      auto node = ParseToken(args.CurrentToken());
+      sig_matcher.push_back(TypeDeducer::Run(node));
+      nodes.push_back(node);
     }
-    if (!args.NextToken().IsEof()) {
-      throw "too many args";
-    }
+
+    auto func = multifunc->funcs[sig_matcher];
+    sig_matcher.clear();
 
     return new FuncCall{func, std::move(nodes)};
   } else {

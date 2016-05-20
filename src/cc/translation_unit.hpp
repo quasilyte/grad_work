@@ -17,7 +17,6 @@ namespace cc {
 struct cc::TranslationUnit {
   std::vector<dt::StrView> structs;
   std::vector<ast::DefVar*> globals;
-  std::vector<dt::StrView> funcs;
   std::vector<ast::Node*> exprs;
 
   sym::Module module;

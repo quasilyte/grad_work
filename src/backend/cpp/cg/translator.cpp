@@ -36,37 +36,39 @@ void Translator::Translate() {
     fw.Write('\n');
   }
 
-  for (dt::StrView func_name : tu.funcs) {
-    auto func = tu.module.Func(func_name);
-
-    auto params = func->Params();
-    write_type(&tu.module, func->ret_type, &fw);
-    fw.Write(' ');
-    fw.Write(func_name);
-    fw.Write('(');
-    if (params.size()) {
-      for (uint i = 0; i < params.size() - 1; ++i) {
-        write_type(&tu.module, params[i].type, &fw);
-        fw.Write(' ');
-        fw.Write(params[i].name);
-        fw.Write(',');
-      }
-      write_type(&tu.module, params.back().type, &fw);
+  for (auto multifunc_pair : tu.module.Funcs()) {
+    auto funcs = multifunc_pair.second->funcs;
+    for (auto& func_pair : funcs) {
+      auto func = func_pair.second;
+      auto params = func->Params();
+      write_type(&tu.module, func->ret_type, &fw);
       fw.Write(' ');
-      fw.Write(params.back().name);
-    } else {
-      fw.Write("void", 4);
-    }
-    fw.Write("){", 2);
+      fw.Write(func->name);
+      fw.Write('(');
+      if (params.size()) {
+        for (uint i = 0; i < params.size() - 1; ++i) {
+          write_type(&tu.module, params[i].type, &fw);
+          fw.Write(' ');
+          fw.Write(params[i].name);
+          fw.Write(',');
+        }
+        write_type(&tu.module, params.back().type, &fw);
+        fw.Write(' ');
+        fw.Write(params.back().name);
+      } else {
+        fw.Write("void", 4);
+      }
+      fw.Write("){", 2);
 
-    for (uint i = 0; i < func->exprs.size() - 1; ++i) {
-      CodeWriter::Run(func->exprs[i], tu.module, fw);
+      for (uint i = 0; i < func->exprs.size() - 1; ++i) {
+        CodeWriter::Run(func->exprs[i], tu.module, fw);
+        fw.Write(';');
+      }
+      fw.Write("return ", 7);
+      CodeWriter::Run(func->exprs.back(), tu.module, fw);
       fw.Write(';');
+      fw.Write("}\n", 2);
     }
-    fw.Write("return ", 7);
-    CodeWriter::Run(func->exprs.back(), tu.module, fw);
-    fw.Write(';');
-    fw.Write("}\n", 2);
   }
 
   for (ast::Node* expr : tu.exprs) {

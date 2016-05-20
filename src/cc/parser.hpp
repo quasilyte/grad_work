@@ -23,6 +23,7 @@ private:
   sym::Module module;
   const TopLevel& top;
   TranslationUnit result;
+  std::vector<sym::Type> sig_matcher;
 
   Parser(const TopLevel&);
 
