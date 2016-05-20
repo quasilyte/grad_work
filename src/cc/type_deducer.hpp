@@ -29,6 +29,7 @@ public:
   void Visit(ast::FuncCall*) override;
   void Visit(ast::CompoundLiteral*) override;
   void Visit(ast::AttrAccess*) override;
+  void Visit(ast::TypeCast*) override;
 
 private:
   sym::Type result;

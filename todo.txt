@@ -1,10 +1,9 @@
 Implement (high priority):
+- higher order functions (function as a type)
 - assignment of builtin functions to a variable
-+ recursive functions
 - mutually recursive functions
 - all basic operations (< = + - / * ...)
 - name mangling for produced C++
-- function overloading
 - dynamic multi dispatch (multimethod)
 - boxing/unboxing of Any_
 - arrays
@@ -19,6 +18,9 @@ Implement (high priority):
 - stack of errors
 - generate correct code for C (based on template)
 - call with apply (list or args)
+- constructors/destructors, some kind of encapsulation & invariants
++ function overloading
++ recursive functions
 
 Implement (delayed):
 - closures
@@ -28,6 +30,8 @@ Implement (delayed):
 - support command line flags
 - nested struct attr lookup (like embedding in Go)
 - tuples
+- better type inference (especially useful for overloaded functions)
+- argument dependent lookup (for passing overloaded functions)
 
 Compilation perfomance:
 - how much times Type is evaluated for same nodes. Maybe it can be improved

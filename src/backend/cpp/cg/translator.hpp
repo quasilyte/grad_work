@@ -5,20 +5,21 @@
 
 namespace cpp_cg {
   class Translator;
+  struct FileWriter;
 }
 
 class cpp_cg::Translator {
 public:
   static void Run(
     const cc::TranslationUnit& input,
-    const io::FileWriter& output = io::FileWriter{}
+    const cpp_cg::FileWriter& output
   );
 
 private:
   const cc::TranslationUnit& tu;
-  const io::FileWriter& fw;
+  const cpp_cg::FileWriter& fw;
 
-  Translator(const cc::TranslationUnit&, const io::FileWriter&);
+  Translator(const cc::TranslationUnit&, const cpp_cg::FileWriter&);
 
   void Translate();
 };

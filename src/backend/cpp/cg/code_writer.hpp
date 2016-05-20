@@ -3,25 +3,22 @@
 #include "ast/visitor.hpp"
 #include <vector>
 
-namespace io {
-  class FileWriter;
-}
-
 namespace sym {
   class Module;
 }
 
 namespace cpp_cg {
   class CodeWriter;
+  struct FileWriter;
 }
 
 class cpp_cg::CodeWriter: public ast::Visitor {
 public:
   typedef std::vector<ast::Node*> NodeList;
 
-  static void Run(ast::Node*, const sym::Module&, const io::FileWriter&);
+  static void Run(ast::Node*, const sym::Module&, const cpp_cg::FileWriter&);
 
-  CodeWriter(const sym::Module&, const io::FileWriter&);
+  CodeWriter(const sym::Module&, const cpp_cg::FileWriter&);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;
@@ -41,10 +38,11 @@ public:
   void Visit(ast::FuncCall*) override;
   void Visit(ast::CompoundLiteral*) override;
   void Visit(ast::AttrAccess*) override;
+  void Visit(ast::TypeCast*) override;
 
 private:
   const sym::Module& module;
-  const io::FileWriter& fw;
+  const cpp_cg::FileWriter& fw;
 
   void VisitButLast(char delimiter, const NodeList&);
   void VisitList(char delimiter, const NodeList&);

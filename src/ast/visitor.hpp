@@ -21,6 +21,7 @@ namespace ast {
   struct FuncCall;
   struct CompoundLiteral;
   struct AttrAccess;
+  struct TypeCast;
 }
 
 class ast::Visitor {
@@ -43,5 +44,6 @@ public:
   virtual void Visit(FuncCall*) = 0;
   virtual void Visit(CompoundLiteral*) = 0;
   virtual void Visit(AttrAccess*) = 0;
+  virtual void Visit(TypeCast*) = 0;
 };
 
