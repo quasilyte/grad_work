@@ -28,12 +28,20 @@ bool Type::IsNum() const noexcept { return tag == NUM; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
 
+bool Type::IsFunc() const noexcept {
+  return tag <= 0;
+}
+
 bool Type::IsArith() const noexcept {
   return tag > BEGIN_ARITH && tag < END_ARITH;
 }
 
 bool Type::IsStruct() const noexcept {
-  return tag < END_STRUCT;
+  return tag > BEGIN_STRUCT && tag < END_STRUCT;
+}
+
+bool Type::IsCallable() const noexcept {
+  return IsFunc() || IsAny();
 }
 
 // Merge rules:

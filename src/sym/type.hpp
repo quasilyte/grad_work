@@ -23,6 +23,8 @@ public:
   static const Id SYM = std::numeric_limits<Id>::max() - 9;
   static const Id END_STRUCT = std::numeric_limits<Id>::max() - 10;
 
+  static const Id BEGIN_STRUCT = 0;
+
   static Type Void();
   static Type Any();
   static Type Num();
@@ -47,8 +49,10 @@ public:
   bool IsStr() const noexcept;
   bool IsSym() const noexcept;
 
+  bool IsFunc() const noexcept;
   bool IsArith() const noexcept;
   bool IsStruct() const noexcept;
+  bool IsCallable() const noexcept;
 
   Type ExtendedWith(Type);
 

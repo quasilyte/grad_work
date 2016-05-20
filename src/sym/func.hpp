@@ -37,5 +37,6 @@ struct sym::Func {
   ExprList exprs;
   ParamList params;
   sym::Type ret_type;
+  sym::Type type;
   u32 suffix_idx;
 };

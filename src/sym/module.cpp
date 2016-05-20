@@ -1,5 +1,7 @@
 #include "sym/module.hpp"
 
+#include <cmath>
+
 using namespace sym;
 
 Module::Module(): name{dt::StrView{"global"}} {
@@ -25,7 +27,7 @@ sym::Struct* Module::Struct(dt::StrView name) const {
   return type_name_map.Get(name);
 }
 
-sym::Struct* Module::Struct(sym::Type::Id type_id) const {
+sym::Struct* Module::Struct(Type::Id type_id) const {
   return type_id_map[type_id -  1];
 }
 
@@ -66,8 +68,8 @@ Type Module::Symbol(dt::StrView name) {
   }
 }
 
-auto Module::Funcs() const noexcept -> dt::DictIter<MultiFunc*> {
-  return funcs.Iter();
+auto Module::Funcs() const noexcept -> dt::DictIter<struct MultiFunc*> {
+  return func_name_map.Iter();
 }
 
 Type Module::LocalSymbol(dt::StrView name) {
@@ -79,7 +81,7 @@ int Module::LocalsCount() const noexcept {
 }
 
 void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::Func* func) {
-  auto multifunc = funcs.Get(name);
+  auto multifunc = func_name_map.Get(name);
 
   if (multifunc) { // Has at least 1 definition
     // Has definition with same signature
@@ -96,12 +98,19 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
     func->suffix_idx = 0;
     multifunc->funcs[key] = func;
 
-    funcs.Put(name, multifunc);
+    func_name_map.Put(name, multifunc);
   }
+
+  func->type = Type{-static_cast<Type::Id>(func_id_map.size())};
+  func_id_map.push_back(func);
 }
 
-MultiFunc* Module::Func(dt::StrView name) const {
-  return funcs.Get(name);
+MultiFunc* Module::MultiFunc(dt::StrView name) const {
+  return func_name_map.Get(name);
+}
+
+Func* Module::Func(Type::Id type_id) const {
+  return func_id_map[std::abs(type_id)];
 }
 
 void Module::CreateScopeLevel() {

@@ -33,7 +33,8 @@ public:
   void CreateScopeLevel();
   void DropScopeLevel();
   void DeclareFunc(dt::StrView name, const sym::MultiFunc::Key&, sym::Func*);
-  sym::MultiFunc* Func(dt::StrView name) const;
+  struct sym::MultiFunc* MultiFunc(dt::StrView name) const;
+  struct sym::Func* Func(sym::Type::Id) const;
 
   // Locals:
   void DefineLocal(dt::StrView name, Type);
@@ -48,9 +49,10 @@ private:
   dt::StrView name;
 
   std::vector<sym::Struct*> type_id_map;
+  std::vector<sym::Func*> func_id_map;
   mutable dt::Dict<sym::Struct*> type_name_map;
   mutable dt::Dict<sym::Type> globals;
-  mutable dt::Dict<sym::MultiFunc*> funcs;
+  mutable dt::Dict<sym::MultiFunc*> func_name_map;
   Scope scope;
 };
 

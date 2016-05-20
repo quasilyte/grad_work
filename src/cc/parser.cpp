@@ -249,7 +249,7 @@ Node* Parser::ParseList(Token tok) {
 }
 
 ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
-  sym::MultiFunc* multifunc = module.Func(name);
+  sym::MultiFunc* multifunc = module.MultiFunc(name);
   if (multifunc) {
     std::vector<Node*> nodes;
 
@@ -264,7 +264,12 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
 
     return new FuncCall{func, std::move(nodes)};
   } else {
-    throw "called undefined function";
+    auto callable = module.Symbol(name);
+    if (callable.IsCallable()) {
+      throw "can not call function via indirection";
+    } else {
+      throw "called undefined function";
+    }
   }
 }
 
