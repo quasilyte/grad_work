@@ -80,3 +80,10 @@ bool Type::SameAs(Type other) const noexcept {
   return tag == other.tag;
 }
 
+bool Type::operator<(const Type& other) const {
+  return tag < other.tag;
+}
+
+bool Type::operator==(const Type& other) const {
+  return SameAs(other);
+}

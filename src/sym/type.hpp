@@ -55,6 +55,9 @@ public:
   bool CompatibleWith(Type) const noexcept;
   bool SameAs(Type) const noexcept;
 
+  bool operator<(const Type&) const;
+  bool operator==(const Type&) const;
+
 private:
   Id tag;
 };
