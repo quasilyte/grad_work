@@ -70,16 +70,12 @@ struct ast::FuncCall: public Node {
   std::vector<Node*> args;
 };
 
-struct ast::VarCall: public Node {
-  typedef std::vector<Node*> ArgList;
-
+struct ast::VarCall: public FuncCall {
   VarCall(dt::StrView name, sym::Func*, ArgList&&);
 
   void Accept(Visitor*);
 
   dt::StrView name;
-  sym::Func* func;
-  std::vector<Node*> args;
 };
 
 struct ast::AttrAccess: public Node {
