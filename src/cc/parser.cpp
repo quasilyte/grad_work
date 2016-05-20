@@ -241,6 +241,9 @@ Node* Parser::ParseList(Token tok) {
     case encode9("'"): return ParseQuote(list);
     case encode9("get"): return ParseGet(list);
     case encode9("."): return ParseAttrAccess(list);
+    case encode9("int"): return ParseTypeCast(list);
+    case encode9("real"): return ParseTypeCast(list);
+    case encode9("num"): return ParseTypeCast(list);
 
     default:
       return ParseFuncCall(name_tok, list);
@@ -413,14 +416,14 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
 
   if (name.IsList()) {
     lex::TokenStream typed_pair{name};
-    auto explicit_ty = TypeByName(typed_pair.NextToken());
+    auto target_ty = TypeByName(typed_pair.NextToken());
     name = typed_pair.NextToken();
 
-    if (explicit_ty.SameAs(expr_ty)) {
-      return std::make_tuple(name, expr, explicit_ty);
-    } else if (explicit_ty.CompatibleWith(expr_ty)) {
+    if (target_ty.SameAs(expr_ty)) {
+      return std::make_tuple(name, expr, target_ty);
+    } else if (target_ty.CompatibleWith(expr_ty)) {
       return std::make_tuple(
-        name, new TypeCast{expr, expr_ty, explicit_ty}, explicit_ty
+        name, new TypeCast{expr, expr_ty, target_ty}, target_ty
       );
     } else {
       throw "FetchVarInfo: incompatible type on assignment";
@@ -428,4 +431,12 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
   } else {
     return std::make_tuple(name, expr, expr_ty);
   }
+}
+
+ast::Node* Parser::ParseTypeCast(TokenStream& toks) {
+  auto target_ty = TypeByName(toks.CurrentToken());
+  auto expr = ParseToken(toks.NextToken());
+  auto expr_ty = TypeDeducer::Run(expr);
+
+  return new TypeCast{expr, expr_ty, target_ty};
 }

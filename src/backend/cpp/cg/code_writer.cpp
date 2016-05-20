@@ -12,6 +12,7 @@
 #include "backend/cpp/cg/file_writer.hpp"
 
 using namespace cpp_cg;
+using namespace sym;
 
 void CodeWriter::Run(ast::Node* node, const sym::Module& module, const cpp_cg::FileWriter& fw) {
   CodeWriter self{module, fw};
@@ -122,7 +123,44 @@ void CodeWriter::Visit(ast::AttrAccess* node) {
 }
 
 void CodeWriter::Visit(ast::TypeCast* node) {
-  fw.module.Write("CAST!");
+  auto from = node->from;
+  auto to = node->to;
+  auto expr = node->expr;
+
+  switch (from.Tag()) {
+  case Type::INT:
+    switch (to.Tag()) {
+    case Type::INT: node->expr->Accept(this); return;
+    case Type::REAL: Cast(expr, Type::Real()); return;
+    case Type::NUM: Call("int_to_num_", expr); return;
+
+    default:
+      throw "unsupported typecast";
+    }
+
+  case Type::REAL:
+    switch (to.Tag()) {
+    case Type::INT: Cast(expr, Type::Int()); return;
+    case Type::REAL: node->expr->Accept(this); return;
+    case Type::NUM: Call("real_to_num_", expr); return;
+
+    default:
+      throw "unsupported typecast";
+    }
+
+  case Type::NUM:
+    switch (to.Tag()) {
+    case Type::INT: Call("num_to_int_", expr); return;
+    case Type::REAL: Call("num_to_real_", expr); return;
+    case Type::NUM: node->expr->Accept(this); return;
+
+    default:
+      throw "unsupported typecast";
+    }
+
+  default:
+    throw "unsupported typecast";
+  }
 }
 
 void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {
@@ -144,5 +182,20 @@ void CodeWriter::VisitList(char delimiter, const NodeList& nodes) {
 void CodeWriter::VisitGroupedList(char delimiter, const NodeList& list) {
   fw.module.Write('(');
   VisitList(delimiter, list);
+  fw.module.Write(')');
+}
+
+void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
+  fw.module.Write(name);
+  fw.module.Write('(');
+  arg->Accept(this);
+  fw.module.Write(')');
+}
+
+void CodeWriter::Cast(ast::Node* expr, Type target_ty) {
+  fw.module.Write("((", 2);
+  fw.module.Write(type_name(target_ty));
+  fw.module.Write(')');
+  expr->Accept(this);
   fw.module.Write(')');
 }

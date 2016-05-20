@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ast/visitor.hpp"
+#include "dt/str_view.hpp"
+#include "sym/type.hpp"
 #include <vector>
 
 namespace sym {
@@ -16,9 +18,9 @@ class cpp_cg::CodeWriter: public ast::Visitor {
 public:
   typedef std::vector<ast::Node*> NodeList;
 
-  static void Run(ast::Node*, const sym::Module&, const cpp_cg::FileWriter&);
+  static void Run(ast::Node*, const sym::Module&, const FileWriter&);
 
-  CodeWriter(const sym::Module&, const cpp_cg::FileWriter&);
+  CodeWriter(const sym::Module&, const FileWriter&);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;
@@ -47,4 +49,7 @@ private:
   void VisitButLast(char delimiter, const NodeList&);
   void VisitList(char delimiter, const NodeList&);
   void VisitGroupedList(char delimiter, const NodeList&);
+
+  void Call(dt::StrView name, ast::Node* arg);
+  void Cast(ast::Node* expr, sym::Type target_ty);
 };

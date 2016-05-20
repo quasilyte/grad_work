@@ -6,10 +6,9 @@
 #include "sym/func.hpp"
 #include "sym/sym.hpp"
 
-using namespace io;
 using namespace sym;
 
-void cpp_cg::write_type(const Module* mod, Type ty, const FileWriter* fw) {
+void cpp_cg::write_type(const Module* mod, Type ty, const io::FileWriter* fw) {
   if (ty.IsStruct()) {
     fw->Write("struct ", 7);
     fw->Write(mod->Struct(ty.Tag())->name);
@@ -18,7 +17,8 @@ void cpp_cg::write_type(const Module* mod, Type ty, const FileWriter* fw) {
   }
 }
 
-void cpp_cg::write_func_name(const Func* f, const FileWriter* fw) {
+void cpp_cg::write_func_name(const Func* f, const io::FileWriter* fw) {
   fw->Write(f->name);
   fw->Write(gen_suffix(f->suffix_idx));
 }
+
