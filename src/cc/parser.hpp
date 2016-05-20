@@ -6,6 +6,7 @@
 #include "sym/module.hpp"
 #include "dt/dict.hpp"
 #include <vector>
+#include <tuple>
 
 namespace ast {
   struct Node;
@@ -20,6 +21,8 @@ public:
   static TranslationUnit Run(const TopLevel&);
 
 private:
+  typedef std::tuple<dt::StrView, ast::Node*, sym::Type> VarInfo;
+
   sym::Module module;
   const TopLevel& top;
   TranslationUnit result;
@@ -44,7 +47,7 @@ private:
   ast::Node* ParseLt(lex::TokenStream&);
   ast::Node* ParseGt(lex::TokenStream&);
   ast::Node* ParseSet(lex::TokenStream&);
-  ast::Node* ParseDef(lex::TokenStream&);
+  ast::Node* ParseVar(lex::TokenStream&);
   ast::Node* ParseIf(lex::TokenStream&);
   ast::Node* ParseStruct(lex::TokenStream&);
   ast::Node* ParseGet(lex::TokenStream&);
@@ -52,6 +55,7 @@ private:
   ast::Node* ParseAttrAccess(lex::TokenStream&);
 
   std::vector<ast::Node*> CollectParsed(lex::TokenStream&);
+  VarInfo FetchVarInfo(lex::TokenStream&);
 
   sym::Type TypeByName(dt::StrView) const;
 };

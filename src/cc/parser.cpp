@@ -11,6 +11,7 @@
 #include "dbg/sym.hpp"
 #include "cc/type_deducer.hpp"
 #include "echo.hpp"
+#include <tuple>
 #include <cstring>
 #include <vector>
 
@@ -61,12 +62,15 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
   case encode9("int"): return Type::Int();
   case encode9("real"): return Type::Real();
   case encode9("num"): return Type::Num();
+  case encode9("any"): return Type::Any();
+  case encode9("str"): return Type::Str();
+
   default:
     auto type_info = module.Struct(name);
     if (type_info) {
       return type_info->type;
     } else {
-      throw "unknown type";
+      throw "TypeByName: unknown type";
     }
   }
 }
@@ -126,26 +130,25 @@ void Parser::ParseDefStruct(TokenStream& toks) {
   result.structs.push_back(name);
 }
 
-void Parser::ParseGlobal(TokenStream& args) {
-  auto name = args.NextToken();
-  auto expr = ParseToken(args.NextToken());
-  auto ty = TypeDeducer::Run(expr);
+Node* Parser::ParseVar(TokenStream& toks) {
+  StrView name;
+  Node* expr;
+  Type ty;
 
-  if (name.IsList()) {
-    lex::TokenStream typed_pair{name};
-    auto explicit_ty = TypeByName(typed_pair.NextToken());
-    name = typed_pair.NextToken();
+  std::tie(name, expr, ty) = FetchVarInfo(toks);
 
-    if (explicit_ty.CompatibleWith(ty)) {
-      result.globals.push_back(new DefVar{name, expr, explicit_ty});
-      module.DefineGlobalSymbol(name, explicit_ty);
-    } else {
-      throw "not compatible assignment";
-    }
-  } else {
-    result.globals.push_back(new DefVar{name, expr, ty});
-    module.DefineGlobalSymbol(name, ty);
-  }
+  return new DefVar{name, expr, ty};
+}
+
+void Parser::ParseGlobal(TokenStream& toks) {
+  StrView name;
+  Node* expr;
+  Type ty;
+
+  std::tie(name, expr, ty) = FetchVarInfo(toks);
+
+  result.globals.push_back(new DefVar{name, expr, ty});
+  module.DefineGlobalSymbol(name, ty);
 }
 
 void Parser::ParseExpr(Token& tok) {
@@ -232,7 +235,7 @@ Node* Parser::ParseList(Token tok) {
     case encode9("-"): return ParseSub(list);
     case encode9("*"): return ParseMul(list);
     case encode9("set!"): return ParseSet(list);
-    case encode9("def"): return ParseDef(list);
+    case encode9("var"): return ParseVar(list);
     case encode9("if"): return ParseIf(list);
     case encode9("struct"): return ParseStruct(list);
     case encode9("'"): return ParseQuote(list);
@@ -322,15 +325,6 @@ Node* Parser::ParseSet(TokenStream& toks) {
   }
 }
 
-Node* Parser::ParseDef(TokenStream& toks) {
-  auto name = toks.NextToken();
-  auto expr = ParseToken(toks.NextToken());
-  auto ty = TypeDeducer::Run(expr);
-
-  module.DefineLocal(name, ty);
-  return new DefVar{name, expr, ty};
-}
-
 Node* Parser::ParseIf(TokenStream& toks) {
   auto cond = ParseToken(toks.NextToken());
   auto on_true = ParseToken(toks.NextToken());
@@ -410,4 +404,28 @@ std::vector<ast::Node*> Parser::CollectParsed(TokenStream& toks) {
   }
 
   return nodes;
+}
+
+Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
+  auto name = toks.NextToken();
+  auto expr = ParseToken(toks.NextToken());
+  auto expr_ty = TypeDeducer::Run(expr);
+
+  if (name.IsList()) {
+    lex::TokenStream typed_pair{name};
+    auto explicit_ty = TypeByName(typed_pair.NextToken());
+    name = typed_pair.NextToken();
+
+    if (explicit_ty.SameAs(expr_ty)) {
+      return std::make_tuple(name, expr, explicit_ty);
+    } else if (explicit_ty.CompatibleWith(expr_ty)) {
+      return std::make_tuple(
+        name, new TypeCast{expr, expr_ty, explicit_ty}, explicit_ty
+      );
+    } else {
+      throw "FetchVarInfo: incompatible type on assignment";
+    }
+  } else {
+    return std::make_tuple(name, expr, expr_ty);
+  }
 }
