@@ -21,3 +21,8 @@ AttrAccess::AttrAccess(dt::StrView obj_name, sym::Param* attr):
 obj_name{obj_name}, attr{attr} {}
 
 void AttrAccess::Accept(Visitor* v) { v->Visit(this); }
+
+TypeCast::TypeCast(Node* expr, sym::Type from, sym::Type to):
+expr{expr}, from{from}, to{to} {}
+
+void TypeCast::Accept(Visitor* v) { v->Visit(this); }

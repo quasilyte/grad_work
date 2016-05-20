@@ -19,6 +19,7 @@ namespace ast {
   struct Gt;
   struct FuncCall;
   struct AttrAccess;
+  struct TypeCast;
 }
 
 struct ast::Operation: public Node {
@@ -74,4 +75,14 @@ struct ast::AttrAccess: public Node {
 
   dt::StrView obj_name;
   sym::Param* attr;
+};
+
+struct ast::TypeCast: public Node {
+  TypeCast(Node* expr, sym::Type from, sym::Type to);
+
+  void Accept(Visitor*);
+
+  Node* expr;
+  sym::Type from;
+  sym::Type to;
 };
