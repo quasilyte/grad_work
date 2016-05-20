@@ -10,6 +10,7 @@
 #include "backend/cpp/cg/type_map.hpp"
 #include "backend/cpp/cg/utils.hpp"
 #include "backend/cpp/cg/file_writer.hpp"
+#include "intrinsic/intrinsic.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
@@ -77,10 +78,37 @@ void CodeWriter::Visit(ast::SetAttr* node) {
 }
 
 void CodeWriter::Visit(ast::DefVar* node) {
-  write_type(&module, node->type, &fw.module);
+  if (node->type.IsFunc()) {
+    if (node->type.IsIntrinsic()) {
+      auto ty = node->type;
+      auto ret_ty = intrinsic::ret_type_of(ty);
+      auto arity = intrinsic::arity_of(ty);
 
-  fw.module.Write(' ');
-  fw.module.Write(node->name);
+      write_type(&module, ret_ty, &fw.module);
+      fw.module.Write("(*", 2);
+      fw.module.Write(node->name);
+      fw.module.Write(')');
+
+      if (arity) {
+        fw.module.Write('(');
+        for (uint i = 0; i < arity - 1; ++i) {
+          write_type(&module, intrinsic::param_of(ty, i), &fw.module);
+          fw.module.Write(',');
+        }
+        write_type(&module, intrinsic::param_of(ty, arity - 1), &fw.module);
+        fw.module.Write(')');
+      } else {
+        fw.module.Write("()");
+      }
+    } else {
+      throw "DefVar: no assignments for user defined funcs yet";
+    }
+  } else {
+    write_type(&module, node->type, &fw.module);
+    fw.module.Write(' ');
+    fw.module.Write(node->name);
+  }
+
   fw.module.Write('=');
   node->value->Accept(this);
 }
@@ -161,6 +189,10 @@ void CodeWriter::Visit(ast::TypeCast* node) {
   default:
     throw "unsupported typecast";
   }
+}
+
+void CodeWriter::Visit(ast::Intrinsic* node) {
+  fw.module.Write(intrinsic_name(node->type));
 }
 
 void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {

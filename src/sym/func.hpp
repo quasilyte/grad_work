@@ -18,6 +18,7 @@ namespace sym {
 struct sym::MultiFunc {
   typedef std::vector<sym::Type> Key;
 
+  uint arity;
   std::map<Key, sym::Func*> funcs;
 };
 
@@ -27,7 +28,7 @@ struct sym::Func {
 
   Func(dt::StrView name, ParamList&&, sym::Type);
 
-  int Arity() const noexcept;
+  uint Arity() const noexcept;
 
   const ParamList& Params() const noexcept;
 

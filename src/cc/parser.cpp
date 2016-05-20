@@ -210,7 +210,7 @@ Node* Parser::ParseToken(Token tok) {
   case Token::STR:
     return new Str{tok};
   case Token::WORD:
-    return new Var{tok, module.Symbol(tok)};
+    return ParseWord(tok);
   case Token::LIST:
     return ParseList(tok);
 
@@ -251,6 +251,21 @@ Node* Parser::ParseList(Token tok) {
 
   } else {
     throw "car(list) != symbol";
+  }
+}
+
+ast::Node* Parser::ParseWord(Token word) {
+  using namespace mn_hash;
+
+  auto word_hash = encode9(word.Data(), word.Len());
+
+  switch (word_hash) {
+  case encode9("num"): return new Intrinsic{Type::ANY_TO_NUM};
+  case encode9("real"): return new Intrinsic{Type::ANY_TO_REAL};
+  case encode9("int"): return new Intrinsic{Type::ANY_TO_INT};
+
+  default:
+    return new Var{word, module.Symbol(word)};
   }
 }
 

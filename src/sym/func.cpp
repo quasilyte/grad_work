@@ -8,7 +8,7 @@ Param::Param(dt::StrView name, Type type): name{name}, type{type} {}
 Func::Func(dt::StrView name, ParamList&& params, Type ty):
 name{name}, params{params}, ret_type{ty} {}
 
-int Func::Arity() const noexcept {
+uint Func::Arity() const noexcept {
   return params.size();
 }
 

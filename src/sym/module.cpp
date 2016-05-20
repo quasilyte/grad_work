@@ -99,17 +99,22 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
   auto multifunc = func_name_map.Get(name);
 
   if (multifunc) { // Has at least 1 definition
+    if (multifunc->arity != func->Arity()) {
+      throw "DeclareFunc: arity mismatch";
+    }
+
     // Has definition with same signature
     auto found_dup = multifunc->funcs.find(key) != multifunc->funcs.end();
 
     if (found_dup) {
-      throw "func already defined";
+      throw "DeclareFunc: func already defined";
     } else {
       func->suffix_idx = multifunc->funcs.size();
       multifunc->funcs[key] = func;
     }
   } else { // First declaration, no overloadings yet
     multifunc = new sym::MultiFunc{};
+    multifunc->arity = func->Arity();
     func->suffix_idx = 0;
     multifunc->funcs[key] = func;
 

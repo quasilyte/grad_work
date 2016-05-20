@@ -22,6 +22,7 @@ namespace ast {
   struct CompoundLiteral;
   struct AttrAccess;
   struct TypeCast;
+  struct Intrinsic;
 }
 
 class ast::Visitor {
@@ -45,5 +46,6 @@ public:
   virtual void Visit(CompoundLiteral*) = 0;
   virtual void Visit(AttrAccess*) = 0;
   virtual void Visit(TypeCast*) = 0;
+  virtual void Visit(Intrinsic*) = 0;
 };
 

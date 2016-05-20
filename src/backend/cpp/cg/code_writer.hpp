@@ -41,6 +41,7 @@ public:
   void Visit(ast::CompoundLiteral*) override;
   void Visit(ast::AttrAccess*) override;
   void Visit(ast::TypeCast*) override;
+  void Visit(ast::Intrinsic*) override;
 
 private:
   const sym::Module& module;

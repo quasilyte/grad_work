@@ -121,3 +121,7 @@ void TypeDeducer::Visit(ast::AttrAccess* node) {
 void TypeDeducer::Visit(ast::TypeCast* node) {
   result = node->to;
 }
+
+void TypeDeducer::Visit(ast::Intrinsic* node) {
+  result = node->type;
+}
