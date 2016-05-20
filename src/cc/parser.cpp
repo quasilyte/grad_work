@@ -289,7 +289,15 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
   } else {
     auto callable = module.Symbol(name);
     if (callable.IsCallable()) {
-      throw "can not call function via indirection";
+      auto func = module.Func(callable.Tag());
+
+      std::vector<Node*> nodes;
+
+      while (!args.NextToken().IsEof()) {
+        nodes.push_back(ParseToken(args.CurrentToken()));
+      }
+
+      return new VarCall{name, func, std::move(nodes)};
     } else {
       throw "called undefined function";
     }

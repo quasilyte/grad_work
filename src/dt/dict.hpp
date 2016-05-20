@@ -24,6 +24,8 @@ public:
   const T& Get(const char* key, u32 key_len);
   const T& Get(StrView key);
 
+  T Find(StrView key);
+
   T& GetMut(const char* key);
   T& GetMut(const char* key, u32 key_len);
   T& GetMut(StrView key);

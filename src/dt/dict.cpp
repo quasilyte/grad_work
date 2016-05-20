@@ -41,6 +41,17 @@ const T& dt::Dict<T>::Get(StrView key) {
 }
 
 template<class T>
+T dt::Dict<T>::Find(StrView key) {
+  auto it = bag.find(key);
+
+  if (it == bag.end()) {
+    return T{};
+  } else {
+    return it->second;
+  }
+}
+
+template<class T>
 T& dt::Dict<T>::GetMut(const char *key) {
   return bag[StrView{key}];
 }

@@ -111,6 +111,10 @@ void TypeDeducer::Visit(ast::FuncCall* node) {
   result = node->func->ret_type;
 }
 
+void TypeDeducer::Visit(ast::VarCall* node) {
+  result = node->func->ret_type;
+}
+
 void TypeDeducer::Visit(ast::CompoundLiteral* node) {
   result = node->type;
 }

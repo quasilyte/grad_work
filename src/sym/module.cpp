@@ -136,7 +136,7 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
 }
 
 MultiFunc* Module::MultiFunc(dt::StrView name) const {
-  return func_name_map.Get(name);
+  return func_name_map.Find(name);
 }
 
 Func* Module::Func(Type::Id type_id) const {

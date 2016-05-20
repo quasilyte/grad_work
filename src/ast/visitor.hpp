@@ -19,6 +19,7 @@ namespace ast {
   struct If;
   struct Var;
   struct FuncCall;
+  struct VarCall;
   struct CompoundLiteral;
   struct AttrAccess;
   struct Intrinsic;
@@ -43,6 +44,7 @@ public:
   virtual void Visit(If*) = 0;
   virtual void Visit(Var*) = 0;
   virtual void Visit(FuncCall*) = 0;
+  virtual void Visit(VarCall*) = 0;
   virtual void Visit(CompoundLiteral*) = 0;
   virtual void Visit(AttrAccess*) = 0;
   virtual void Visit(Intrinsic*) = 0;

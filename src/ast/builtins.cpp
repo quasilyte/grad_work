@@ -17,6 +17,11 @@ func{func}, args{args} {}
 
 void FuncCall::Accept(Visitor* v) { v->Visit(this); }
 
+VarCall::VarCall(dt::StrView name, sym::Func* func, ArgList&& args):
+name{name}, func{func}, args{args} {}
+
+void VarCall::Accept(Visitor* v) { v->Visit(this); }
+
 AttrAccess::AttrAccess(dt::StrView obj_name, sym::Param* attr):
 obj_name{obj_name}, attr{attr} {}
 

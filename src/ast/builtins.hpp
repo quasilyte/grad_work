@@ -18,6 +18,7 @@ namespace ast {
   struct Lt;
   struct Gt;
   struct FuncCall;
+  struct VarCall;
   struct AttrAccess;
   struct Intrinsic;
   struct IntrinsicCall1;
@@ -61,10 +62,22 @@ struct ast::Gt: public Operation {
 struct ast::FuncCall: public Node {
   typedef std::vector<Node*> ArgList;
 
-  FuncCall(sym::Func*, ArgList&& args);
+  FuncCall(sym::Func*, ArgList&&);
 
   void Accept(Visitor*);
 
+  sym::Func* func;
+  std::vector<Node*> args;
+};
+
+struct ast::VarCall: public Node {
+  typedef std::vector<Node*> ArgList;
+
+  VarCall(dt::StrView name, sym::Func*, ArgList&&);
+
+  void Accept(Visitor*);
+
+  dt::StrView name;
   sym::Func* func;
   std::vector<Node*> args;
 };

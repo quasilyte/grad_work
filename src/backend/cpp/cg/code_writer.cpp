@@ -153,6 +153,13 @@ void CodeWriter::Visit(ast::FuncCall* node) {
   fw.module.Write(')');
 }
 
+void CodeWriter::Visit(ast::VarCall* node) {
+  fw.module.Write(node->name);
+  fw.module.Write('(');
+  VisitList(',', node->args);
+  fw.module.Write(')');
+}
+
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
   sym::Struct* s = module.Struct(node->type.Tag());
 

@@ -39,9 +39,11 @@ void Translator::Translate() {
 
   for (auto multifunc_pair : tu.module.Funcs()) {
     auto funcs = multifunc_pair.second->funcs;
+
     for (auto& func_pair : funcs) {
       auto func = func_pair.second;
       auto params = func->Params();
+
       write_type(&tu.module, func->ret_type, &fw.module);
       fw.module.Write(' ');
       write_func_name(func, &fw.module);
