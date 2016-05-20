@@ -57,8 +57,6 @@ struct ast::Gt: public Operation {
   void Accept(Visitor*);
 };
 
-// struct ast::Eq
-
 struct ast::FuncCall: public Node {
   typedef std::vector<Node*> ArgList;
 
