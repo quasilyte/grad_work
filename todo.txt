@@ -22,6 +22,7 @@ Implement (high priority):
 - constructors/destructors, some kind of encapsulation & invariants
 + function overloading
 + recursive functions
+- tail recursion optimization
 
 Implement (delayed):
 - closures
