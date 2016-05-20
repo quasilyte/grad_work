@@ -1,4 +1,6 @@
 #+BEGIN_SRC C
+  #include "core.h"
+  #include "runtime.h"
   // structs declarations
   // globals declarations
   // functions declarations
