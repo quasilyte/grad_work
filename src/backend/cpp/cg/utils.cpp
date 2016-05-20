@@ -3,6 +3,8 @@
 #include "backend/cpp/cg/type_map.hpp"
 #include "io/file_writer.hpp"
 #include "sym/module.hpp"
+#include "sym/func.hpp"
+#include "sym/sym.hpp"
 
 using namespace io;
 using namespace sym;
@@ -14,4 +16,9 @@ void cpp_cg::write_type(const Module* mod, Type ty, const FileWriter* fw) {
   } else {
     fw->Write(type_name(ty));
   }
+}
+
+void cpp_cg::write_func_name(const Func* f, const FileWriter* fw) {
+  fw->Write(f->name);
+  fw->Write(gen_suffix(f->suffix_idx));
 }

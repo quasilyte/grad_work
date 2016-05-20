@@ -88,12 +88,12 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
     if (found_dup) {
       throw "func already defined";
     } else {
+      func->suffix_idx = multifunc->funcs.size();
       multifunc->funcs[key] = func;
     }
-
-
   } else { // First declaration, no overloadings yet
     multifunc = new sym::MultiFunc{};
+    func->suffix_idx = 0;
     multifunc->funcs[key] = func;
 
     funcs.Put(name, multifunc);

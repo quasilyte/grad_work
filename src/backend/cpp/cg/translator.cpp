@@ -43,7 +43,7 @@ void Translator::Translate() {
       auto params = func->Params();
       write_type(&tu.module, func->ret_type, &fw);
       fw.Write(' ');
-      fw.Write(func->name);
+      write_func_name(func, &fw);
       fw.Write('(');
       if (params.size()) {
         for (uint i = 0; i < params.size() - 1; ++i) {

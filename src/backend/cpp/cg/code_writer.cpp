@@ -98,7 +98,7 @@ void CodeWriter::Visit(ast::Var* node) {
 }
 
 void CodeWriter::Visit(ast::FuncCall* node) {
-  fw.Write(node->func->name);
+  write_func_name(node->func, &fw);
   fw.Write('(');
   VisitList(',', node->args);
   fw.Write(')');
