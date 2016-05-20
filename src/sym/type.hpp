@@ -39,10 +39,19 @@ public:
   };
 
   enum: Id {
+    // (int x)
     ANY_TO_INT = std::numeric_limits<Id>::min(),
+    NUM_TO_INT,
     REAL_TO_INT,
+    // (real x)
     ANY_TO_REAL,
+    NUM_TO_REAL,
     INT_TO_REAL,
+    // (num x)
+    ANY_TO_NUM,
+    REAL_TO_NUM,
+    INT_TO_NUM,
+
     END_INTRINSIC
   };
 
