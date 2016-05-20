@@ -40,8 +40,8 @@ public:
   void Visit(ast::FuncCall*) override;
   void Visit(ast::CompoundLiteral*) override;
   void Visit(ast::AttrAccess*) override;
-  void Visit(ast::TypeCast*) override;
   void Visit(ast::Intrinsic*) override;
+  void Visit(ast::IntrinsicCall1*) override;
 
 private:
   const sym::Module& module;

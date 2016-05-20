@@ -40,6 +40,7 @@ private:
   ast::Node* ParseToken(lex::Token);
   ast::Node* ParseList(lex::Token);
   ast::Node* ParseWord(lex::Token);
+  ast::Node* ParseIntrinsicCall1(lex::TokenStream&, sym::Type(*)(sym::Type));
 
   ast::Node* ParseFuncCall(lex::Token& name, lex::TokenStream& args);
   ast::Node* ParseSum(lex::TokenStream&);
@@ -54,7 +55,6 @@ private:
   ast::Node* ParseGet(lex::TokenStream&);
   ast::Node* ParseQuote(lex::TokenStream&);
   ast::Node* ParseAttrAccess(lex::TokenStream&);
-  ast::Node* ParseTypeCast(lex::TokenStream&);
 
   std::vector<ast::Node*> CollectParsed(lex::TokenStream&);
   VarInfo FetchVarInfo(lex::TokenStream&);

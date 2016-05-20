@@ -14,6 +14,7 @@
 #include <tuple>
 #include <cstring>
 #include <vector>
+#include "intrinsic/intrinsic.hpp"
 
 #include "dbg/lex.hpp"
 
@@ -137,6 +138,7 @@ Node* Parser::ParseVar(TokenStream& toks) {
 
   std::tie(name, expr, ty) = FetchVarInfo(toks);
 
+  module.DefineLocal(name, ty);
   return new DefVar{name, expr, ty};
 }
 
@@ -241,9 +243,9 @@ Node* Parser::ParseList(Token tok) {
     case encode9("'"): return ParseQuote(list);
     case encode9("get"): return ParseGet(list);
     case encode9("."): return ParseAttrAccess(list);
-    case encode9("int"): return ParseTypeCast(list);
-    case encode9("real"): return ParseTypeCast(list);
-    case encode9("num"): return ParseTypeCast(list);
+    case encode9("int"): return ParseIntrinsicCall1(list, intrinsic::int_overloading);
+    case encode9("real"): return ParseIntrinsicCall1(list, intrinsic::real_overloading);
+    case encode9("num"): return ParseIntrinsicCall1(list, intrinsic::num_overloading);
 
     default:
       return ParseFuncCall(name_tok, list);
@@ -437,9 +439,11 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
     if (target_ty.SameAs(expr_ty)) {
       return std::make_tuple(name, expr, target_ty);
     } else if (target_ty.CompatibleWith(expr_ty)) {
-      return std::make_tuple(
-        name, new TypeCast{expr, expr_ty, target_ty}, target_ty
-      );
+      puts("coerce!");
+      auto coerced_expr =
+          new IntrinsicCall1{intrinsic::cast(expr_ty, target_ty), expr};
+
+      return std::make_tuple(name, coerced_expr, target_ty);
     } else {
       throw "FetchVarInfo: incompatible type on assignment";
     }
@@ -448,10 +452,9 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
   }
 }
 
-ast::Node* Parser::ParseTypeCast(TokenStream& toks) {
-  auto target_ty = TypeByName(toks.CurrentToken());
+ast::Node* Parser::ParseIntrinsicCall1(TokenStream& toks, Type(*lookup)(Type)) {
   auto expr = ParseToken(toks.NextToken());
-  auto expr_ty = TypeDeducer::Run(expr);
+  auto ty = TypeDeducer::Run(expr);
 
-  return new TypeCast{expr, expr_ty, target_ty};
+  return new IntrinsicCall1{lookup(ty), expr};
 }

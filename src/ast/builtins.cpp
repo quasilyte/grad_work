@@ -22,11 +22,11 @@ obj_name{obj_name}, attr{attr} {}
 
 void AttrAccess::Accept(Visitor* v) { v->Visit(this); }
 
-TypeCast::TypeCast(Node* expr, sym::Type from, sym::Type to):
-expr{expr}, from{from}, to{to} {}
-
-void TypeCast::Accept(Visitor* v) { v->Visit(this); }
-
 Intrinsic::Intrinsic(sym::Type ty): type{ty} {}
 
 void Intrinsic::Accept(Visitor* v) { v->Visit(this); }
+
+IntrinsicCall1::IntrinsicCall1(sym::Type ty, Node* arg):
+arg{arg}, type{ty} {}
+
+void IntrinsicCall1::Accept(Visitor* v) { v->Visit(this); }

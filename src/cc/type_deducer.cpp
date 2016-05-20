@@ -5,6 +5,7 @@
 #include "ast/cond.hpp"
 #include "ast/atoms.hpp"
 #include "sym/func.hpp"
+#include "intrinsic/intrinsic.hpp"
 
 using namespace cc;
 using namespace sym;
@@ -118,10 +119,10 @@ void TypeDeducer::Visit(ast::AttrAccess* node) {
   result = node->attr->type;
 }
 
-void TypeDeducer::Visit(ast::TypeCast* node) {
-  result = node->to;
-}
-
 void TypeDeducer::Visit(ast::Intrinsic* node) {
   result = node->type;
+}
+
+void TypeDeducer::Visit(ast::IntrinsicCall1* node) {
+  result = intrinsic::ret_type_of(node->type);
 }

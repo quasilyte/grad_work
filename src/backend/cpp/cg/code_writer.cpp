@@ -150,49 +150,15 @@ void CodeWriter::Visit(ast::AttrAccess* node) {
   fw.module.Write(node->attr->name);
 }
 
-void CodeWriter::Visit(ast::TypeCast* node) {
-  auto from = node->from;
-  auto to = node->to;
-  auto expr = node->expr;
-
-  switch (from.Tag()) {
-  case Type::INT:
-    switch (to.Tag()) {
-    case Type::INT: node->expr->Accept(this); return;
-    case Type::REAL: Cast(expr, Type::Real()); return;
-    case Type::NUM: Call("int_to_num_", expr); return;
-
-    default:
-      throw "unsupported typecast";
-    }
-
-  case Type::REAL:
-    switch (to.Tag()) {
-    case Type::INT: Cast(expr, Type::Int()); return;
-    case Type::REAL: node->expr->Accept(this); return;
-    case Type::NUM: Call("real_to_num_", expr); return;
-
-    default:
-      throw "unsupported typecast";
-    }
-
-  case Type::NUM:
-    switch (to.Tag()) {
-    case Type::INT: Call("num_to_int_", expr); return;
-    case Type::REAL: Call("num_to_real_", expr); return;
-    case Type::NUM: node->expr->Accept(this); return;
-
-    default:
-      throw "unsupported typecast";
-    }
-
-  default:
-    throw "unsupported typecast";
-  }
-}
-
 void CodeWriter::Visit(ast::Intrinsic* node) {
   fw.module.Write(intrinsic_name(node->type));
+}
+
+void CodeWriter::Visit(ast::IntrinsicCall1* node) {
+  fw.module.Write(intrinsic_name(node->type));
+  fw.module.Write('(');
+  node->arg->Accept(this);
+  fw.module.Write(')');
 }
 
 void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {

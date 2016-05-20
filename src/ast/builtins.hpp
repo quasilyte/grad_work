@@ -19,8 +19,8 @@ namespace ast {
   struct Gt;
   struct FuncCall;
   struct AttrAccess;
-  struct TypeCast;
   struct Intrinsic;
+  struct IntrinsicCall1;
 }
 
 struct ast::Operation: public Node {
@@ -78,20 +78,19 @@ struct ast::AttrAccess: public Node {
   sym::Param* attr;
 };
 
-struct ast::TypeCast: public Node {
-  TypeCast(Node* expr, sym::Type from, sym::Type to);
-
-  void Accept(Visitor*);
-
-  Node* expr;
-  sym::Type from;
-  sym::Type to;
-};
-
 struct ast::Intrinsic: public Node {
   Intrinsic(sym::Type);
 
   void Accept(Visitor*);
 
+  sym::Type type;
+};
+
+struct ast::IntrinsicCall1: public Node {
+  IntrinsicCall1(sym::Type, Node* arg);
+
+  void Accept(Visitor*);
+
+  Node* arg;
   sym::Type type;
 };
