@@ -3,38 +3,55 @@
 #include "io/utils.hpp"
 #include "fmt/uint.hpp"
 #include <cstdlib>
+#include <cstdio>
+#include "dev_assert.hpp"
 
 using namespace sym;
 
-Generator::Generator(char prefix):
-prefix{prefix}, current_id{0}, count{32} {
-  pool = static_cast<dt::StrView*>(std::malloc(sizeof(dt::StrView) * count));
+Generator::Generator(char prefix, int cap): prefix{prefix} {
+  pool.reserve(cap);
 }
 
 Generator::Id Generator::NextId() {
-  auto len = fmt::width(current_id) + 1;
-
-  char* buf = new char[len];
-  buf[0] = prefix;
-  io::write_to_buf(buf + 1, current_id);
-
-  pool[current_id] = dt::StrView{buf, len};
+  if (pool[current_id].Data() == nullptr) {
+    Generate(current_id);
+  }
 
   return current_id++;
 }
 
-const dt::StrView* Generator::Next() {
+Generator::Id Generator::CurrentId() const noexcept {
+  return current_id;
+}
+
+const dt::StrView& Generator::GetNext() {
   return Get(NextId());
 }
 
-const dt::StrView* Generator::Get(Id id) {
-  return &pool[id];
+const dt::StrView& Generator::Get(Id id) {
+  dev_assert(pool[id].Data() != nullptr);
+
+  return pool[id];
 }
 
-void Generator::Drop(int n) {
-  current_id -= n;
+void Generator::GenerateAll() {
+  for (Id i = current_id; i < pool.capacity(); ++i) {
+    Generate(i);
+  }
+}
+
+void Generator::Generate(Id id) {
+  dev_assert(pool[id].Data() == nullptr);
+
+  auto len = fmt::width(id) + 1; // extra byte for prefix
+
+  char* buf = new char[len];
+  buf[0] = prefix;
+  io::write_to_buf(buf + 1, id);
+
+  pool.push_back(dt::StrView{buf, len});
 }
 
 Generator::~Generator() {
-  // std::free(pool);
+  puts("cleanup");
 }

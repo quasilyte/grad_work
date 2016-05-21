@@ -2,6 +2,7 @@
 
 #include "typedefs.hpp"
 #include "dt/str_view.hpp"
+#include <vector>
 
 namespace sym {
   class Generator;
@@ -11,18 +12,21 @@ class sym::Generator {
 public:
   typedef u32 Id;
 
-  Generator(char prefix);
+  Generator(char prefix, int cap = 32);
   ~Generator();
 
   Id NextId();
-  const dt::StrView* Next();
-  const dt::StrView* Get(Id id);
+  Id CurrentId() const noexcept;
 
-  void Drop(int n);
+  const dt::StrView& GetNext();
+  const dt::StrView& Get(Id id);
+
+  void GenerateAll();
 
 private:
   char prefix;
-  dt::StrView* pool;
-  Id current_id;
-  Id count;
+  std::vector<dt::StrView> pool;
+  Id current_id = 0;
+
+  void Generate(Id id);
 };
