@@ -12,6 +12,7 @@ Implement (high priority):
 - runtime generation based on usage
 - nested function definitions
 - lambdas
+- functions as explicit type (fn int int ...)
 - pattern matching
 - stack of errors
 - generate correct code for C (based on template)
@@ -35,6 +36,7 @@ Implement (delayed):
 - tuples
 - better type inference (especially useful for overloaded functions)
 - argument dependent lookup (for passing overloaded functions)
+- recursive lambda
 
 Compilation perfomance:
 - how much times Type is evaluated for same nodes. Maybe it can be improved
@@ -53,3 +55,4 @@ Fix:
 - merge alist & hlist into single class, if possible
 - sig_matcher should be reused in memory, but beware of nested keys;
   for example, function call inside function call may also need overloading lookup.
+- never permit assigning mixed arity functions (even via cond/if)
