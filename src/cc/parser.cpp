@@ -289,18 +289,14 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
   } else {
     auto callable = module.Symbol(name);
 
-    if (callable.IsCallable()) {
+    if (callable.IsAny()) {
+      throw "FuncCall: polymorphic call is not supported yet";
+    } else if (callable.IsFunc()) {
       auto func = module.Func(callable.Tag());
 
-      std::vector<Node*> nodes;
-
-      while (!args.NextToken().IsEof()) {
-        nodes.push_back(ParseToken(args.CurrentToken()));
-      }
-
-      return new VarCall{name, func, std::move(nodes)};
+      return new VarCall{name, func, std::move(CollectParsed(args))};
     } else {
-      throw "called undefined function";
+      throw "FuncCall: called something that can not be called";
     }
   }
 }
