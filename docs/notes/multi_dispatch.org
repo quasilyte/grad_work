@@ -95,3 +95,26 @@ Example(2) - Particular cases
     return q0(x); // Note: no indirection ever applied.
   }
 #+END_SRC
+
+Example(3) - Invocations
+#+BEGIN_SRC
+  (fn (sum (int a b)) (+ a b))        ;; sum0
+  (fn (sum (int a) (real b)) (+ a b)) ;; sum1
+  (fn (sum a b) (+ a b))              ;; sum2
+   
+                   ;; static type | dynamic type
+  (var i 10)       ;; int         | n/a
+  (var r 10.0)     ;; real        | n/a
+  (var (any a) 10) ;; any         | int
+  (var (num n) 10) ;; num         | int
+
+  (sum i i) ;; sum0 called statically
+  (sum i r) ;; sum1 called statically
+  (sum a a) ;; sum0 called dynamically
+  (sum n n) ;; sum2 called dynamically
+
+  (sum "1" "2") ;; sum2 called dynamically and failed at run time
+  ;; Warning can be generated for (sum "1" "2") call.
+  ;; Also, in trivial case like this, we can give an error, because
+  ;; a program is guaranteed to never work. 
+#+END_SRC
