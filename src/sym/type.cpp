@@ -1,4 +1,5 @@
 #include "sym/type.hpp"
+#include "sym/sym.hpp"
 
 using namespace sym;
 
@@ -10,7 +11,9 @@ Type Type::Int() { return Type{INT}; }
 Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
-Type Type::Lambda() { return Type{LAMBDA}; }
+
+Type::Id Type::LambdaTag(Id id) { return id + END_INTRINSIC; }
+int Type::LambdaKey(Id id) { return id + (-END_INTRINSIC); }
 
 Type::Type(): Type(VOID) {}
 Type::Type(const Type& other): tag{other.tag} {}
@@ -28,10 +31,14 @@ bool Type::IsReal() const noexcept { return tag == REAL; }
 bool Type::IsNum() const noexcept { return tag == NUM; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
-bool Type::IsLambda() const noexcept {return tag == LAMBDA; }
 
 bool Type::IsIntrinsic() const noexcept {
   return tag < END_INTRINSIC;
+}
+
+bool Type::IsLambda() const noexcept {
+  return tag >= END_INTRINSIC
+      && tag < (END_INTRINSIC + sym::MAX_UNIQ_SUFFIXES);
 }
 
 bool Type::IsFunc() const noexcept {
