@@ -17,6 +17,7 @@ namespace ast {
   struct Mul;
   struct Lt;
   struct Gt;
+  struct LambdaExpr;
   struct FuncCall;
   struct VarCall;
   struct AttrAccess;
@@ -55,6 +56,14 @@ struct ast::Lt: public Operation {
 struct ast::Gt: public Operation {
   using Operation::Operation;
   void Accept(Visitor*);
+};
+
+struct ast::LambdaExpr: public Node {
+  LambdaExpr(sym::Type::Id);
+
+  void Accept(Visitor*);
+
+  sym::Type::Id id;
 };
 
 struct ast::FuncCall: public Node {

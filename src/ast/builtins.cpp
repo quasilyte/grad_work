@@ -12,6 +12,10 @@ void Mul::Accept(Visitor* v) { v->Visit(this); }
 void Lt::Accept(Visitor* v) { v->Visit(this); }
 void Gt::Accept(Visitor* v) { v->Visit(this); }
 
+LambdaExpr::LambdaExpr(sym::Type::Id id): id{id} {}
+
+void LambdaExpr::Accept(Visitor* v) { v->Visit(this); }
+
 FuncCall::FuncCall(sym::Func* func, ArgList&& args):
 func{func}, args{args} {}
 
