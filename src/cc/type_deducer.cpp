@@ -107,6 +107,10 @@ void TypeDeducer::Visit(ast::Var* node) {
   result = node->type;
 }
 
+void TypeDeducer::Visit(ast::LambdaExpr* node) {
+  result = node->id;
+}
+
 void TypeDeducer::Visit(ast::FuncCall* node) {
   result = node->func->ret_type;
 }

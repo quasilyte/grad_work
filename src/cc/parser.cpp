@@ -126,8 +126,6 @@ void Parser::ParseDefStruct(TokenStream& toks) {
     }
   }
 
-  // #FIXME: return value (type_id) unused
-  // module.DefineStruct(name, new Struct{name, attrs});
   module.DefineStruct(name, std::move(attrs));
   result.structs.push_back(name);
 }
@@ -162,6 +160,43 @@ void Parser::ParseExpr(Token& tok) {
   }
 }
 
+// (fn (a) a)
+Node* Parser::ParseLambdaExpr(TokenStream& toks) {
+  lex::TokenStream sigrature{toks.NextToken()};
+  std::vector<sym::Param> params;
+
+  module.CreateScopeLevel();
+
+  while (!sigrature.NextToken().IsEof()) {
+    auto tok = sigrature.CurrentToken();
+
+    if (tok.IsList()) {
+      lex::TokenStream typed_list{tok};
+      auto ty = TypeByName(typed_list.NextToken());
+
+      while (!typed_list.NextToken().IsEof()) {
+        dt::StrView param_name = typed_list.CurrentToken();
+        params.push_back(Param{param_name, ty});
+        module.DefineLocal(param_name, ty);
+      }
+    } else {
+      params.push_back(Param{tok, sym::Type::Any()});
+      module.DefineLocal(tok, sym::Type::Any());
+    }
+  }
+
+  auto lambda_id = Type::LambdaTag(result.lambdas.size());
+  auto lambda_expr = new Lambda{lambda_id, std::move(params), Type::Unknown()};
+  auto exprs = CollectParsed(toks);
+  auto ty = TypeDeducer::Run(exprs.back());
+
+  module.DropScopeLevel();
+  lambda_expr->Define(std::move(exprs), ty);
+  result.lambdas.push_back(lambda_expr);
+
+  return new LambdaExpr{lambda_id};
+}
+
 void Parser::ParseSignature(TokenStream& toks) {
   lex::TokenStream signature{toks.NextToken()};
   MultiFunc::Key sig_matcher;
@@ -193,14 +228,11 @@ void Parser::ParseSignature(TokenStream& toks) {
   auto func = new sym::Func{name, std::move(params), Type::Unknown()};
   module.DeclareFunc(name, sig_matcher, func);
 
-  std::vector<Node*> exprs;
-  while (!toks.NextToken().IsEof()) {
-    exprs.push_back(ParseToken(toks.CurrentToken()));
-  }
-
+  auto exprs = CollectParsed(toks);
+  auto ty = TypeDeducer::Run(exprs.back());
   module.DropScopeLevel();
 
-  func->Define(std::move(exprs), TypeDeducer::Run(exprs.back()));
+  func->Define(std::move(exprs), ty);
 }
 
 Node* Parser::ParseToken(Token tok) {
@@ -231,6 +263,7 @@ Node* Parser::ParseList(Token tok) {
     auto name_hash = encode9(name_tok.Data(), name_tok.Len());
 
     switch (name_hash) {
+    case encode9("fn"): return ParseLambdaExpr(list);
     case encode9("<"): return ParseLt(list);
     case encode9(">"): return ParseGt(list);
     case encode9("+"): return ParseSum(list);

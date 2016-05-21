@@ -26,6 +26,7 @@ public:
   void Visit(ast::DefVar*) override;
   void Visit(ast::If*) override;
   void Visit(ast::Var*) override;
+  void Visit(ast::LambdaExpr*) override;
   void Visit(ast::FuncCall*) override;
   void Visit(ast::VarCall*) override;
   void Visit(ast::CompoundLiteral*) override;

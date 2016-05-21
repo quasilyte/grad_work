@@ -5,8 +5,8 @@
 #include "sym/type.hpp"
 #include <vector>
 
-namespace sym {
-  class Module;
+namespace cc {
+  struct TranslationUnit;
 }
 
 namespace cpp_cg {
@@ -18,9 +18,9 @@ class cpp_cg::CodeWriter: public ast::Visitor {
 public:
   typedef std::vector<ast::Node*> NodeList;
 
-  static void Run(ast::Node*, const sym::Module&, const FileWriter&);
+  static void Run(ast::Node*, const cc::TranslationUnit&, const FileWriter&);
 
-  CodeWriter(const sym::Module&, const FileWriter&);
+  CodeWriter(const cc::TranslationUnit&, const FileWriter&);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;
@@ -37,6 +37,7 @@ public:
   void Visit(ast::DefVar*) override;
   void Visit(ast::If*) override;
   void Visit(ast::Var*) override;
+  void Visit(ast::LambdaExpr*) override;
   void Visit(ast::FuncCall*) override;
   void Visit(ast::VarCall*) override;
   void Visit(ast::CompoundLiteral*) override;
@@ -45,7 +46,7 @@ public:
   void Visit(ast::IntrinsicCall1*) override;
 
 private:
-  const sym::Module& module;
+  const cc::TranslationUnit& tu;
   const cpp_cg::FileWriter& fw;
 
   void VisitButLast(char delimiter, const NodeList&);

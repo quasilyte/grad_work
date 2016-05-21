@@ -33,8 +33,43 @@ void Translator::Translate() {
   }
 
   for (ast::DefVar* global : tu.globals) {
-    CodeWriter::Run(global, tu.module, fw);
+    CodeWriter::Run(global, tu, fw);
     fw.module.Write('\n');
+  }
+
+  for (uint i = 0; i < tu.lambdas.size(); ++i) {
+    sym::Lambda* lambda = tu.lambdas[i];
+    auto params = lambda->Params();
+    auto exprs = lambda->exprs;
+
+    write_type(&tu.module, lambda->ret_type, &fw.module);
+    fw.module.Write(' ');
+    write_lambda_name(lambda, &fw.module);
+    fw.module.Write('(');
+    if (lambda->params.size()) {
+      for (uint i = 0; i < params.size() - 1; ++i) {
+        write_type(&tu.module, params[i].type, &fw.module);
+        fw.module.Write(' ');
+        fw.module.Write(params[i].name);
+        fw.module.Write(',');
+      }
+      write_type(&tu.module, params.back().type, &fw.module);
+      fw.module.Write(' ');
+      fw.module.Write(params.back().name);
+    } else {
+      fw.module.Write("void", 4);
+    }
+    fw.module.Write("){", 2);
+
+    for (uint i = 0; i < exprs.size() - 1; ++i) {
+      CodeWriter::Run(exprs[i], tu, fw);
+      fw.module.Write(';');
+    }
+    fw.module.Write("return ", 7);
+    CodeWriter::Run(exprs.back(), tu, fw);
+    fw.module.Write(';');
+
+    fw.module.Write("}\n", 2);
   }
 
   for (auto multifunc_pair : tu.module.Funcs()) {
@@ -64,18 +99,18 @@ void Translator::Translate() {
       fw.module.Write("){", 2);
 
       for (uint i = 0; i < func->exprs.size() - 1; ++i) {
-        CodeWriter::Run(func->exprs[i], tu.module, fw);
+        CodeWriter::Run(func->exprs[i], tu, fw);
         fw.module.Write(';');
       }
       fw.module.Write("return ", 7);
-      CodeWriter::Run(func->exprs.back(), tu.module, fw);
+      CodeWriter::Run(func->exprs.back(), tu, fw);
       fw.module.Write(';');
       fw.module.Write("}\n", 2);
     }
   }
 
   for (ast::Node* expr : tu.exprs) {
-    CodeWriter::Run(expr, tu.module, fw);
+    CodeWriter::Run(expr, tu, fw);
     fw.module.Write('\n');
   }
 }

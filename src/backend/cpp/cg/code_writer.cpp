@@ -11,17 +11,19 @@
 #include "backend/cpp/cg/utils.hpp"
 #include "backend/cpp/cg/file_writer.hpp"
 #include "intrinsic/type_ops.hpp"
+#include "cc/translation_unit.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
+using namespace dt;
 
-void CodeWriter::Run(ast::Node* node, const sym::Module& module, const cpp_cg::FileWriter& fw) {
-  CodeWriter self{module, fw};
+void CodeWriter::Run(ast::Node* node, const cc::TranslationUnit& tu, const cpp_cg::FileWriter& fw) {
+  CodeWriter self{tu, fw};
   self.Visit(node);
 }
 
-CodeWriter::CodeWriter(const sym::Module& module, const cpp_cg::FileWriter& fw):
-module{module}, fw{fw} {}
+CodeWriter::CodeWriter(const cc::TranslationUnit& tu, const cpp_cg::FileWriter& fw):
+tu{tu}, fw{fw} {}
 
 void CodeWriter::Visit(ast::Node* node) {
   node->Accept(this);
@@ -89,7 +91,7 @@ void CodeWriter::Visit(ast::DefVar* node) {
       auto ret_ty = intrinsic::ret_type_of(ty);
       auto arity = intrinsic::arity_of(ty);
 
-      write_type(&module, ret_ty, &fw.module);
+      write_type(&tu.module, ret_ty, &fw.module);
       fw.module.Write("(*", 2);
       fw.module.Write(node->name);
       fw.module.Write(')');
@@ -97,20 +99,32 @@ void CodeWriter::Visit(ast::DefVar* node) {
       if (arity) {
         fw.module.Write('(');
         for (uint i = 0; i < arity - 1; ++i) {
-          write_type(&module, intrinsic::param_of(ty, i), &fw.module);
+          write_type(&tu.module, intrinsic::param_of(ty, i), &fw.module);
           fw.module.Write(',');
         }
-        write_type(&module, intrinsic::param_of(ty, arity - 1), &fw.module);
+        write_type(&tu.module, intrinsic::param_of(ty, arity - 1), &fw.module);
         fw.module.Write(')');
       } else {
         fw.module.Write("()", 2);
       }
     } else {
-      auto func = module.Func(node->type.Tag());
-      auto arity = func->Arity();
-      auto ret_ty = func->ret_type;
+      uint arity;
+      Type ret_ty;
+      std::vector<sym::Param> params;
 
-      write_type(&module, ret_ty, &fw.module);
+      if (node->type.IsLambda()) {
+        sym::Lambda* lambda = tu.lambdas[Type::LambdaKey(node->type.Tag())];
+        arity = lambda->Arity();
+        ret_ty = lambda->ret_type;
+        params = lambda->params;
+      } else {
+        auto func = tu.module.Func(node->type.Tag());
+        arity = func->Arity();
+        ret_ty = func->ret_type;
+        params = func->params;
+      }
+
+      write_type(&tu.module, ret_ty, &fw.module);
       fw.module.Write("(*", 2);
       fw.module.Write(node->name);
       fw.module.Write(')');
@@ -118,17 +132,17 @@ void CodeWriter::Visit(ast::DefVar* node) {
       if (arity) {
         fw.module.Write('(');
         for (uint i = 0; i < arity - 1; ++i) {
-          write_type(&module, func->params[i].type, &fw.module);
+          write_type(&tu.module, params[i].type, &fw.module);
           fw.module.Write(',');
         }
-        write_type(&module, func->params.back().type, &fw.module);
+        write_type(&tu.module, params.back().type, &fw.module);
         fw.module.Write(')');
       } else {
         fw.module.Write("()", 2);
       }
     }
   } else {
-    write_type(&module, node->type, &fw.module);
+    write_type(&tu.module, node->type, &fw.module);
     fw.module.Write(' ');
     fw.module.Write(node->name);
   }
@@ -151,6 +165,11 @@ void CodeWriter::Visit(ast::Var* node) {
   fw.module.Write(node->name);
 }
 
+void CodeWriter::Visit(ast::LambdaExpr* node) {
+  auto lambda = tu.lambdas[Type::LambdaKey(node->id)];
+  write_lambda_name(lambda, &fw.module);
+}
+
 void CodeWriter::Visit(ast::FuncCall* node) {
   write_func_name(node->func, &fw.module);
   VisitGroupedList(',', node->args);
@@ -162,7 +181,7 @@ void CodeWriter::Visit(ast::VarCall* node) {
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
-  sym::Struct* s = module.Struct(node->type.Tag());
+  sym::Struct* s = tu.module.Struct(node->type.Tag());
 
   fw.module.Write("(struct ", 8);
   fw.module.Write(s->name);

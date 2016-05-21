@@ -18,6 +18,7 @@ namespace ast {
   struct DefVar;
   struct If;
   struct Var;
+  struct LambdaExpr;
   struct FuncCall;
   struct VarCall;
   struct CompoundLiteral;
@@ -43,6 +44,7 @@ public:
   virtual void Visit(DefVar*) = 0;
   virtual void Visit(If*) = 0;
   virtual void Visit(Var*) = 0;
+  virtual void Visit(LambdaExpr*) = 0;
   virtual void Visit(FuncCall*) = 0;
   virtual void Visit(VarCall*) = 0;
   virtual void Visit(CompoundLiteral*) = 0;
