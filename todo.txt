@@ -1,12 +1,9 @@
 Implement (high priority):
-- rework some special forms into functions (maybe type casts should be functions)
-- higher order functions (function as a type)
-- assignment of builtin functions to a variable
+- arith on Num_ and Any_
+- higher order functions (function as a type); Note: need polymorphic function variant for this to work
 - mutually recursive functions
-- all basic operations (< = + - / * ...)
 - name mangling for produced C++
 - dynamic multi dispatch (multimethod)
-- boxing/unboxing of Any_
 - arrays
 - lists
 - macro
@@ -20,9 +17,13 @@ Implement (high priority):
 - generate correct code for C (based on template)
 - call with apply (list or args)
 - constructors/destructors, some kind of encapsulation & invariants
+- boxing/unboxing of Any_ & Num_
+- tail recursion optimization
++ all basic operations (< = + - / * ...)
 + function overloading
 + recursive functions
-- tail recursion optimization
++ assignment of builtin functions to a variable
++ rework some special forms into functions (maybe type casts should be functions)
 
 Implement (delayed):
 - closures
