@@ -9,40 +9,40 @@
 #include "sym/struct.hpp"
 #include "backend/cpp/cg/type_map.hpp"
 #include "backend/cpp/cg/utils.hpp"
-#include "backend/cpp/cg/file_writer.hpp"
 #include "intrinsic/type_ops.hpp"
 #include "cc/translation_unit.hpp"
+#include "di/output.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
 using namespace dt;
+using namespace di;
 
-void CodeWriter::Run(ast::Node* node, const cc::TranslationUnit& tu, const cpp_cg::FileWriter& fw) {
-  CodeWriter self{tu, fw};
+void CodeWriter::Run(ast::Node* node, const cc::TranslationUnit& tu) {
+  CodeWriter self{tu};
   self.Visit(node);
 }
 
-CodeWriter::CodeWriter(const cc::TranslationUnit& tu, const cpp_cg::FileWriter& fw):
-tu{tu}, fw{fw} {}
+CodeWriter::CodeWriter(const cc::TranslationUnit& tu): tu{tu} {}
 
 void CodeWriter::Visit(ast::Node* node) {
   node->Accept(this);
 }
 
 void CodeWriter::Visit(ast::Int* node) {
-  fw.module.Write(node->datum);
+  module_write(node->datum);
 }
 
 void CodeWriter::Visit(ast::Real* node) {
-  fw.module.Write(node->datum);
+  module_write(node->datum);
 }
 
 void CodeWriter::Visit(ast::Str* node) {
-  fw.module.Write(node->datum);
+  module_write(node->datum);
 }
 
 void CodeWriter::Visit(ast::Sym*) {
-  fw.module.Write("SYM", 3);
+  module_write("SYM", 3);
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
@@ -71,16 +71,16 @@ void CodeWriter::Visit(ast::Gt* node) {
 }
 
 void CodeWriter::Visit(ast::SetVar* node) {
-  fw.module.Write(node->name);
-  fw.module.Write('=');
+  module_write(node->name);
+  module_write('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::SetAttr* node) {
-  fw.module.Write(node->obj_name);
-  fw.module.Write('.');
-  fw.module.Write(node->attr->name);
-  fw.module.Write('=');
+  module_write(node->obj_name);
+  module_write('.');
+  module_write(node->attr->name);
+  module_write('=');
   node->value->Accept(this);
 }
 
@@ -91,21 +91,21 @@ void CodeWriter::Visit(ast::DefVar* node) {
       auto ret_ty = intrinsic::ret_type_of(ty);
       auto arity = intrinsic::arity_of(ty);
 
-      write_type(&tu.module, ret_ty, &fw.module);
-      fw.module.Write("(*", 2);
-      fw.module.Write(node->name);
-      fw.module.Write(')');
+      write_type(&tu.module, ret_ty);
+      module_write("(*", 2);
+      module_write(node->name);
+      module_write(')');
 
       if (arity) {
-        fw.module.Write('(');
+        module_write('(');
         for (uint i = 0; i < arity - 1; ++i) {
-          write_type(&tu.module, intrinsic::param_of(ty, i), &fw.module);
-          fw.module.Write(',');
+          write_type(&tu.module, intrinsic::param_of(ty, i));
+          module_write(',');
         }
-        write_type(&tu.module, intrinsic::param_of(ty, arity - 1), &fw.module);
-        fw.module.Write(')');
+        write_type(&tu.module, intrinsic::param_of(ty, arity - 1));
+        module_write(')');
       } else {
-        fw.module.Write("()", 2);
+        module_write("()", 2);
       }
     } else {
       uint arity;
@@ -124,94 +124,94 @@ void CodeWriter::Visit(ast::DefVar* node) {
         params = func->params;
       }
 
-      write_type(&tu.module, ret_ty, &fw.module);
-      fw.module.Write("(*", 2);
-      fw.module.Write(node->name);
-      fw.module.Write(')');
+      write_type(&tu.module, ret_ty);
+      module_write("(*", 2);
+      module_write(node->name);
+      module_write(')');
 
       if (arity) {
-        fw.module.Write('(');
+        module_write('(');
         for (uint i = 0; i < arity - 1; ++i) {
-          write_type(&tu.module, params[i].type, &fw.module);
-          fw.module.Write(',');
+          write_type(&tu.module, params[i].type);
+          module_write(',');
         }
-        write_type(&tu.module, params.back().type, &fw.module);
-        fw.module.Write(')');
+        write_type(&tu.module, params.back().type);
+        module_write(')');
       } else {
-        fw.module.Write("()", 2);
+        module_write("()", 2);
       }
     }
   } else {
-    write_type(&tu.module, node->type, &fw.module);
-    fw.module.Write(' ');
-    fw.module.Write(node->name);
+    write_type(&tu.module, node->type);
+    module_write(' ');
+    module_write(node->name);
   }
 
-  fw.module.Write('=');
+  module_write('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::If* node) {
-  fw.module.Write("(");
+  module_write("(");
   node->cond->Accept(this);
-  fw.module.Write(")?(");
+  module_write(")?(");
   node->on_true->Accept(this);
-  fw.module.Write("):(");
+  module_write("):(");
   node->on_false->Accept(this);
-  fw.module.Write(")");
+  module_write(")");
 }
 
 void CodeWriter::Visit(ast::Var* node) {
-  fw.module.Write(node->name);
+  module_write(node->name);
 }
 
 void CodeWriter::Visit(ast::LambdaExpr* node) {
   auto lambda = tu.lambdas[Type::LambdaKey(node->id)];
-  write_lambda_name(lambda, &fw.module);
+  write_lambda_name(lambda);
 }
 
 void CodeWriter::Visit(ast::FuncCall* node) {
-  write_func_name(node->func, &fw.module);
+  write_func_name(node->func);
   VisitGroupedList(',', node->args);
 }
 
 void CodeWriter::Visit(ast::VarCall* node) {
-  fw.module.Write(node->name);
+  module_write(node->name);
   VisitGroupedList(',', node->args);
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
   sym::Struct* s = tu.module.Struct(node->type.Tag());
 
-  fw.module.Write("(struct ", 8);
-  fw.module.Write(s->name);
-  fw.module.Write("){", 2);
+  module_write("(struct ", 8);
+  module_write(s->name);
+  module_write("){", 2);
   VisitList(',', node->initializers);
-  fw.module.Write('}');
+  module_write('}');
 }
 
 void CodeWriter::Visit(ast::AttrAccess* node) {
-  fw.module.Write(node->obj_name);
-  fw.module.Write('.');
-  fw.module.Write(node->attr->name);
+  module_write(node->obj_name);
+  module_write('.');
+  module_write(node->attr->name);
 }
 
 void CodeWriter::Visit(ast::Intrinsic* node) {
-  fw.module.Write(intrinsic_name(node->type));
+  module_write(intrinsic_name(node->type));
 }
 
 void CodeWriter::Visit(ast::IntrinsicCall1* node) {
-  fw.module.Write(intrinsic_name(node->type));
-  fw.module.Write('(');
+  module_write(intrinsic_name(node->type));
+  module_write('(');
   node->arg->Accept(this);
-  fw.module.Write(')');
+  module_write(')');
 }
 
 void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {
   if (nodes.size()) {
     for (uint i = 0; i < nodes.size() - 1; ++i) {
       nodes[i]->Accept(this);
-      fw.module.Write(delimiter);
+      module_write(delimiter);
     }
   }
 }
@@ -224,29 +224,29 @@ void CodeWriter::VisitList(char delimiter, const NodeList& nodes) {
 }
 
 void CodeWriter::VisitGroupedList(char delimiter, const NodeList& list) {
-  fw.module.Write('(');
+  module_write('(');
   VisitList(delimiter, list);
-  fw.module.Write(')');
+  module_write(')');
 }
 
 void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
-  fw.module.Write(name);
-  fw.module.Write('(');
+  module_write(name);
+  module_write('(');
   arg->Accept(this);
-  fw.module.Write(')');
+  module_write(')');
 }
 
 void CodeWriter::Cast(ast::Node* expr, Type target_ty) {
-  fw.module.Write("((", 2);
-  fw.module.Write(type_name(target_ty));
-  fw.module.Write(')');
+  module_write("((", 2);
+  module_write(type_name(target_ty));
+  module_write(')');
   expr->Accept(this);
-  fw.module.Write(')');
+  module_write(')');
 }
 
 void CodeWriter::VisitUnary(char op, ast::Node* node) {
-  fw.module.Write('(');
-  fw.module.Write(op);
+  module_write('(');
+  module_write(op);
   node->Accept(this);
-  fw.module.Write(')');
+  module_write(')');
 }

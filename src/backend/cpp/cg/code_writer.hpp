@@ -11,16 +11,15 @@ namespace cc {
 
 namespace cpp_cg {
   class CodeWriter;
-  struct FileWriter;
 }
 
 class cpp_cg::CodeWriter: public ast::Visitor {
 public:
   typedef std::vector<ast::Node*> NodeList;
 
-  static void Run(ast::Node*, const cc::TranslationUnit&, const FileWriter&);
+  static void Run(ast::Node*, const cc::TranslationUnit&);
 
-  CodeWriter(const cc::TranslationUnit&, const FileWriter&);
+  CodeWriter(const cc::TranslationUnit&);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;
@@ -47,7 +46,6 @@ public:
 
 private:
   const cc::TranslationUnit& tu;
-  const cpp_cg::FileWriter& fw;
 
   void VisitButLast(char delimiter, const NodeList&);
   void VisitList(char delimiter, const NodeList&);

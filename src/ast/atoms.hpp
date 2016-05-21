@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ast/node.hpp"
-#include "io/file_writer.hpp"
 #include "dt/str_view.hpp"
 #include "sym/type.hpp"
 #include <vector>

@@ -58,6 +58,7 @@ add_subdirectory(src/intrinsic)
 add_subdirectory(src/dt)
 add_subdirectory(src/fmt)
 add_subdirectory(src/backend/cpp/cg)
+add_subdirectory(src/di)
 
 ## Tests
 enable_testing()
@@ -66,7 +67,7 @@ add_subdirectory(tests/test_dt)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
-target_link_libraries(${PROJECT_NAME} cpp_cg cc ast lex sym dt io fmt dbg intrinsic)
+target_link_libraries(${PROJECT_NAME} cpp_cg cc ast lex sym io fmt dbg intrinsic di dt)
 
 add_executable(rt rt.cpp)
 target_link_libraries(rt)
