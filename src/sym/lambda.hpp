@@ -16,6 +16,7 @@ struct sym::Lambda {
   typedef std::vector<sym::Param> ParamList;
   typedef std::vector<ast::Node*> ExprList;
 
+  Lambda(Type::Id, ParamList&&, sym::Type);
   Lambda(ParamList&&, sym::Type);
 
   uint Arity() const noexcept;

@@ -2,6 +2,9 @@
 
 using namespace sym;
 
+Lambda::Lambda(Type::Id type_id, ParamList&& params, Type ty):
+params{params}, ret_type{ty}, type_id{type_id} {}
+
 Lambda::Lambda(ParamList&& params, Type ty):
 params{params}, ret_type{ty} {}
 
