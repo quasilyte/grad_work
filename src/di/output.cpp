@@ -7,6 +7,7 @@ FILE* r_file;
 
 void di::set_files(FILE *module, FILE *runtime) {
   dev_assert(nullptr == m_file && nullptr == r_file);
+  dev_assert(module != runtime);
 
   if (module && runtime) {
     m_file = module;
