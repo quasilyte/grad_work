@@ -4,6 +4,7 @@
 #include "io/file_writer.hpp"
 #include "sym/module.hpp"
 #include "sym/func.hpp"
+#include "sym/lambda.hpp"
 #include "sym/sym.hpp"
 
 using namespace sym;
@@ -22,3 +23,7 @@ void cpp_cg::write_func_name(const Func* f, const io::FileWriter* fw) {
   fw->Write(gen_suffix(f->suffix_idx));
 }
 
+void cpp_cg::write_lambda_name(const Lambda* l, const io::FileWriter* fw) {
+  fw->Write('l');
+  fw->Write(gen_suffix(Type::LambdaKey(l->type_id)));
+}
