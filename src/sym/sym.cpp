@@ -2,6 +2,10 @@
 
 dt::StrView sym::gen_suffix(u32 idx) {
   // Up to 2015 unique identifiers
+  if (idx > MAX_UNIQ_SUFFIXES) {
+    throw "gen_suffix: idx overflows MAX_UNIQ_SUFFIXES";
+  }
+
   static const char alphabet[] =
     "0123456789"                 // 10
     "abcdefghijklmnopqrstuvwxyz" // 26
