@@ -1,0 +1,14 @@
+| Feature                | Rationale                                                                         |
+|------------------------+-----------------------------------------------------------------------------------|
+| Function overloading   | Enables generic operations like len & push to be implemented for viable types     |
+| Multiple dispatch      | Writing polymorphic code without type hierarchies                                 |
+| Optional static typing | For perfomance, compile time checks and sane function overloading                 |
+| Dynamic typing         | Plays nice with multiple dispatch; reduces the need for parametric polymorphism   |
+| Functional             | Programming in functional paradigm should be convenient (TCO - must have)         |
+| Variables              | State is unavoidable; pragmatic choice is to make imperative programming possible |
+| Not bloated            | Language is designed to be embedded. Libraries can be used via FFI                |
+| Easy to transcompile   | Language features should be portable to most mainstream languages (C, Java, ...)  |
+| Metaprogramming        | Macro is an essential part of any Lisp                                            |
+| Good modules support   | Module system must make code sharing & reusing easier                             |
+| Composition oriented   | Embedded structures (like in Go), etc.                                            |
+
