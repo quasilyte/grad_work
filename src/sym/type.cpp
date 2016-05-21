@@ -27,6 +27,7 @@ bool Type::IsReal() const noexcept { return tag == REAL; }
 bool Type::IsNum() const noexcept { return tag == NUM; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
+bool Type::IsLambda() const noexcept {return tag == LAMBDA; }
 
 bool Type::IsIntrinsic() const noexcept {
   return tag < END_INTRINSIC;
@@ -42,10 +43,6 @@ bool Type::IsArith() const noexcept {
 
 bool Type::IsStruct() const noexcept {
   return tag > BEGIN_STRUCT && tag < END_STRUCT;
-}
-
-bool Type::IsCallable() const noexcept {
-  return IsFunc() || IsAny();
 }
 
 // Merge rules:
