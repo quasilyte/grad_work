@@ -4,13 +4,17 @@ perfect match (because this will prohibit finding a better fit specialization).
 Code for calling fallback generated only in "default" clauses of generic
 dispatching function.
 
+Both C & Lisp syntaxes below are fictional, pseudo code-like.
+
 Example(0) - Arity=1
 #+BEGIN_SRC 
+  -- Lisp --
+
   (fn (f (int x)) x) ;; specialization 1
   (fn (f (real x)) x) ;; specialization 2
   (fn (f x) x) ;; "fallback"
 
-  --
+  -- C --
 
   long f0(long x) { return x; }
   double f1(double x) { return x; }
@@ -29,11 +33,15 @@ Example(0) - Arity=1
 
 Example(1) - Arity=2
 #+BEGIN_SRC
+  -- Lisp --
+
   (fn (f (int a b)) b)
   (fn (f (int a) (real b)) b)
   (fn (f (int a) b) b)
   (fn (f (a (real b)) b)
   (fn (f a b) b)
+
+  -- C --
 
   long f0(long a, long b) { return b; }
   double f1(long a, double b) { return b; }
@@ -62,13 +70,15 @@ Example(1) - Arity=2
 
 Example(2) - Particular cases
 #+BEGIN_SRC
+  -- Lisp --
+
   (fn (f (int x)) x) 
   ;; Note: no fallback provided for "f"
 
   (fn (q x) x)
   ;; Note: only fallback provided for "q"
 
-  -- 
+  -- C --
 
   long f0(long x) { return x; }
 
