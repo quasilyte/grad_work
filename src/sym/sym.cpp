@@ -1,75 +1,22 @@
 #include "sym/sym.hpp"
 
-#include "fmt/uint.hpp"
-
-// 0 1 2 3 4 5 6 7 8 9
-// 01 12 23 34 45 56 67 78 89
-// 012 123 234 345 456 567 678 789
-// 0123 ...
-// ...
-// 0123456789
 dt::StrView sym::gen_suffix(u32 idx) {
-  static const char alphabet[] = "0123456789";
+  // Up to 2015 unique identifiers
+  static const char alphabet[] =
+    "0123456789"                 // 10
+    "abcdefghijklmnopqrstuvwxyz" // 26
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" // 26
+    "_";                         // 1
+  static const uint alphabet_size = 10 + 26 + 26 + 1;
 
-  switch (idx) {
-  case 0:
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 5:
-  case 6:
-  case 7:
-  case 8:
-  case 9: return dt::StrView{alphabet + idx, 1};
-  case 10:
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
-  case 16:
-  case 17:
-  case 18: return dt::StrView{alphabet + idx - 10, 2};
-  case 19:
-  case 20:
-  case 21:
-  case 22:
-  case 23:
-  case 24:
-  case 25:
-  case 26: return dt::StrView{alphabet + idx - 19, 3};
-  case 27:
-  case 28:
-  case 29:
-  case 30:
-  case 31:
-  case 32:
-  case 33: return dt::StrView{alphabet + idx - 27, 4};
-  case 34:
-  case 35:
-  case 36:
-  case 37:
-  case 38:
-  case 39: return dt::StrView{alphabet + idx - 34, 5};
-  case 40:
-  case 41:
-  case 42:
-  case 43:
-  case 44: return dt::StrView{alphabet + idx - 40, 6};
-  case 45:
-  case 46:
-  case 47:
-  case 48: return dt::StrView{alphabet + idx - 45, 7};
-  case 49:
-  case 50:
-  case 51: return dt::StrView{alphabet + idx - 49, 8};
-  case 52:
-  case 53: return dt::StrView{alphabet + idx - 52, 9};
-  case 54: return dt::StrView{alphabet, 10};
-  default:
-    throw "suffix out of range";
+  u32 len = 1;
+
+  for (uint i = alphabet_size; idx >= i; --i) {
+    idx -= i;
+    len += 1;
   }
+
+  return dt::StrView{alphabet + idx, len};
 }
 
 const char* sym::mangle(char ch) {
