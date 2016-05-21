@@ -14,7 +14,8 @@
 #include <tuple>
 #include <cstring>
 #include <vector>
-#include "intrinsic/intrinsic.hpp"
+#include "intrinsic/overloadings.hpp"
+#include "intrinsic/type_ops.hpp"
 
 #include "dbg/lex.hpp"
 

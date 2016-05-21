@@ -10,7 +10,7 @@
 #include "backend/cpp/cg/type_map.hpp"
 #include "backend/cpp/cg/utils.hpp"
 #include "backend/cpp/cg/file_writer.hpp"
-#include "intrinsic/intrinsic.hpp"
+#include "intrinsic/type_ops.hpp"
 
 using namespace cpp_cg;
 using namespace sym;

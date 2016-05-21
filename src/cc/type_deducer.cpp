@@ -5,7 +5,7 @@
 #include "ast/cond.hpp"
 #include "ast/atoms.hpp"
 #include "sym/func.hpp"
-#include "intrinsic/intrinsic.hpp"
+#include "intrinsic/type_ops.hpp"
 
 using namespace cc;
 using namespace sym;

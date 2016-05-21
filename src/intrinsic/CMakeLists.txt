@@ -2,7 +2,8 @@ project(intrinsic)
 
 set(
   intrinsic_src
-  intrinsic.cpp
+  type_ops.cpp
+  overloadings.cpp
 )
 
 add_library(intrinsic STATIC ${intrinsic_src})
