@@ -51,6 +51,7 @@ private:
   void VisitButLast(char delimiter, const NodeList&);
   void VisitList(char delimiter, const NodeList&);
   void VisitGroupedList(char delimiter, const NodeList&);
+  void VisitUnary(char op, ast::Node*);
 
   void Call(dt::StrView name, ast::Node* arg);
   void Cast(ast::Node* expr, sym::Type target_ty);

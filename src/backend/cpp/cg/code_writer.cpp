@@ -44,11 +44,16 @@ void CodeWriter::Visit(ast::Sym*) {
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
+  // No need for unary "+" because it is mostly NOOP
   VisitGroupedList('+', node->operands);
 }
 
 void CodeWriter::Visit(ast::Sub* node) {
-  VisitGroupedList('-', node->operands);
+  if (1 == node->operands.size()) {
+    VisitUnary('-', node->operands[0]);
+  } else {
+    VisitGroupedList('-', node->operands);
+  }
 }
 
 void CodeWriter::Visit(ast::Mul* node) {
@@ -217,5 +222,12 @@ void CodeWriter::Cast(ast::Node* expr, Type target_ty) {
   fw.module.Write(type_name(target_ty));
   fw.module.Write(')');
   expr->Accept(this);
+  fw.module.Write(')');
+}
+
+void CodeWriter::VisitUnary(char op, ast::Node* node) {
+  fw.module.Write('(');
+  fw.module.Write(op);
+  node->Accept(this);
   fw.module.Write(')');
 }
