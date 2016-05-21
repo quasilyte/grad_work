@@ -1,0 +1,87 @@
+*Fallback* - function variant with _every_ its argument defined without type.
+Fallback can not be called directly, even if static types are in
+perfect match (because this will prohibit finding a better fit specialization).
+Code for calling fallback generated only in "default" clauses of generic
+dispatching function.
+
+Example(0) - Arity=1
+#+BEGIN_SRC 
+  (fn (f (int x)) x) ;; specialization 1
+  (fn (f (real x)) x) ;; specialization 2
+  (fn (f x) x) ;; "fallback"
+
+  --
+
+  long f0(long x) { return x; }
+  double f1(double x) { return x; }
+  any f2(any x) { return x; }
+
+  // Generic dispatcher
+  any f(any x) { 
+    switch (x.type) {
+    case long: return any(f0(long(x)));
+    case double: return any(f1(double(x)));
+    default: return f2(x); 
+    // Note: if no "fallback" defined, panic will be called.
+    }
+  }
+#+END_SRC
+
+Example(1) - Arity=2
+#+BEGIN_SRC
+  (fn (f (int a b)) b)
+  (fn (f (int a) (real b)) b)
+  (fn (f (int a) b) b)
+  (fn (f (a (real b)) b)
+  (fn (f a b) b)
+
+  long f0(long a, long b) { return b; }
+  double f1(long a, double b) { return b; }
+  any f2(long a, any b) { return b; }
+  double f3(any a, double b) { return b; }
+  any f4(any a, any b) { return b; }
+
+  any f(any a, any b) {
+    switch (a.type) {
+    case long:
+      switch (b.type) {
+        case long: return any(f0(long(a), long(b)));
+        case double: return any(f1(long(a), double(a)));
+        case any: return f2(long(a), b);
+        default: return f4(a, b);
+      }
+    case any:
+      switch (b.type) {
+        case double: return any(f3(a, double(b)));
+        default: return f4(a, b);
+      }
+    default: return f4(a, b);
+    }
+  }
+#+END_SRC
+
+Example(2) - Particular cases
+#+BEGIN_SRC
+  (fn (f (int x)) x) 
+  ;; Note: no fallback provided for "f"
+
+  (fn (q x) x)
+  ;; Note: only fallback provided for "q"
+
+  -- 
+
+  long f0(long x) { return x; }
+
+  any f(any x) {
+    switch (x.type) {
+    case long: return any(f0(long(x)));
+    default: panic("...");
+    }
+  }
+
+  any q0(any x) { return x; }
+
+  any q(any x) {
+    return q0(x); // Note: no indirection ever applied.
+  }
+#+END_SRC
