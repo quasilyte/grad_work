@@ -67,7 +67,7 @@ add_subdirectory(tests/test_dt)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
-target_link_libraries(${PROJECT_NAME} cpp_cg cc ast lex sym io fmt dbg intrinsic di dt)
+target_link_libraries(${PROJECT_NAME} cpp_cg cc ast lex sym fmt dbg intrinsic di dt io)
 
 add_executable(rt rt.cpp)
 target_link_libraries(rt)

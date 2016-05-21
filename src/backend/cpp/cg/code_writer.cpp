@@ -12,6 +12,7 @@
 #include "intrinsic/type_ops.hpp"
 #include "cc/translation_unit.hpp"
 #include "di/output.hpp"
+#include "io/file_writer.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
@@ -30,19 +31,19 @@ void CodeWriter::Visit(ast::Node* node) {
 }
 
 void CodeWriter::Visit(ast::Int* node) {
-  module_write(node->datum);
+  module_writer()(node->datum);
 }
 
 void CodeWriter::Visit(ast::Real* node) {
-  module_write(node->datum);
+  module_writer()(node->datum);
 }
 
 void CodeWriter::Visit(ast::Str* node) {
-  module_write(node->datum);
+  module_writer()(node->datum);
 }
 
 void CodeWriter::Visit(ast::Sym*) {
-  module_write("SYM", 3);
+  module_writer()("SYM", 3);
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
@@ -71,16 +72,16 @@ void CodeWriter::Visit(ast::Gt* node) {
 }
 
 void CodeWriter::Visit(ast::SetVar* node) {
-  module_write(node->name);
-  module_write('=');
+  module_writer()(node->name);
+  module_writer()('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::SetAttr* node) {
-  module_write(node->obj_name);
-  module_write('.');
-  module_write(node->attr->name);
-  module_write('=');
+  module_writer()(node->obj_name);
+  module_writer()('.');
+  module_writer()(node->attr->name);
+  module_writer()('=');
   node->value->Accept(this);
 }
 
@@ -92,20 +93,18 @@ void CodeWriter::Visit(ast::DefVar* node) {
       auto arity = intrinsic::arity_of(ty);
 
       write_type(&tu.module, ret_ty);
-      module_write("(*", 2);
-      module_write(node->name);
-      module_write(')');
+      module_writer()("(*", 2)(node->name)(')');
 
       if (arity) {
-        module_write('(');
+        module_writer()('(');
         for (uint i = 0; i < arity - 1; ++i) {
           write_type(&tu.module, intrinsic::param_of(ty, i));
-          module_write(',');
+          module_writer()(',');
         }
         write_type(&tu.module, intrinsic::param_of(ty, arity - 1));
-        module_write(')');
+        module_writer()(')');
       } else {
-        module_write("()", 2);
+        module_writer()("()", 2);
       }
     } else {
       uint arity;
@@ -125,44 +124,41 @@ void CodeWriter::Visit(ast::DefVar* node) {
       }
 
       write_type(&tu.module, ret_ty);
-      module_write("(*", 2);
-      module_write(node->name);
-      module_write(')');
+      module_writer()("(*", 2)(node->name)(')');
 
       if (arity) {
-        module_write('(');
+        module_writer()('(');
         for (uint i = 0; i < arity - 1; ++i) {
           write_type(&tu.module, params[i].type);
-          module_write(',');
+          module_writer()(',');
         }
         write_type(&tu.module, params.back().type);
-        module_write(')');
+        module_writer()(')');
       } else {
-        module_write("()", 2);
+        module_writer()("()", 2);
       }
     }
   } else {
     write_type(&tu.module, node->type);
-    module_write(' ');
-    module_write(node->name);
+    module_writer()(' ')(node->name);
   }
 
-  module_write('=');
+  module_writer()('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::If* node) {
-  module_write("(");
+  module_writer()("(");
   node->cond->Accept(this);
-  module_write(")?(");
+  module_writer()(")?(");
   node->on_true->Accept(this);
-  module_write("):(");
+  module_writer()("):(");
   node->on_false->Accept(this);
-  module_write(")");
+  module_writer()(")");
 }
 
 void CodeWriter::Visit(ast::Var* node) {
-  module_write(node->name);
+  module_writer()(node->name);
 }
 
 void CodeWriter::Visit(ast::LambdaExpr* node) {
@@ -176,42 +172,37 @@ void CodeWriter::Visit(ast::FuncCall* node) {
 }
 
 void CodeWriter::Visit(ast::VarCall* node) {
-  module_write(node->name);
+  module_writer()(node->name);
   VisitGroupedList(',', node->args);
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
   sym::Struct* s = tu.module.Struct(node->type.Tag());
 
-  module_write("(struct ", 8);
-  module_write(s->name);
-  module_write("){", 2);
+  module_writer()("(struct ", 8)(s->name)("){", 2);
   VisitList(',', node->initializers);
-  module_write('}');
+  module_writer()('}');
 }
 
 void CodeWriter::Visit(ast::AttrAccess* node) {
-  module_write(node->obj_name);
-  module_write('.');
-  module_write(node->attr->name);
+  module_writer()(node->obj_name)('.')(node->attr->name);
 }
 
 void CodeWriter::Visit(ast::Intrinsic* node) {
-  module_write(intrinsic_name(node->type));
+  module_writer()(intrinsic_name(node->type));
 }
 
 void CodeWriter::Visit(ast::IntrinsicCall1* node) {
-  module_write(intrinsic_name(node->type));
-  module_write('(');
+  module_writer()(intrinsic_name(node->type))('(');
   node->arg->Accept(this);
-  module_write(')');
+  module_writer()(')');
 }
 
 void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {
   if (nodes.size()) {
     for (uint i = 0; i < nodes.size() - 1; ++i) {
       nodes[i]->Accept(this);
-      module_write(delimiter);
+      module_writer()(delimiter);
     }
   }
 }
@@ -224,29 +215,25 @@ void CodeWriter::VisitList(char delimiter, const NodeList& nodes) {
 }
 
 void CodeWriter::VisitGroupedList(char delimiter, const NodeList& list) {
-  module_write('(');
+  module_writer()('(');
   VisitList(delimiter, list);
-  module_write(')');
+  module_writer()(')');
 }
 
 void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
-  module_write(name);
-  module_write('(');
+  module_writer()(name)('(');
   arg->Accept(this);
-  module_write(')');
+  module_writer()(')');
 }
 
 void CodeWriter::Cast(ast::Node* expr, Type target_ty) {
-  module_write("((", 2);
-  module_write(type_name(target_ty));
-  module_write(')');
+  module_writer()("((", 2)(type_name(target_ty))(')');
   expr->Accept(this);
-  module_write(')');
+  module_writer()(')');
 }
 
 void CodeWriter::VisitUnary(char op, ast::Node* node) {
-  module_write('(');
-  module_write(op);
+  module_writer()('(')(op);
   node->Accept(this);
-  module_write(')');
+  module_writer()(')');
 }

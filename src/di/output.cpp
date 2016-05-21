@@ -1,49 +1,34 @@
 #include "di/output.hpp"
 
 #include "dev_assert.hpp"
+#include "io/file_writer.hpp"
 
-FILE* m_file;
-FILE* r_file;
+// FILE* m_file;
+// FILE* r_file;
+io::FileWriter module_fw;
+io::FileWriter runtime_fw;
 
 void di::set_files(FILE *module, FILE *runtime) {
-  dev_assert(nullptr == m_file && nullptr == r_file);
   dev_assert(module != runtime);
 
   if (module && runtime) {
-    m_file = module;
-    r_file = runtime;
+    module_fw.SetFile(module);
+    runtime_fw.SetFile(runtime);
   } else {
     throw "module or runtime file is null";
   }
 }
 
 void di::close_files() {
-  dev_assert(nullptr != m_file && nullptr != r_file);
-
-  fclose(m_file);
-  fclose(r_file);
+  module_fw.Close();
+  runtime_fw.Close();
 }
 
-void di::module_write(const dt::StrView& s) {
-  std::fwrite(s.Data(), 1, s.Len(), m_file);
+io::FileWriter di::module_writer() {
+  return module_fw;
 }
 
-void di::module_write(const char* bytes, u32 amount) {
-  std::fwrite(bytes, 1, amount, m_file);
+io::FileWriter di::runtime_writer() {
+  return runtime_fw;
 }
 
-void di::module_write(char c) {
-  std::fputc(c, m_file);
-}
-
-void di::runtime_write(const dt::StrView& s) {
-  std::fwrite(s.Data(), 1, s.Len(), r_file);
-}
-
-void di::runtime_write(const char* bytes, u32 amount) {
-  std::fwrite(bytes, 1, amount, r_file);
-}
-
-void di::runtime_write(char c) {
-  std::fputc(c, r_file);
-}
