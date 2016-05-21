@@ -285,7 +285,11 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
 
     auto func = multifunc->Func(sig_matcher);
 
-    return new FuncCall{func, std::move(nodes)};
+    if (func) {
+      return new FuncCall{func, std::move(nodes)};
+    } else {
+      throw "FuncCall: no signature matched arguments";
+    }
   } else {
     auto callable = module.Symbol(name);
 
@@ -293,7 +297,6 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
       throw "FuncCall: polymorphic call is not supported yet";
     } else if (callable.IsFunc()) {
       auto func = module.Func(callable.Tag());
-
       return new VarCall{name, func, std::move(CollectParsed(args))};
     } else {
       throw "FuncCall: called something that can not be called";
