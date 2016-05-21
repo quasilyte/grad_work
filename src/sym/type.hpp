@@ -66,6 +66,7 @@ public:
   static Type Unknown();
   static Type Str();
   static Type Sym();
+  static Type Lambda();
 
   Type();
   Type(const Type&);

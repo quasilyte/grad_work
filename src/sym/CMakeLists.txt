@@ -9,6 +9,7 @@ set(
   generator.cpp
   scope.cpp
   struct.cpp
+  lambda.cpp
 )
 
 add_library(sym STATIC ${sym_src})

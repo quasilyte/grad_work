@@ -3,6 +3,7 @@
 #include "sym/type.hpp"
 #include "dt/str_view.hpp"
 #include "sym/param.hpp"
+#include "sym/lambda.hpp"
 #include <map>
 #include <vector>
 
@@ -24,22 +25,9 @@ struct sym::MultiFunc {
   std::map<Key, sym::Func*> funcs;
 };
 
-struct sym::Func {
-  typedef std::vector<sym::Param> ParamList;
-  typedef std::vector<ast::Node*> ExprList;
-
+struct sym::Func: public Lambda {
   Func(dt::StrView name, ParamList&&, sym::Type);
 
-  uint Arity() const noexcept;
-
-  const ParamList& Params() const noexcept;
-
-  void Define(ExprList&& exprs, Type ty);
-
   const dt::StrView name;
-  ExprList exprs;
-  ParamList params;
-  sym::Type ret_type;
-  sym::Type type;
-  u32 suffix_idx;
+  u32 suffix_idx; // Assigned from the Module::DeclareFunc
 };

@@ -10,6 +10,7 @@ Type Type::Int() { return Type{INT}; }
 Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
+Type Type::Lambda() { return Type{LAMBDA}; }
 
 Type::Type(): Type(VOID) {}
 Type::Type(const Type& other): tag{other.tag} {}

@@ -81,7 +81,7 @@ Type Module::SymbolOrFunc(dt::StrView name) {
 
     if (multifunc) {
       if (1 == multifunc->funcs.size()) { // Precise type exists
-        return multifunc->funcs.begin()->second->type;
+        return Type{multifunc->funcs.begin()->second->type_id};
       } else {
         throw "symbol or func: duck typing for func not implemented";
       }
@@ -131,7 +131,7 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
     func_name_map.Put(name, multifunc);
   }
 
-  func->type = Type{-static_cast<Type::Id>(func_id_map.size())};
+  func->type_id = -static_cast<Type::Id>(func_id_map.size());
   func_id_map.push_back(func);
 }
 
