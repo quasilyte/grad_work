@@ -34,27 +34,27 @@ struct ast::Operation: public Node {
 };
 
 struct ast::Sum: public Operation {
-  using Operation::Operation;
+  Sum(ArgList&&);
   void Accept(Visitor*);
 };
 
 struct ast::Mul: public Operation {
-  using Operation::Operation;
+  Mul(ArgList&&);
   void Accept(Visitor*);
 };
 
 struct ast::Sub: public Operation {
-  using Operation::Operation;
+  Sub(ArgList&&);
   void Accept(Visitor*);
 };
 
 struct ast::Lt: public Operation {
-  using Operation::Operation;
+  Lt(ArgList&&);
   void Accept(Visitor*);
 };
 
 struct ast::Gt: public Operation {
-  using Operation::Operation;
+  Gt(ArgList&&);
   void Accept(Visitor*);
 };
 

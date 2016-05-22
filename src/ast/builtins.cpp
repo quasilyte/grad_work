@@ -6,10 +6,39 @@ using namespace ast;
 
 Operation::Operation(ArgList&& operands): operands{operands} {}
 
+Sum::Sum(ArgList&& operands): Operation{std::move(operands)} {
+  if (operands.size() < 1) {
+    throw "Sum: min arity is 1";
+  }
+}
 void Sum::Accept(Visitor* v) { v->Visit(this); }
+
+Sub::Sub(ArgList&& operands): Operation{std::move(operands)} {
+  if (operands.size() < 1) {
+    throw "Sub: min arity is 1";
+  }
+}
 void Sub::Accept(Visitor* v) { v->Visit(this); }
+
+Mul::Mul(ArgList&& operands): Operation{std::move(operands)} {
+  if (operands.size() < 1) {
+    throw "Mul: min arity is 1";
+  }
+}
 void Mul::Accept(Visitor* v) { v->Visit(this); }
+
+Lt::Lt(ArgList&& operands): Operation{std::move(operands)} {
+  if (operands.size() < 2) {
+    throw "Lt: min arity is 2";
+  }
+}
 void Lt::Accept(Visitor* v) { v->Visit(this); }
+
+Gt::Gt(ArgList&& operands): Operation{std::move(operands)} {
+  if (operands.size() < 2) {
+    throw "Gt: min arity is 2";
+  }
+}
 void Gt::Accept(Visitor* v) { v->Visit(this); }
 
 LambdaExpr::LambdaExpr(sym::TypeId id): id{id} {}
