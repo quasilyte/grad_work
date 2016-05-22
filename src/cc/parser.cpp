@@ -25,6 +25,22 @@ using namespace ast;
 using namespace dt;
 using namespace sym;
 
+bool is_type_name(dt::StrView maybe_type_name) {
+  return maybe_type_name[0] >= 'A'
+      && maybe_type_name[0] <= 'Z';
+}
+
+int param_seq_len(lex::TokenStream toks) {
+  int result = 0;
+
+  while (!toks.NextToken().IsEof()
+         && !is_type_name(toks.CurrentToken())) {
+    result += 1;
+  }
+
+  return result;
+}
+
 int length(TokenStream toks) {
   int size = 0;
 
@@ -61,11 +77,11 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
   using namespace mn_hash;
 
   switch (encode9(name.Data(), name.Len())) {
-  case encode9("int"): return Type::Int();
-  case encode9("real"): return Type::Real();
-  case encode9("num"): return Type::Num();
-  case encode9("any"): return Type::Any();
-  case encode9("str"): return Type::Str();
+  case encode9("Int"): return Type::Int();
+  case encode9("Real"): return Type::Real();
+  case encode9("Num"): return Type::Num();
+  case encode9("Any"): return Type::Any();
+  case encode9("Str"): return Type::Str();
 
   default:
     auto type_info = module.Struct(name);
@@ -160,29 +176,14 @@ void Parser::ParseExpr(Token& tok) {
   }
 }
 
-// (fn (a) a)
 Node* Parser::ParseLambdaExpr(TokenStream& toks) {
-  lex::TokenStream sigrature{toks.NextToken()};
-  std::vector<sym::Param> params;
+  lex::TokenStream signature{toks.NextToken()};
+  std::vector<sym::Param> params = CollectParams(signature);
 
   module.CreateScopeLevel();
 
-  while (!sigrature.NextToken().IsEof()) {
-    auto tok = sigrature.CurrentToken();
-
-    if (tok.IsList()) {
-      lex::TokenStream typed_list{tok};
-      auto ty = TypeByName(typed_list.NextToken());
-
-      while (!typed_list.NextToken().IsEof()) {
-        dt::StrView param_name = typed_list.CurrentToken();
-        params.push_back(Param{param_name, ty});
-        module.DefineLocal(param_name, ty);
-      }
-    } else {
-      params.push_back(Param{tok, sym::Type::Any()});
-      module.DefineLocal(tok, sym::Type::Any());
-    }
+  for (const sym::Param& param : params) {
+    module.DefineLocal(param.name, param.type);
   }
 
   auto lambda_id = Type::LambdaTag(result.lambdas.size());
@@ -200,29 +201,15 @@ Node* Parser::ParseLambdaExpr(TokenStream& toks) {
 void Parser::ParseSignature(TokenStream& toks) {
   lex::TokenStream signature{toks.NextToken()};
   MultiFunc::Key sig_matcher;
+
   auto name = signature.NextToken();
+  auto params = CollectParams(signature);
 
   module.CreateScopeLevel();
 
-  std::vector<sym::Param> params;
-  while (!signature.NextToken().IsEof()) {
-    auto tok = signature.CurrentToken();
-
-    if (tok.IsList()) {
-      lex::TokenStream typed_list{tok};
-      auto type = TypeByName(typed_list.NextToken());
-
-      while (!typed_list.NextToken().IsEof()) {
-        dt::StrView param_name = typed_list.CurrentToken();
-        params.push_back(Param{param_name, type});
-        module.DefineLocal(param_name, type);
-        sig_matcher.push_back(type);
-      }
-    } else {
-      params.push_back(Param{tok, sym::Type::Any()});
-      module.DefineLocal(tok, sym::Type::Any());
-      sig_matcher.push_back(sym::Type::Any());
-    }
+  for (const sym::Param& param : params) {
+    sig_matcher.push_back(param.type);
+    module.DefineLocal(param.name, param.type);
   }
 
   auto func = new sym::Func{name, std::move(params), Type::Unknown()};
@@ -453,6 +440,32 @@ Node* Parser::ParseAttrAccess(TokenStream& toks) {
   auto attr = module.Struct(var.Tag())->Attr(attr_name);
 
   return new AttrAccess{obj_name, attr};
+}
+
+std::vector<sym::Param> Parser::CollectParams(TokenStream& toks) {
+  std::vector<sym::Param> params;
+
+  while (!toks.NextToken().IsEof()) {
+    dt::StrView tok = toks.CurrentToken();
+
+    if (is_type_name(tok)) {
+      auto type = TypeByName(tok);
+      int count = param_seq_len(toks);
+
+      if (count) {
+        for (int i = 0; i < count; ++i) {
+          dt::StrView param_name = toks.NextToken();
+          params.push_back(Param{param_name, type});
+        }
+      } else {
+        throw "at least 1 typed param";
+      }
+    } else {
+      throw "first id must be a type name";
+    }
+  }
+
+  return params;
 }
 
 std::vector<ast::Node*> Parser::CollectParsed(TokenStream& toks) {
