@@ -46,7 +46,7 @@ bool Type::IsFunc() const noexcept {
 }
 
 bool Type::IsArith() const noexcept {
-  return tag > BEGIN_ARITH && tag < END_ARITH;
+  return IsReal() || IsInt();
 }
 
 bool Type::IsStruct() const noexcept {

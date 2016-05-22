@@ -25,15 +25,13 @@ public:
   enum: TypeId {
     // Never forget to increase this constant int literal.
     // If you will forget, compiler error will rise anyway (overflow).
-    END_STRUCT = std::numeric_limits<TypeId>::max() - 9,
+    END_STRUCT = std::numeric_limits<TypeId>::max() - 7,
     SYM,
     STR,
-    BEGIN_ARITH,
     UNKNOWN,
     INT,
     REAL,
     ANY,
-    END_ARITH,
     VOID,
   };
 

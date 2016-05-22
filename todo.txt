@@ -1,5 +1,4 @@
 Implement (high priority):
-- arith on Num_ and Any_
 - higher order functions (function as a type); Note: need polymorphic function variant for this to work
 - mutually recursive functions
 - name mangling for produced C++
@@ -18,10 +17,8 @@ Implement (high priority):
 - generate correct code for C (based on template)
 - call with apply (list or args)
 - constructors/destructors, some kind of encapsulation & invariants
-- boxing/unboxing of Any_ & Num_
 - tail recursion optimization
 - var syntax: (var (int x) 10) -> (var Int x 10)
-- get rid of Num, make arith strict
 + all basic operations (< = + - / * ...)
 + function overloading
 + recursive functions
