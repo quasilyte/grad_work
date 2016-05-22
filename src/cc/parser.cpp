@@ -79,7 +79,6 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
   switch (encode9(name.Data(), name.Len())) {
   case encode9("Int"): return Type::Int();
   case encode9("Real"): return Type::Real();
-  case encode9("Num"): return Type::Num();
   case encode9("Any"): return Type::Any();
   case encode9("Str"): return Type::Str();
 
@@ -246,7 +245,6 @@ Node* Parser::ParseList(Token tok) {
     case encode9("."): return ParseAttrAccess(list);
     case encode9("int"): return ParseIntrinsicCall1(list, intrinsic::int_overloading);
     case encode9("real"): return ParseIntrinsicCall1(list, intrinsic::real_overloading);
-    case encode9("num"): return ParseIntrinsicCall1(list, intrinsic::num_overloading);
 
     default:
       return ParseFuncCall(name_tok, list);
@@ -263,7 +261,6 @@ ast::Node* Parser::ParseWord(Token word) {
   auto word_hash = encode9(word.Data(), word.Len());
 
   switch (word_hash) {
-  case encode9("num"): return new Intrinsic{Type::ANY_TO_NUM};
   case encode9("real"): return new Intrinsic{Type::ANY_TO_REAL};
   case encode9("int"): return new Intrinsic{Type::ANY_TO_INT};
 

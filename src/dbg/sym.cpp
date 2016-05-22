@@ -10,7 +10,6 @@ void dbg::dump(sym::Type ty) {
   case Type::ANY: puts("<ANY>"); break;
   case Type::INT: puts("<INT>"); break;
   case Type::REAL: puts("<REAL>"); break;
-  case Type::NUM: puts("<NUM>"); break;
   case Type::STR: puts("<STR>"); break;
 
   default:

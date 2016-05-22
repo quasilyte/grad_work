@@ -25,31 +25,24 @@ public:
   enum: TypeId {
     // Never forget to increase this constant int literal.
     // If you will forget, compiler error will rise anyway (overflow).
-    END_STRUCT = std::numeric_limits<TypeId>::max() - 10,
+    END_STRUCT = std::numeric_limits<TypeId>::max() - 9,
     SYM,
     STR,
     BEGIN_ARITH,
     UNKNOWN,
     INT,
     REAL,
-    NUM,
     ANY,
     END_ARITH,
     VOID,
   };
 
   enum: TypeId {
-    // (num x)
-    ANY_TO_NUM = std::numeric_limits<TypeId>::min(),
-    REAL_TO_NUM,
-    INT_TO_NUM,
     // (real x)
     ANY_TO_REAL,
-    NUM_TO_REAL,
     INT_TO_REAL,
     // (int x)
     ANY_TO_INT ,
-    NUM_TO_INT,
     REAL_TO_INT,
 
     END_INTRINSIC
@@ -59,7 +52,6 @@ public:
 
   static Type Void();
   static Type Any();
-  static Type Num();
   static Type Real();
   static Type Int();
   static Type Unknown();
@@ -82,7 +74,6 @@ public:
   bool IsInt() const noexcept;
   bool IsUnknown() const noexcept;
   bool IsReal() const noexcept;
-  bool IsNum() const noexcept;
   bool IsStr() const noexcept;
   bool IsSym() const noexcept;
 

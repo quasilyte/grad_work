@@ -5,7 +5,6 @@ using namespace sym;
 
 Type Type::Void() { return Type{VOID}; }
 Type Type::Any() { return Type{ANY}; }
-Type Type::Num() { return Type{NUM}; }
 Type Type::Real() { return Type{REAL}; }
 Type Type::Int() { return Type{INT}; }
 Type Type::Unknown() { return Type{UNKNOWN}; }
@@ -30,7 +29,6 @@ bool Type::IsAny() const noexcept { return tag == ANY; }
 bool Type::IsInt() const noexcept { return tag == INT; }
 bool Type::IsUnknown() const noexcept { return tag == UNKNOWN; }
 bool Type::IsReal() const noexcept { return tag == REAL; }
-bool Type::IsNum() const noexcept { return tag == NUM; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
 
@@ -74,13 +72,7 @@ Type Type::ExtendedWith(Type other) {
     return Type::Any();
   }
 
-  // !Any & not same arith types => promote to Num
-  if (IsArith() || other.IsArith()) {
-    return Type::Num();
-  }
-
-  // #FIXME: handle classes
-  // #FIXME: handle either<A, B>
+  // #FIXME: handle structs
 
   return Type::Any();
 }

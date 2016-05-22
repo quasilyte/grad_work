@@ -38,21 +38,23 @@ void TypeDeducer::Visit(ast::Sym*) {
 }
 
 sym::Type deduce_arith_type(ast::Operation* op) {
-  Type ty;
+  Type result_type = TypeDeducer::Run(op->operands[0]);
+  if (!result_type.IsArith()) {
+    throw "invalid operand type in arith expression";
+  }
 
-  for (ast::Node* operand : op->operands) {
-    ty = TypeDeducer::Run(operand);
-
-    if (ty.IsArith()) {
-      if (ty.IsReal()) {
-        return ty;
+  for (uint i = 1; i < op->operands.size(); ++i) {
+    auto type = TypeDeducer::Run(op->operands[i]);
+    if (!result_type.SameAs(type)) {
+      if (type.IsArith()) {
+        throw "mixed arith types";
+      } else {
+        throw "invalid operand type in arith expression";
       }
-    } else {
-      throw "invalid operand type in arith expression";
     }
   }
 
-  return ty.IsInt() || ty.IsUnknown() ? Type::Int() : Type::Num();
+  return result_type;
 }
 
 void TypeDeducer::Visit(ast::Sum* sum) {
