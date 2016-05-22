@@ -104,16 +104,6 @@ void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
   RunBlock(l->exprs, tu);
 }
 
-/*
-int      x2       (int x) { return x + x; }
-int(*get_x2(void))(int)   { return x2; }
-
-    (*                        (void))
-Int_  (*get_ten_getter0(void))       (void){return get_ten0;}
-Int_(*(*get_ten_getter0(void))(void))(void){return get_ten0;}
-
-*/
-
 void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
   if (f->ret_type.IsFunc()) {
     Fn* lambda = unit::get_fn(f->ret_type);

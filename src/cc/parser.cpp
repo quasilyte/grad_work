@@ -124,24 +124,13 @@ TranslationUnit Parser::Parse() {
 
 void Parser::ParseDefStruct(TokenStream& toks) {
   dt::StrView name = toks.NextToken();
-  std::vector<sym::Param> attrs;
+  std::vector<sym::Param> attrs = CollectParams(toks);
 
-  while (!toks.NextToken().IsEof()) {
-    auto tok = toks.CurrentToken();
-
-    if (tok.IsList()) {
-      lex::TokenStream typed_list{tok};
-      auto type = TypeByName(typed_list.NextToken());
-
-      while (!typed_list.NextToken().IsEof()) {
-        attrs.push_back(Param{typed_list.CurrentToken(), type});
-      }
-    } else {
-      attrs.push_back(Param{tok, Type::Any()});
-    }
+  if (attrs.size()) {
+    unit::def_struct(name, std::move(attrs));
+  } else {
+    throw "struct must have at least 1 named field";
   }
-
-  unit::def_struct(name, std::move(attrs));
 }
 
 Node* Parser::ParseVar(TokenStream& toks) {
@@ -329,8 +318,6 @@ Node* Parser::ParseGt(TokenStream& toks) {
   return new Gt{std::move(CollectParsed(toks))};
 }
 
-// (set! obj val)
-// (set! obj attr val)
 Node* Parser::ParseSet(TokenStream& toks) {  
   switch (length(toks)) {
   case 2: {
