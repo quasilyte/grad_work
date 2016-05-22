@@ -6,7 +6,6 @@
 namespace ast {
   struct Node;
   struct DefVar;
-  struct DefFunc;
 }
 
 namespace sym {

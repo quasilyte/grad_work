@@ -186,14 +186,15 @@ Node* Parser::ParseLambdaExpr(TokenStream& toks) {
     module.DefineLocal(param.name, param.type);
   }
 
-  auto lambda_id = Type::LambdaTag(result.lambdas.size());
-  auto lambda_expr = new Lambda{lambda_id, std::move(params), Type::Unknown()};
   auto exprs = CollectParsed(toks);
   auto ty = TypeDeducer::Run(exprs.back());
 
-  module.DropScopeLevel();
-  lambda_expr->Define(std::move(exprs), ty);
+  auto lambda_id = Type::LambdaTag(result.lambdas.size());
+  auto lambda_expr = new Lambda{lambda_id, std::move(params), Type::Unknown()};
   result.lambdas.push_back(lambda_expr);
+  lambda_expr->Define(std::move(exprs), ty);
+
+  module.DropScopeLevel();
 
   return new LambdaExpr{lambda_id};
 }

@@ -15,11 +15,26 @@ using namespace sym;
 using namespace dt;
 using namespace di;
 
+Type deep_ret_type(Lambda* lambda, const cc::TranslationUnit& tu) {
+  while (lambda->ret_type.IsFunc()) {
+    lambda = lambda->ret_type.IsLambda()
+        ? tu.lambdas[Type::LambdaKey(lambda->ret_type.Tag())]
+        : tu.module.Func(lambda->ret_type.Tag());
+  }
+
+  return lambda->ret_type;
+}
+
 void cpp_cg::write_type(const cc::TranslationUnit& tu, Type ty) {
   if (ty.IsStruct()) {
     module_writer()("struct ")(tu.module.Struct(ty.Tag())->name);
   } else if (ty.IsFunc()) {
-    throw "func types are temporarily disabled";
+    // throw "func types are temporarily disabled";
+    Lambda* lambda = ty.IsLambda()
+        ? tu.lambdas[Type::LambdaKey(ty.Tag())]
+        : tu.module.Func(ty.Tag());
+
+    write_type(tu, deep_ret_type(lambda, tu));
   } else {
     module_writer()(type_name(ty));
   }
