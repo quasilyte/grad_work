@@ -20,6 +20,7 @@
 #include "util/std_vector.hpp"
 #include "unit/syms.hpp"
 #include "unit/structs.hpp"
+#include "sym/rules.hpp"
 
 #include "dbg/lex.hpp"
 
@@ -29,16 +30,11 @@ using namespace ast;
 using namespace dt;
 using namespace sym;
 
-bool is_type_name(dt::StrView maybe_type_name) {
-  return maybe_type_name[0] >= 'A'
-      && maybe_type_name[0] <= 'Z';
-}
-
 int param_seq_len(lex::TokenStream toks) {
   int result = 0;
 
   while (!toks.NextToken().IsEof()
-         && !is_type_name(toks.CurrentToken())) {
+         && !is_struct_name(toks.CurrentToken())) {
     result += 1;
   }
 
@@ -436,7 +432,7 @@ std::vector<sym::Param> Parser::CollectParams(TokenStream& toks) {
   while (!toks.NextToken().IsEof()) {
     dt::StrView tok = toks.CurrentToken();
 
-    if (is_type_name(tok)) {
+    if (is_struct_name(tok)) {
       auto type = TypeByName(tok);
       int count = param_seq_len(toks);
 

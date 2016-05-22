@@ -1,6 +1,7 @@
 #include "unit/structs.hpp"
 
 #include "dt/dict.hpp"
+#include "sym/rules.hpp"
 
 using namespace sym;
 using namespace dt;
@@ -9,6 +10,10 @@ std::vector<sym::Struct*> type_id_map;
 Dict<sym::Struct*> type_name_map;
 
 void unit::def_struct(dt::StrView name, Struct::AttrList&& attrs) {
+  if (!is_struct_name(name)) {
+    throw "def_struct: struct name must start with capital letter";
+  }
+
   if (type_name_map.Find(name)) {
     throw "def_struct: redefinition of struct";
   } else {

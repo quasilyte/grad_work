@@ -9,6 +9,7 @@ set(
   scope.cpp
   struct.cpp
   fn.cpp
+  rules.cpp
 )
 
 add_library(sym STATIC ${sym_src})
