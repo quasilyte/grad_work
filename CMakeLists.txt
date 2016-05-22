@@ -59,6 +59,7 @@ add_subdirectory(src/dt)
 add_subdirectory(src/fmt)
 add_subdirectory(src/backend/cpp/cg)
 add_subdirectory(src/di)
+add_subdirectory(src/util)
 
 ## Tests
 enable_testing()

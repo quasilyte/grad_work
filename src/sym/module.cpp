@@ -1,6 +1,7 @@
 #include "sym/module.hpp"
 
 #include <cmath>
+#include "di/unit.hpp"
 
 using namespace sym;
 
@@ -27,7 +28,7 @@ sym::Struct* Module::Struct(dt::StrView name) const {
   return type_name_map.Find(name);
 }
 
-sym::Struct* Module::Struct(Type::Id type_id) const {
+sym::Struct* Module::Struct(TypeId type_id) const {
   return type_id_map[type_id -  1];
 }
 
@@ -77,11 +78,12 @@ Type Module::SymbolOrFunc(dt::StrView name) {
   auto maybe_void = MaybeVoidSymbol(name);
 
   if (maybe_void.IsVoid()) {
-    auto multifunc = func_name_map.Find(name);
+    // auto multifunc = func_name_map.Find(name);
+    auto multi_fn = unit::get_multi_fn(name);
 
-    if (multifunc) {
-      if (1 == multifunc->funcs.size()) { // Precise type exists
-        return Type{multifunc->funcs.begin()->second->type_id};
+    if (multi_fn) {
+      if (1 == multi_fn->funcs.size()) { // Precise type exists
+        return Type{multi_fn->funcs.begin()->second->type_id};
       } else {
         throw "symbol or func: duck typing for func not implemented";
       }
@@ -93,9 +95,11 @@ Type Module::SymbolOrFunc(dt::StrView name) {
   }
 }
 
-auto Module::Funcs() const noexcept -> dt::DictIter<struct MultiFunc*> {
+/*
+auto Module::Funcs() const noexcept -> dt::DictIter<struct MultiFn*> {
   return func_name_map.Iter();
 }
+*/
 
 Type Module::LocalSymbol(dt::StrView name) {
   return scope.Symbol(name);
@@ -105,7 +109,8 @@ int Module::LocalsCount() const noexcept {
   return scope.LevelSize();
 }
 
-void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::Func* func) {
+/*
+void Module::DeclareFunc(dt::StrView name, const sym::MultiFn::Key& key, sym::NamedFn* func) {
   auto multifunc = func_name_map.Find(name);
 
   if (multifunc) { // Has at least 1 definition
@@ -123,7 +128,7 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
       multifunc->funcs[key] = func;
     }
   } else { // First declaration, no overloadings yet
-    multifunc = new sym::MultiFunc{};
+    multifunc = new sym::MultiFn{};
     multifunc->arity = func->Arity();
     func->suffix_idx = 0;
     multifunc->funcs[key] = func;
@@ -131,17 +136,20 @@ void Module::DeclareFunc(dt::StrView name, const sym::MultiFunc::Key& key, sym::
     func_name_map.Put(name, multifunc);
   }
 
-  func->type_id = -static_cast<Type::Id>(func_id_map.size());
+  func->type_id = -static_cast<TypeId>(func_id_map.size());
   func_id_map.push_back(func);
 }
+*/
 
-MultiFunc* Module::MultiFunc(dt::StrView name) const {
+/*
+MultiFn* Module::MultiFunc(dt::StrView name) const {
   return func_name_map.Find(name);
 }
 
-Func* Module::Func(Type::Id type_id) const {
+NamedFn* Module::Func(TypeId type_id) const {
   return func_id_map[std::abs(type_id)];
 }
+*/
 
 void Module::CreateScopeLevel() {
   scope.CreateLevel();

@@ -3,7 +3,7 @@
 #include "dt/str_view.hpp"
 #include "dt/dict.hpp"
 #include "sym/type.hpp"
-#include "sym/func.hpp"
+#include "sym/fn.hpp"
 #include "sym/struct.hpp"
 #include "sym/param.hpp"
 #include "sym/scope.hpp"
@@ -23,7 +23,7 @@ public:
   // Types:
   void DefineStruct(dt::StrView name, std::vector<Param>&& attrs);
   sym::Struct* Struct(dt::StrView name) const;
-  sym::Struct* Struct(sym::Type::Id) const;
+  sym::Struct* Struct(sym::TypeId) const;
 
   // Globals:
   void DefineGlobalSymbol(dt::StrView name, sym::Type);
@@ -32,9 +32,9 @@ public:
   // Functions:
   void CreateScopeLevel();
   void DropScopeLevel();
-  void DeclareFunc(dt::StrView name, const sym::MultiFunc::Key&, sym::Func*);
-  struct sym::MultiFunc* MultiFunc(dt::StrView name) const;
-  struct sym::Func* Func(sym::Type::Id) const;
+  // void DeclareFunc(dt::StrView name, const sym::MultiFn::Key&, sym::NamedFn*);
+  // struct sym::MultiFn* MultiFunc(dt::StrView name) const;
+  // struct sym::NamedFn* Func(sym::TypeId) const;
 
   // Locals:
   void DefineLocal(dt::StrView name, Type);
@@ -45,16 +45,14 @@ public:
   Type Symbol(dt::StrView name);
   Type SymbolOrFunc(dt::StrView name);
 
-  auto Funcs() const noexcept -> typename dt::DictIter<sym::MultiFunc*>;
+  // auto Funcs() const noexcept -> typename dt::DictIter<sym::MultiFn*>;
 
 private:
   dt::StrView name;
 
   std::vector<sym::Struct*> type_id_map;
-  std::vector<sym::Func*> func_id_map;
   mutable dt::Dict<sym::Struct*> type_name_map;
   mutable dt::Dict<sym::Type> globals;
-  mutable dt::Dict<sym::MultiFunc*> func_name_map;
   Scope scope;
 };
 

@@ -9,7 +9,7 @@ namespace ast {
 }
 
 namespace sym {
-  struct Lambda;
+  struct Fn;
 }
 
 namespace cc {
@@ -20,7 +20,6 @@ struct cc::TranslationUnit {
   std::vector<dt::StrView> structs;
   std::vector<ast::DefVar*> globals;
   std::vector<ast::Node*> exprs;
-  std::vector<sym::Lambda*> lambdas;
 
   sym::Module module;
 };

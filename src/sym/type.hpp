@@ -5,6 +5,7 @@
 
 namespace sym {
   class Type;
+  typedef i32 TypeId;
 }
 
 /**
@@ -20,12 +21,11 @@ namespace sym {
 
 class sym::Type {
 public:
-  typedef i32 Id;
 
-  enum: Id {
+  enum: TypeId {
     // Never forget to increase this constant int literal.
     // If you will forget, compiler error will rise anyway (overflow).
-    END_STRUCT = std::numeric_limits<Id>::max() - 10,
+    END_STRUCT = std::numeric_limits<TypeId>::max() - 10,
     SYM,
     STR,
     BEGIN_ARITH,
@@ -38,9 +38,9 @@ public:
     VOID,
   };
 
-  enum: Id {
+  enum: TypeId {
     // (num x)
-    ANY_TO_NUM = std::numeric_limits<Id>::min(),
+    ANY_TO_NUM = std::numeric_limits<TypeId>::min(),
     REAL_TO_NUM,
     INT_TO_NUM,
     // (real x)
@@ -55,7 +55,7 @@ public:
     END_INTRINSIC
   };
 
-  static const Id BEGIN_STRUCT = 0;
+  static const TypeId BEGIN_STRUCT = 0;
 
   static Type Void();
   static Type Any();
@@ -66,14 +66,14 @@ public:
   static Type Str();
   static Type Sym();
 
-  static Type::Id LambdaTag(Id id);
-  static int LambdaKey(Id);
+  static TypeId LambdaTag(TypeId id);
+  static int LambdaKey(TypeId);
 
   Type();
   Type(const Type&);
-  Type(Id Tag);
+  Type(TypeId Tag);
 
-  Id Tag() const noexcept;
+  TypeId Tag() const noexcept;
 
   bool IsVoid() const noexcept;
   bool IsAny() const noexcept;
@@ -99,5 +99,5 @@ public:
   bool operator==(const Type&) const;
 
 private:
-  Id tag;
+  TypeId tag;
 };

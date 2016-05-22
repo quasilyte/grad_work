@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace sym {
-  struct Func;
+  struct NamedFn;
 }
 
 namespace ast {
@@ -59,26 +59,26 @@ struct ast::Gt: public Operation {
 };
 
 struct ast::LambdaExpr: public Node {
-  LambdaExpr(sym::Type::Id);
+  LambdaExpr(sym::TypeId);
 
   void Accept(Visitor*);
 
-  sym::Type::Id id;
+  sym::TypeId id;
 };
 
 struct ast::FuncCall: public Node {
   typedef std::vector<Node*> ArgList;
 
-  FuncCall(sym::Func*, ArgList&&);
+  FuncCall(sym::NamedFn*, ArgList&&);
 
   void Accept(Visitor*);
 
-  sym::Func* func;
+  sym::NamedFn* func;
   std::vector<Node*> args;
 };
 
 struct ast::VarCall: public FuncCall {
-  VarCall(dt::StrView name, sym::Func*, ArgList&&);
+  VarCall(dt::StrView name, sym::NamedFn*, ArgList&&);
 
   void Accept(Visitor*);
 

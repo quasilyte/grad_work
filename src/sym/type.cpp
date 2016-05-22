@@ -12,14 +12,14 @@ Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
 
-Type::Id Type::LambdaTag(Id id) { return id + END_INTRINSIC; }
-int Type::LambdaKey(Id id) { return id + (-END_INTRINSIC); }
+TypeId Type::LambdaTag(TypeId id) { return id + END_INTRINSIC; }
+int Type::LambdaKey(TypeId id) { return id + (-END_INTRINSIC); }
 
 Type::Type(): Type(VOID) {}
 Type::Type(const Type& other): tag{other.tag} {}
-Type::Type(Id tag): tag{tag} {}
+Type::Type(TypeId tag): tag{tag} {}
 
-Type::Id Type::Tag() const noexcept {
+TypeId Type::Tag() const noexcept {
   return tag;
 }
 

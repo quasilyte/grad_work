@@ -16,6 +16,8 @@
 #include <vector>
 #include "intrinsic/overloadings.hpp"
 #include "intrinsic/type_ops.hpp"
+#include "di/unit.hpp"
+#include "util/std_vector.hpp"
 
 #include "dbg/lex.hpp"
 
@@ -177,31 +179,25 @@ void Parser::ParseExpr(Token& tok) {
 }
 
 Node* Parser::ParseLambdaExpr(TokenStream& toks) {
-  lex::TokenStream signature{toks.NextToken()};
-  std::vector<sym::Param> params = CollectParams(signature);
+  TokenStream signature{toks.NextToken()};
+  auto params = CollectParams(signature);
 
   module.CreateScopeLevel();
-
   for (const sym::Param& param : params) {
     module.DefineLocal(param.name, param.type);
   }
-
   auto exprs = CollectParsed(toks);
-  auto ty = TypeDeducer::Run(exprs.back());
-
-  auto lambda_id = Type::LambdaTag(result.lambdas.size());
-  auto lambda_expr = new Lambda{lambda_id, std::move(params), Type::Unknown()};
-  result.lambdas.push_back(lambda_expr);
-  lambda_expr->Define(std::move(exprs), ty);
-
+  auto ret_ty = TypeDeducer::Run(exprs.back());
   module.DropScopeLevel();
 
-  return new LambdaExpr{lambda_id};
+  return new LambdaExpr{
+    unit::new_unnamed_fn(std::move(params), std::move(exprs), ret_ty)
+  };
 }
 
 void Parser::ParseSignature(TokenStream& toks) {
   lex::TokenStream signature{toks.NextToken()};
-  MultiFunc::Key sig_matcher;
+  MultiFn::Key sig_matcher;
 
   auto name = signature.NextToken();
   auto params = CollectParams(signature);
@@ -213,14 +209,13 @@ void Parser::ParseSignature(TokenStream& toks) {
     module.DefineLocal(param.name, param.type);
   }
 
-  auto func = new sym::Func{name, std::move(params), Type::Unknown()};
-  module.DeclareFunc(name, sig_matcher, func);
+  auto named_fn = unit::declare_named_fn(name, std::move(params), sig_matcher);
 
   auto exprs = CollectParsed(toks);
   auto ty = TypeDeducer::Run(exprs.back());
   module.DropScopeLevel();
 
-  func->Define(std::move(exprs), ty);
+  named_fn->Define(std::move(exprs), ty);
 }
 
 Node* Parser::ParseToken(Token tok) {
@@ -292,23 +287,15 @@ ast::Node* Parser::ParseWord(Token word) {
   }
 }
 
-ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
-  sym::MultiFunc* multifunc = module.MultiFunc(name);
+ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
+  auto args = CollectParsed(toks);
+  sym::MultiFn* multi_fn = unit::get_multi_fn(name);
 
-  if (multifunc) {
-    std::vector<Node*> nodes;
-    MultiFunc::Key sig_matcher;
+  if (multi_fn) {
+    auto named_fn = multi_fn->Find(util::map(args, TypeDeducer::Run));
 
-    while (!args.NextToken().IsEof()) {
-      auto node = ParseToken(args.CurrentToken());
-      sig_matcher.push_back(TypeDeducer::Run(node));
-      nodes.push_back(node);
-    }
-
-    auto func = multifunc->Func(sig_matcher);
-
-    if (func) {
-      return new FuncCall{func, std::move(nodes)};
+    if (named_fn) {
+      return new FuncCall{named_fn, std::move(args)};
     } else {
       throw "FuncCall: no signature matched arguments";
     }
@@ -318,8 +305,8 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& args) {
     if (callable.IsAny()) {
       throw "FuncCall: polymorphic call is not supported yet";
     } else if (callable.IsFunc()) {
-      auto func = module.Func(callable.Tag());
-      return new VarCall{name, func, std::move(CollectParsed(args))};
+      auto func = unit::get_named_fn(callable.Tag());
+      return new VarCall{name, func, std::move(args)};
     } else {
       throw "FuncCall: called something that can not be called";
     }

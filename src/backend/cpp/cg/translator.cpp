@@ -7,6 +7,7 @@
 #include "ast/defs.hpp"
 #include "di/output.hpp"
 #include "io/file_writer.hpp"
+#include "di/unit.hpp"
 
 using namespace cpp_cg;
 using namespace di;
@@ -34,18 +35,14 @@ void Translator::Translate() {
     module_writer()('\n');
   }
 
-  for (uint i = 0; i < tu.lambdas.size(); ++i) {
-    CodeWriter::RunLambda(tu.lambdas[i], tu);
+  for (uint i = 0; i < unit::unnamed_fn_count(); ++i) {
+    CodeWriter::RunLambda(unit::get_unnamed_fn(i), tu);
     module_writer()('\n');
   }
 
-  for (auto multifunc_pair : tu.module.Funcs()) {
-    auto funcs = multifunc_pair.second->funcs;
-
-    for (auto& func_pair : funcs) {
-      CodeWriter::RunFunc(func_pair.second, tu);
-      module_writer()('\n');
-    }
+  for (uint i = 0; i < unit::named_fn_count(); ++i) {
+    CodeWriter::RunFunc(unit::get_named_fn(i), tu);
+    module_writer()('\n');
   }
 
   for (ast::Node* expr : tu.exprs) {

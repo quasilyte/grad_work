@@ -13,38 +13,32 @@
 #include "cc/translation_unit.hpp"
 #include "di/output.hpp"
 #include "io/file_writer.hpp"
+#include "di/unit.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
 using namespace dt;
 using namespace di;
 
-void write_ptr(Lambda* lambda, const cc::TranslationUnit& tu) {
+void write_ptr(Fn* lambda, const cc::TranslationUnit& tu) {
   while (lambda->ret_type.IsFunc()) {
     module_writer()("(*");
-    lambda = lambda->ret_type.IsLambda()
-        ? tu.lambdas[Type::LambdaKey(lambda->ret_type.Tag())]
-        : tu.module.Func(lambda->ret_type.Tag());
+    lambda = unit::get_fn(lambda->ret_type);
   }
 }
 
-void write_ptr_params(Lambda* lambda, const cc::TranslationUnit& tu) {
+void write_ptr_params(Fn* lambda, const cc::TranslationUnit& tu) {
   while (lambda->ret_type.IsFunc()) {
     write_params(tu, lambda->Params());
     module_writer()(')');
 
-    lambda = lambda->ret_type.IsLambda()
-        ? tu.lambdas[Type::LambdaKey(lambda->ret_type.Tag())]
-        : tu.module.Func(lambda->ret_type.Tag());
-
+    lambda = unit::get_fn(lambda->ret_type);
   }
 }
 
-const std::vector<Param>& deep_params(Lambda* lambda, const cc::TranslationUnit& tu) {
+const std::vector<Param>& deep_params(Fn* lambda, const cc::TranslationUnit& tu) {
   while (lambda->ret_type.IsFunc()) {
-    lambda = lambda->ret_type.IsLambda()
-        ? tu.lambdas[Type::LambdaKey(lambda->ret_type.Tag())]
-        : tu.module.Func(lambda->ret_type.Tag());
+    lambda = unit::get_fn(lambda->ret_type);
   }
 
   return lambda->Params();
@@ -87,11 +81,9 @@ void CodeWriter::RunReturn(ast::Node* node, const cc::TranslationUnit& tu) {
   module_writer()(';');
 }
 
-void CodeWriter::RunLambda(Lambda* l, const cc::TranslationUnit& tu) {
+void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
   if (l->ret_type.IsFunc()) {
-    Lambda* lambda = l->ret_type.IsLambda()
-        ? tu.lambdas[Type::LambdaKey(l->ret_type.Tag())]
-        : tu.module.Func(l->ret_type.Tag());
+    Fn* lambda = unit::get_fn(l->ret_type);
 
     write_type(tu, lambda->ret_type);
     write_ptr(lambda, tu);
@@ -121,11 +113,9 @@ Int_(*(*get_ten_getter0(void))(void))(void){return get_ten0;}
 
 */
 
-void CodeWriter::RunFunc(Func* f, const cc::TranslationUnit& tu) {
+void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
   if (f->ret_type.IsFunc()) {
-    Lambda* lambda = f->ret_type.IsLambda()
-        ? tu.lambdas[Type::LambdaKey(f->ret_type.Tag())]
-        : tu.module.Func(f->ret_type.Tag());
+    Fn* lambda = unit::get_fn(f->ret_type);
 
     write_type(tu, lambda->ret_type);
     write_ptr(lambda, tu);
@@ -217,9 +207,7 @@ void CodeWriter::Visit(ast::DefVar* node) {
       module_writer()(type_name(intrinsic::ret_type_of(ty)))("(*")(node->name)(')');
       write_intrinsic_params(ty);
     } else {
-      sym::Lambda* lambda = node->type.IsLambda()
-          ? tu.lambdas[Type::LambdaKey(node->type.Tag())]
-          : tu.module.Func(node->type.Tag());
+      sym::Fn* lambda = unit::get_fn(node->type);
 
       write_type(tu, lambda->ret_type);
       module_writer()("(*")(node->name)(')');
@@ -249,7 +237,7 @@ void CodeWriter::Visit(ast::Var* node) {
 }
 
 void CodeWriter::Visit(ast::LambdaExpr* node) {
-  write_lambda_name(tu.lambdas[Type::LambdaKey(node->id)]);
+  write_lambda_name(unit::get_fn(node->id));
 }
 
 void CodeWriter::Visit(ast::FuncCall* node) {

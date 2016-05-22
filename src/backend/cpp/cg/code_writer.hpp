@@ -6,8 +6,8 @@
 #include <vector>
 
 namespace sym {
-  struct Func;
-  struct Lambda;
+  struct NamedFn;
+  struct UnnamedFn;
 }
 
 namespace cc {
@@ -27,8 +27,8 @@ public:
   static void RunButLast(char delimiter, const NodeList&, const cc::TranslationUnit&);
   static void RunList(char delimiter, const NodeList&, const cc::TranslationUnit&);
   static void RunReturn(ast::Node*, const cc::TranslationUnit&);
-  static void RunLambda(sym::Lambda*, const cc::TranslationUnit&);
-  static void RunFunc(sym::Func*, const cc::TranslationUnit&);
+  static void RunLambda(sym::UnnamedFn*, const cc::TranslationUnit&);
+  static void RunFunc(sym::NamedFn*, const cc::TranslationUnit&);
   static void RunBlock(const NodeList&, const cc::TranslationUnit&);
 
   CodeWriter(const cc::TranslationUnit&);

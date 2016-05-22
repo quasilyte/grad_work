@@ -8,8 +8,6 @@ namespace sym {
 }
 
 struct sym::Param {
-  Param(dt::StrView name, Type type);
-
   dt::StrView name;
-  Type type;
+  sym::Type type;
 };

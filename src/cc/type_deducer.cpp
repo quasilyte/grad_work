@@ -4,7 +4,7 @@
 #include "ast/builtins.hpp"
 #include "ast/cond.hpp"
 #include "ast/atoms.hpp"
-#include "sym/func.hpp"
+#include "sym/fn.hpp"
 #include "intrinsic/type_ops.hpp"
 
 using namespace cc;
@@ -108,7 +108,7 @@ void TypeDeducer::Visit(ast::Var* node) {
 }
 
 void TypeDeducer::Visit(ast::LambdaExpr* node) {
-  result = node->id;
+  result = Type{node->id};
 }
 
 void TypeDeducer::Visit(ast::FuncCall* node) {

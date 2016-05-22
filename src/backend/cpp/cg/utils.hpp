@@ -1,11 +1,11 @@
 #pragma once
 
-#include "sym/lambda.hpp"
+#include "sym/fn.hpp"
 
 namespace sym {
   class Module;
   class Type;
-  struct Func;
+  struct NamedFn;
 }
 
 namespace cc {
@@ -18,10 +18,10 @@ namespace cpp_cg {
 
   void write_type(const cc::TranslationUnit& tu, Type);
 
-  void write_func_name(const Func*);
-  void write_lambda_name(const Lambda*);
-  void write_named_params(const cc::TranslationUnit& tu, const Lambda::ParamList&);
-  void write_params(const cc::TranslationUnit& tu, const Lambda::ParamList&);
+  void write_func_name(const sym::NamedFn*);
+  void write_lambda_name(const Fn*);
+  void write_named_params(const cc::TranslationUnit& tu, const Fn::ParamList&);
+  void write_params(const cc::TranslationUnit& tu, const Fn::ParamList&);
   void write_intrinsic_params(Type);
 }
 
