@@ -24,6 +24,63 @@ void CodeWriter::Run(ast::Node* node, const cc::TranslationUnit& tu) {
   self.Visit(node);
 }
 
+void CodeWriter::RunButLast(char delimiter, const NodeList& nodes, const cc::TranslationUnit& tu) {
+  CodeWriter self{tu};
+
+  if (nodes.size()) {
+    for (uint i = 0; i < nodes.size() - 1; ++i) {
+      nodes[i]->Accept(&self);
+      module_writer()(delimiter);
+    }
+  }
+}
+
+void CodeWriter::RunList(char delimiter, const NodeList& nodes, const cc::TranslationUnit& tu) {
+  CodeWriter self{tu};
+
+  if (nodes.size()) {
+    RunButLast(delimiter, nodes, tu);
+    nodes.back()->Accept(&self);
+  }
+}
+
+void CodeWriter::RunGroupedList(char delimiter, const NodeList& list, const cc::TranslationUnit& tu) {
+  module_writer()('(');
+  RunList(delimiter, list, tu);
+  module_writer()(')');
+}
+
+void CodeWriter::RunReturn(ast::Node* node, const cc::TranslationUnit& tu) {
+  module_writer()("return ");
+  Run(node, tu);
+  module_writer()(';');
+}
+
+void CodeWriter::RunLambda(Lambda* l, const cc::TranslationUnit& tu) {
+  write_type(tu, l->ret_type);
+  module_writer()(' ');
+  write_lambda_name(l);
+
+  write_named_params(tu, l->Params());
+  RunBlock(l->exprs, tu);
+}
+
+void CodeWriter::RunFunc(Func* f, const cc::TranslationUnit& tu) {
+  write_type(tu, f->ret_type);
+  module_writer()(' ');
+  write_func_name(f);
+
+  write_named_params(tu, f->Params());
+  RunBlock(f->exprs, tu);
+}
+
+void CodeWriter::RunBlock(const NodeList& exprs, const cc::TranslationUnit& tu) {
+  module_writer()('{');
+  CodeWriter::RunButLast(';', exprs, tu);
+  CodeWriter::RunReturn(exprs.back(), tu);
+  module_writer()('}');
+}
+
 CodeWriter::CodeWriter(const cc::TranslationUnit& tu): tu{tu} {}
 
 void CodeWriter::Visit(ast::Node* node) {
@@ -48,40 +105,36 @@ void CodeWriter::Visit(ast::Sym*) {
 
 void CodeWriter::Visit(ast::Sum* node) {
   // No need for unary "+" because it is mostly NOOP
-  VisitGroupedList('+', node->operands);
+  RunGroupedList('+', node->operands, tu);
 }
 
 void CodeWriter::Visit(ast::Sub* node) {
   if (1 == node->operands.size()) {
     VisitUnary('-', node->operands[0]);
   } else {
-    VisitGroupedList('-', node->operands);
+    RunGroupedList('-', node->operands, tu);
   }
 }
 
 void CodeWriter::Visit(ast::Mul* node) {
-  VisitGroupedList('*', node->operands);
+  RunGroupedList('*', node->operands, tu);
 }
 
 void CodeWriter::Visit(ast::Lt* node) {
-  VisitGroupedList('<', node->operands);
+  RunGroupedList('<', node->operands, tu);
 }
 
 void CodeWriter::Visit(ast::Gt* node) {
-  VisitGroupedList('>', node->operands);
+  RunGroupedList('>', node->operands, tu);
 }
 
 void CodeWriter::Visit(ast::SetVar* node) {
-  module_writer()(node->name);
-  module_writer()('=');
+  module_writer()(node->name)('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::SetAttr* node) {
-  module_writer()(node->obj_name);
-  module_writer()('.');
-  module_writer()(node->attr->name);
-  module_writer()('=');
+  module_writer()(node->obj_name)('.')(node->attr->name)('=');
   node->value->Accept(this);
 }
 
@@ -89,57 +142,20 @@ void CodeWriter::Visit(ast::DefVar* node) {
   if (node->type.IsFunc()) {
     if (node->type.IsIntrinsic()) {
       auto ty = node->type;
-      auto ret_ty = intrinsic::ret_type_of(ty);
-      auto arity = intrinsic::arity_of(ty);
 
-      write_type(&tu.module, ret_ty);
-      module_writer()("(*", 2)(node->name)(')');
-
-      if (arity) {
-        module_writer()('(');
-        for (uint i = 0; i < arity - 1; ++i) {
-          write_type(&tu.module, intrinsic::param_of(ty, i));
-          module_writer()(',');
-        }
-        write_type(&tu.module, intrinsic::param_of(ty, arity - 1));
-        module_writer()(')');
-      } else {
-        module_writer()("()", 2);
-      }
+      module_writer()(type_name(intrinsic::ret_type_of(ty)))("(*")(node->name)(')');
+      write_intrinsic_params(ty);
     } else {
-      uint arity;
-      Type ret_ty;
-      std::vector<sym::Param> params;
+      sym::Lambda* lambda = node->type.IsLambda()
+          ? tu.lambdas[Type::LambdaKey(node->type.Tag())]
+          : tu.module.Func(node->type.Tag());
 
-      if (node->type.IsLambda()) {
-        sym::Lambda* lambda = tu.lambdas[Type::LambdaKey(node->type.Tag())];
-        arity = lambda->Arity();
-        ret_ty = lambda->ret_type;
-        params = lambda->params;
-      } else {
-        auto func = tu.module.Func(node->type.Tag());
-        arity = func->Arity();
-        ret_ty = func->ret_type;
-        params = func->params;
-      }
-
-      write_type(&tu.module, ret_ty);
-      module_writer()("(*", 2)(node->name)(')');
-
-      if (arity) {
-        module_writer()('(');
-        for (uint i = 0; i < arity - 1; ++i) {
-          write_type(&tu.module, params[i].type);
-          module_writer()(',');
-        }
-        write_type(&tu.module, params.back().type);
-        module_writer()(')');
-      } else {
-        module_writer()("()", 2);
-      }
+      write_type(tu, lambda->ret_type);
+      module_writer()("(*")(node->name)(')');
+      write_params(tu, lambda->params);
     }
   } else {
-    write_type(&tu.module, node->type);
+    write_type(tu, node->type);
     module_writer()(' ')(node->name);
   }
 
@@ -162,25 +178,24 @@ void CodeWriter::Visit(ast::Var* node) {
 }
 
 void CodeWriter::Visit(ast::LambdaExpr* node) {
-  auto lambda = tu.lambdas[Type::LambdaKey(node->id)];
-  write_lambda_name(lambda);
+  write_lambda_name(tu.lambdas[Type::LambdaKey(node->id)]);
 }
 
 void CodeWriter::Visit(ast::FuncCall* node) {
   write_func_name(node->func);
-  VisitGroupedList(',', node->args);
+  RunGroupedList(',', node->args, tu);
 }
 
 void CodeWriter::Visit(ast::VarCall* node) {
   module_writer()(node->name);
-  VisitGroupedList(',', node->args);
+  RunGroupedList(',', node->args, tu);
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
   sym::Struct* s = tu.module.Struct(node->type.Tag());
 
-  module_writer()("(struct ", 8)(s->name)("){", 2);
-  VisitList(',', node->initializers);
+  module_writer()("(struct ")(s->name)("){");
+  RunList(',', node->initializers, tu);
   module_writer()('}');
 }
 
@@ -198,28 +213,6 @@ void CodeWriter::Visit(ast::IntrinsicCall1* node) {
   module_writer()(')');
 }
 
-void CodeWriter::VisitButLast(char delimiter, const NodeList& nodes) {
-  if (nodes.size()) {
-    for (uint i = 0; i < nodes.size() - 1; ++i) {
-      nodes[i]->Accept(this);
-      module_writer()(delimiter);
-    }
-  }
-}
-
-void CodeWriter::VisitList(char delimiter, const NodeList& nodes) {
-  if (nodes.size()) {
-    VisitButLast(delimiter, nodes);
-    nodes.back()->Accept(this);
-  }
-}
-
-void CodeWriter::VisitGroupedList(char delimiter, const NodeList& list) {
-  module_writer()('(');
-  VisitList(delimiter, list);
-  module_writer()(')');
-}
-
 void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
   module_writer()(name)('(');
   arg->Accept(this);
@@ -227,7 +220,7 @@ void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
 }
 
 void CodeWriter::Cast(ast::Node* expr, Type target_ty) {
-  module_writer()("((", 2)(type_name(target_ty))(')');
+  module_writer()("((")(type_name(target_ty))(')');
   expr->Accept(this);
   module_writer()(')');
 }

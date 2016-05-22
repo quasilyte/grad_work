@@ -16,4 +16,6 @@ private:
   Translator(const cc::TranslationUnit&);
 
   void Translate();
+
+  void WriteFunc();
 };

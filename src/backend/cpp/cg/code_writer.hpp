@@ -5,6 +5,11 @@
 #include "sym/type.hpp"
 #include <vector>
 
+namespace sym {
+  struct Func;
+  struct Lambda;
+}
+
 namespace cc {
   struct TranslationUnit;
 }
@@ -18,6 +23,13 @@ public:
   typedef std::vector<ast::Node*> NodeList;
 
   static void Run(ast::Node*, const cc::TranslationUnit&);
+  static void RunGroupedList(char delimiter, const NodeList&, const cc::TranslationUnit&);
+  static void RunButLast(char delimiter, const NodeList&, const cc::TranslationUnit&);
+  static void RunList(char delimiter, const NodeList&, const cc::TranslationUnit&);
+  static void RunReturn(ast::Node*, const cc::TranslationUnit&);
+  static void RunLambda(sym::Lambda*, const cc::TranslationUnit&);
+  static void RunFunc(sym::Func*, const cc::TranslationUnit&);
+  static void RunBlock(const NodeList&, const cc::TranslationUnit&);
 
   CodeWriter(const cc::TranslationUnit&);
 
@@ -47,9 +59,6 @@ public:
 private:
   const cc::TranslationUnit& tu;
 
-  void VisitButLast(char delimiter, const NodeList&);
-  void VisitList(char delimiter, const NodeList&);
-  void VisitGroupedList(char delimiter, const NodeList&);
   void VisitUnary(char op, ast::Node*);
 
   void Call(dt::StrView name, ast::Node* arg);
