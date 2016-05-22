@@ -100,7 +100,6 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
 TranslationUnit Parser::Run(const TopLevel& top) {
   Parser self{top};
   auto tu = self.Parse();
-  tu.module = self.module; // #FIXME: is this causes whole module to copy?
 
   return tu;
 }

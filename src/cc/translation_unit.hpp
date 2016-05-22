@@ -1,15 +1,10 @@
 #pragma once
 
-#include "sym/module.hpp"
 #include <vector>
 
 namespace ast {
   struct Node;
   struct DefVar;
-}
-
-namespace sym {
-  struct Fn;
 }
 
 namespace cc {
@@ -19,6 +14,4 @@ namespace cc {
 struct cc::TranslationUnit {
   std::vector<ast::DefVar*> globals;
   std::vector<ast::Node*> exprs;
-
-  sym::Module module;
 };
