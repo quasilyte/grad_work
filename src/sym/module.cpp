@@ -1,7 +1,7 @@
 #include "sym/module.hpp"
 
 #include <cmath>
-#include "di/unit.hpp"
+#include "unit/fns.hpp"
 
 using namespace sym;
 

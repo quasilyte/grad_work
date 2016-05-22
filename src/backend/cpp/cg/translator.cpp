@@ -7,7 +7,7 @@
 #include "ast/defs.hpp"
 #include "di/output.hpp"
 #include "io/file_writer.hpp"
-#include "di/unit.hpp"
+#include "unit/fns.hpp"
 
 using namespace cpp_cg;
 using namespace di;

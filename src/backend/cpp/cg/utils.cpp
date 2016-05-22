@@ -8,13 +8,13 @@
 #include "intrinsic/type_ops.hpp"
 #include "cc/translation_unit.hpp"
 #include "backend/cpp/cg/code_writer.hpp"
-#include "di/unit.hpp"
+#include "unit/fns.hpp"
 
 using namespace sym;
 using namespace dt;
 using namespace di;
 
-Type deep_ret_type(Fn* lambda, const cc::TranslationUnit& tu) {
+Type deep_ret_type(Fn* lambda) {
   while (lambda->ret_type.IsFunc()) {
     lambda = unit::get_fn(lambda->ret_type);
   }
@@ -28,7 +28,7 @@ void cpp_cg::write_type(const cc::TranslationUnit& tu, Type ty) {
   } else if (ty.IsFunc()) {
     Fn* lambda = unit::get_fn(ty);
 
-    write_type(tu, deep_ret_type(lambda, tu));
+    write_type(tu, deep_ret_type(lambda));
   } else {
     module_writer()(type_name(ty));
   }

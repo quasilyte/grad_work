@@ -16,7 +16,7 @@
 #include <vector>
 #include "intrinsic/overloadings.hpp"
 #include "intrinsic/type_ops.hpp"
-#include "di/unit.hpp"
+#include "unit/fns.hpp"
 #include "util/std_vector.hpp"
 
 #include "dbg/lex.hpp"

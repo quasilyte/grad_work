@@ -13,14 +13,14 @@
 #include "cc/translation_unit.hpp"
 #include "di/output.hpp"
 #include "io/file_writer.hpp"
-#include "di/unit.hpp"
+#include "unit/fns.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
 using namespace dt;
 using namespace di;
 
-void write_ptr(Fn* lambda, const cc::TranslationUnit& tu) {
+void write_ptr(Fn* lambda) {
   while (lambda->ret_type.IsFunc()) {
     module_writer()("(*");
     lambda = unit::get_fn(lambda->ret_type);
@@ -36,7 +36,7 @@ void write_ptr_params(Fn* lambda, const cc::TranslationUnit& tu) {
   }
 }
 
-const std::vector<Param>& deep_params(Fn* lambda, const cc::TranslationUnit& tu) {
+const std::vector<Param>& deep_params(Fn* lambda) {
   while (lambda->ret_type.IsFunc()) {
     lambda = unit::get_fn(lambda->ret_type);
   }
@@ -86,13 +86,13 @@ void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
     Fn* lambda = unit::get_fn(l->ret_type);
 
     write_type(tu, lambda->ret_type);
-    write_ptr(lambda, tu);
+    write_ptr(lambda);
     module_writer()("(*");
     write_lambda_name(l);
     write_named_params(tu, l->Params());
     module_writer()(')');
     write_ptr_params(lambda, tu);
-    write_params(tu, deep_params(l, tu));
+    write_params(tu, deep_params(l));
   } else {
     write_type(tu, l->ret_type);
     module_writer()(' ');
@@ -118,13 +118,13 @@ void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
     Fn* lambda = unit::get_fn(f->ret_type);
 
     write_type(tu, lambda->ret_type);
-    write_ptr(lambda, tu);
+    write_ptr(lambda);
     module_writer()("(*");
     write_func_name(f);
     write_named_params(tu, f->Params());
     module_writer()(')');
     write_ptr_params(lambda, tu);
-    write_params(tu, deep_params(f, tu));
+    write_params(tu, deep_params(f));
   } else {
     write_type(tu, f->ret_type);
     module_writer()(' ');
