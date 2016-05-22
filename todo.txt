@@ -21,6 +21,7 @@ Implement (high priority):
 - boxing/unboxing of Any_ & Num_
 - tail recursion optimization
 - var syntax: (var (int x) 10) -> (var Int x 10)
+- get rid of Num, make arith strict
 + all basic operations (< = + - / * ...)
 + function overloading
 + recursive functions
@@ -60,3 +61,4 @@ Fix:
 - returning function: if overloaded, then return generic dispatcher,
   otherwise return specialization
 - get rid of duplicative typedefs like ParamList, ExprList
+- rename Str to Bytes. Also, Byte type must be added
