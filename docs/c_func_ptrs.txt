@@ -1,0 +1,10 @@
+#+BEGIN_SRC C
+// (fn (int) int)
+// (fn () (fn (int) int))
+// (fn () (fn () (fn (int) int)))
+int x2(int x) { return x + x; }
+int(*get_x2(void))(int) { return x2; }
+int(*(*getter)(void))(int) = get_x2;
+int(*(*get_getter(void))(void))(int) { return getter; }
+int(*(*(*getter_getter)(void))(void))(int) = get_getter;
+#+END_SRC
