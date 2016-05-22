@@ -7,4 +7,5 @@ int(*get_x2(void))(int) { return x2; }
 int(*(*getter)(void))(int) = get_x2;
 int(*(*get_getter(void))(void))(int) { return getter; }
 int(*(*(*getter_getter)(void))(void))(int) = get_getter;
+int caller(int(*(*getter)(void))(int), int x) { return getter()(x); }
 #+END_SRC
