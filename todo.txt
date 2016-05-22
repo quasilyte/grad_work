@@ -20,6 +20,7 @@ Implement (high priority):
 - constructors/destructors, some kind of encapsulation & invariants
 - boxing/unboxing of Any_ & Num_
 - tail recursion optimization
+- var syntax: (var (int x) 10) -> (var Int x 10)
 + all basic operations (< = + - / * ...)
 + function overloading
 + recursive functions
@@ -56,3 +57,6 @@ Fix:
 - sig_matcher should be reused in memory, but beware of nested keys;
   for example, function call inside function call may also need overloading lookup.
 - never permit assigning mixed arity functions (even via cond/if)
+- returning function: if overloaded, then return generic dispatcher,
+  otherwise return specialization
+- get rid of duplicative typedefs like ParamList, ExprList
