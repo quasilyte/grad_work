@@ -14,6 +14,7 @@
 #include "di/output.hpp"
 #include "io/file_writer.hpp"
 #include "unit/fns.hpp"
+#include "unit/structs.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
@@ -251,9 +252,9 @@ void CodeWriter::Visit(ast::VarCall* node) {
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
-  sym::Struct* s = tu.module.Struct(node->type.Tag());
+  sym::Struct* st = unit::get_struct(node->type);
 
-  module_writer()("(struct ")(s->name)("){");
+  module_writer()("(struct ")(st->name)("){");
   RunList(',', node->initializers, tu);
   module_writer()('}');
 }

@@ -18,6 +18,8 @@
 #include "intrinsic/type_ops.hpp"
 #include "unit/fns.hpp"
 #include "util/std_vector.hpp"
+#include "unit/syms.hpp"
+#include "unit/structs.hpp"
 
 #include "dbg/lex.hpp"
 
@@ -86,9 +88,9 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
   case encode9("Str"): return Type::Str();
 
   default:
-    auto type_info = module.Struct(name);
-    if (type_info) {
-      return type_info->type;
+    auto st = unit::get_struct(name);
+    if (st) {
+      return st->type;
     } else {
       throw "TypeByName: unknown type";
     }
@@ -144,8 +146,7 @@ void Parser::ParseDefStruct(TokenStream& toks) {
     }
   }
 
-  module.DefineStruct(name, std::move(attrs));
-  result.structs.push_back(name);
+  unit::def_struct(name, std::move(attrs));
 }
 
 Node* Parser::ParseVar(TokenStream& toks) {
@@ -167,7 +168,7 @@ void Parser::ParseGlobal(TokenStream& toks) {
   std::tie(name, expr, ty) = FetchVarInfo(toks);
 
   result.globals.push_back(new DefVar{name, expr, ty});
-  module.DefineGlobalSymbol(name, ty);
+  unit::def_global(name, ty);
 }
 
 void Parser::ParseExpr(Token& tok) {
@@ -353,7 +354,7 @@ Node* Parser::ParseSet(TokenStream& toks) {
     auto attr_name = toks.NextToken();
     auto expr = ParseToken(toks.NextToken());
     auto var = module.Symbol(obj_name);
-    auto attr = module.Struct(var.Tag())->Attr(attr_name);
+    auto attr = unit::get_struct(var)->Attr(attr_name);
 
     return new SetAttr{obj_name, attr, expr};
   }
@@ -371,15 +372,15 @@ Node* Parser::ParseIf(TokenStream& toks) {
 }
 
 Node* Parser::ParseStruct(TokenStream& toks) {
-  auto s = module.Struct(toks.NextToken());
+  auto st = unit::get_struct(toks.NextToken());
 
-  if (s) {
+  if (st) {
     std::vector<Node*> initializers;
     while (!toks.NextToken().IsEof()) {
       initializers.push_back(ParseToken(toks.CurrentToken()));
     }
 
-    return new CompoundLiteral{std::move(initializers), s->type};
+    return new CompoundLiteral{std::move(initializers), st->type};
   } else {
     throw "type not exist";
   }
@@ -392,7 +393,7 @@ Node* Parser::ParseGet(TokenStream& toks) {
   auto key_ty = TypeDeducer::Run(key);
 
   if (key_ty.IsSym()) {
-    auto attr = module.Struct(var.Tag())->Attr(static_cast<Sym*>(key)->datum);
+    auto attr = unit::get_struct(var)->Attr(static_cast<Sym*>(key)->datum);
     return new AttrAccess{obj_name, attr};
   } else {
     throw "dynamic lookup is not supported yet";
@@ -425,7 +426,7 @@ Node* Parser::ParseAttrAccess(TokenStream& toks) {
   dt::StrView attr_name = toks.NextToken();
 
   auto var = module.Symbol(obj_name);
-  auto attr = module.Struct(var.Tag())->Attr(attr_name);
+  auto attr = unit::get_struct(var)->Attr(attr_name);
 
   return new AttrAccess{obj_name, attr};
 }

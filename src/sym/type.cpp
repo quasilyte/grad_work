@@ -12,8 +12,10 @@ Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
 
-TypeId Type::LambdaTag(TypeId id) { return id + END_INTRINSIC; }
+TypeId Type::LambdaTag(uint idx) { return idx + END_INTRINSIC; }
 int Type::LambdaKey(TypeId id) { return id + (-END_INTRINSIC); }
+TypeId Type::StructTag(uint idx) { return idx + 1; }
+TypeId Type::StructKey(TypeId id) { return id - 1; }
 
 Type::Type(): Type(VOID) {}
 Type::Type(const Type& other): tag{other.tag} {}

@@ -2,7 +2,7 @@
 
 using namespace sym;
 
-Struct::Struct(dt::StrView name, std::vector<Param>&& attrs, Type ty):
+Struct::Struct(dt::StrView name, AttrList&& attrs, Type ty):
 name{name}, attrs{attrs}, type{ty} {}
 
 sym::Param* Struct::Attr(dt::StrView name) {

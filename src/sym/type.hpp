@@ -66,8 +66,10 @@ public:
   static Type Str();
   static Type Sym();
 
-  static TypeId LambdaTag(TypeId id);
+  static TypeId LambdaTag(uint idx);
   static int LambdaKey(TypeId);
+  static TypeId StructTag(uint idx);
+  static int StructKey(TypeId);
 
   Type();
   Type(const Type&);

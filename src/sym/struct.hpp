@@ -10,11 +10,13 @@ namespace sym {
 }
 
 struct sym::Struct {
+  typedef std::vector<sym::Param> AttrList;
+
   dt::StrView name;
-  std::vector<sym::Param> attrs;
+  AttrList attrs;
   sym::Type type;
 
-  Struct(dt::StrView, std::vector<sym::Param>&&, sym::Type);
+  Struct(dt::StrView, AttrList&&, sym::Type);
 
   sym::Param* Attr(dt::StrView name);
 };

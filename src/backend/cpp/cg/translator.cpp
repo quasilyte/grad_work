@@ -8,6 +8,7 @@
 #include "di/output.hpp"
 #include "io/file_writer.hpp"
 #include "unit/fns.hpp"
+#include "unit/structs.hpp"
 
 using namespace cpp_cg;
 using namespace di;
@@ -20,10 +21,11 @@ void Translator::Run(const cc::TranslationUnit &input) {
 Translator::Translator(const cc::TranslationUnit& tu): tu{tu} {}
 
 void Translator::Translate() {
-  for (dt::StrView struct_name : tu.structs) {
-    sym::Struct* s = tu.module.Struct(struct_name);
-    module_writer()("struct ")(struct_name)('{');
-    for (sym::Param attr : s->attrs) {
+  for (uint i = 0; i < unit::struct_count(); ++i) {
+    sym::Struct* st = unit::get_struct(i);
+
+    module_writer()("struct ")(st->name)('{');
+    for (sym::Param attr : st->attrs) {
       write_type(tu, attr.type);
       module_writer()(' ')(attr.name)(';');
     }

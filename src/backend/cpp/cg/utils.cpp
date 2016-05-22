@@ -9,6 +9,7 @@
 #include "cc/translation_unit.hpp"
 #include "backend/cpp/cg/code_writer.hpp"
 #include "unit/fns.hpp"
+#include "unit/structs.hpp"
 
 using namespace sym;
 using namespace dt;
@@ -24,7 +25,7 @@ Type deep_ret_type(Fn* lambda) {
 
 void cpp_cg::write_type(const cc::TranslationUnit& tu, Type ty) {
   if (ty.IsStruct()) {
-    module_writer()("struct ")(tu.module.Struct(ty.Tag())->name);
+    module_writer()("struct ")(unit::get_struct(ty)->name);
   } else if (ty.IsFunc()) {
     Fn* lambda = unit::get_fn(ty);
 
