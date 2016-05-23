@@ -8,11 +8,12 @@ namespace app {
 
 class app::Instance {
 public:
+  typedef void(*StartHandler)();
   typedef void(*ShutdownHandler)();
 
   ~Instance();
 
-  int Run();
+  int Run(StartHandler);
   bool IsRunning() const noexcept;
 
   void PushShutdownHandler(ShutdownHandler handler);

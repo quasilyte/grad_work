@@ -13,13 +13,15 @@ Instance::~Instance() {
   is_running = false;
 }
 
-int Instance::Run() {
+int Instance::Run(StartHandler handler) {
   is_running = true;
 
   di::set_files(
     fopen("./module.txt", "w"),
     fopen("./runtime.txt", "w")
   );
+
+  handler();
 
   return EXIT_SUCCESS;
 }
