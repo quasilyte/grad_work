@@ -8,6 +8,7 @@ Implement (high priority):
 - macro
 - map, filter, reduce/fold, ...
 - i/o functions
+- ((fn (x) x) 10) should be evaluable (returns 10)
 - runtime generation based on usage
 - nested function definitions
 - lambdas
@@ -18,7 +19,6 @@ Implement (high priority):
 - call with apply (list or args)
 - constructors/destructors, some kind of encapsulation & invariants
 - tail recursion optimization
-- var syntax: (var (int x) 10) -> (var Int x 10)
 + all basic operations (< = + - / * ...)
 + function overloading
 + recursive functions

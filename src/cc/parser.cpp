@@ -34,7 +34,7 @@ int param_seq_len(lex::TokenStream toks) {
   int result = 0;
 
   while (!toks.NextToken().IsEof()
-         && !is_struct_name(toks.CurrentToken())) {
+         && !is_type_name(toks.CurrentToken())) {
     result += 1;
   }
 
@@ -416,7 +416,7 @@ std::vector<sym::Param> Parser::CollectParams(TokenStream& toks) {
   while (!toks.NextToken().IsEof()) {
     dt::StrView tok = toks.CurrentToken();
 
-    if (is_struct_name(tok)) {
+    if (is_type_name(tok)) {
       auto type = TypeByName(tok);
       int count = param_seq_len(toks);
 
@@ -447,27 +447,37 @@ std::vector<ast::Node*> Parser::CollectParsed(TokenStream& toks) {
 }
 
 Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
-  auto name = toks.NextToken();
-  auto expr = ParseToken(toks.NextToken());
-  auto expr_ty = TypeDeducer::Run(expr);
+  switch (length(toks)) {
+  case 2: { // Infer type from assignment
+    auto name = toks.NextToken();
+    auto expr = ParseToken(toks.NextToken());
+    auto expr_type = TypeDeducer::Run(expr);
 
-  if (name.IsList()) {
-    lex::TokenStream typed_pair{name};
-    auto target_ty = TypeByName(typed_pair.NextToken());
-    name = typed_pair.NextToken();
+    return std::make_tuple(name, expr, expr_type);
+  }
+  case 3: { // With explicit type info
+    auto type_name = toks.NextToken();
+    auto name = toks.NextToken();
+    auto expr = ParseToken(toks.NextToken());
+    auto expr_type = TypeDeducer::Run(expr);
 
-    if (target_ty.SameAs(expr_ty)) {
-      return std::make_tuple(name, expr, target_ty);
-    } else if (target_ty.CompatibleWith(expr_ty)) {
-      auto coerced_expr =
-          new IntrinsicCall1{intrinsic::cast(expr_ty, target_ty), expr};
+    if (sym::is_type_name(type_name)) {
+      auto type = TypeByName(type_name);
 
-      return std::make_tuple(name, coerced_expr, target_ty);
+      if (type.SameAs(expr_type)) {
+        return std::make_tuple(name, expr, type);
+      } else {
+        auto coerced_expr =
+            new IntrinsicCall1{intrinsic::cast(expr_type, type), expr};
+
+        return std::make_tuple(name, coerced_expr, type);
+      }
     } else {
-      throw "FetchVarInfo: incompatible type on assignment";
+      throw "var: not a type name";
     }
-  } else {
-    return std::make_tuple(name, expr, expr_ty);
+  }
+  default:
+    throw "var: arity mismatch";
   }
 }
 

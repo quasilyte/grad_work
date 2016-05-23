@@ -5,5 +5,5 @@ namespace dt {
 }
 
 namespace sym {
-  bool is_struct_name(const dt::StrView&);
+  bool is_type_name(const dt::StrView&);
 }
