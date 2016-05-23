@@ -2,9 +2,8 @@
 
 #include "dev_assert.hpp"
 #include "io/file_writer.hpp"
+#include "app/api.hpp"
 
-// FILE* m_file;
-// FILE* r_file;
 io::FileWriter module_fw;
 io::FileWriter runtime_fw;
 
@@ -17,11 +16,11 @@ void di::set_files(FILE *module, FILE *runtime) {
   } else {
     throw "module or runtime file is null";
   }
-}
 
-void di::close_files() {
-  module_fw.Close();
-  runtime_fw.Close();
+  app::push_shutdown_handler([]{
+    module_fw.Close();
+    runtime_fw.Close();
+  });
 }
 
 io::FileWriter di::module_writer() {
