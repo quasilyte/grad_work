@@ -8,6 +8,7 @@
 
 namespace sym {
   struct NamedFn;
+  struct Fn;
 }
 
 namespace ast {
@@ -91,12 +92,16 @@ struct ast::FuncCall: public Node {
   std::vector<Node*> args;
 };
 
-struct ast::VarCall: public FuncCall {
-  VarCall(dt::StrView name, sym::NamedFn*, ArgList&&);
+struct ast::VarCall: public Node {
+  typedef std::vector<Node*> ArgList;
+
+  VarCall(dt::StrView name, sym::Fn*, ArgList&&);
 
   void Accept(Visitor*);
 
   dt::StrView name;
+  sym::Fn* func;
+  std::vector<Node*> args;
 };
 
 struct ast::AttrAccess: public Node {

@@ -67,8 +67,8 @@ func{func}, args{args} {}
 
 void FuncCall::Accept(Visitor* v) { v->Visit(this); }
 
-VarCall::VarCall(dt::StrView name, sym::NamedFn* func, ArgList&& args):
-FuncCall{func, std::move(args)}, name{name} {}
+VarCall::VarCall(dt::StrView name, sym::Fn* func, ArgList&& args):
+name{name}, func{func}, args{args} {}
 
 void VarCall::Accept(Visitor* v) { v->Visit(this); }
 

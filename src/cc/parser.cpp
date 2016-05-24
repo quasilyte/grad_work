@@ -265,7 +265,13 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
     if (callable.IsAny()) {
       throw "FuncCall: polymorphic call is not supported yet";
     } else if (callable.IsFunc()) {
-      auto func = unit::get_named_fn(callable.Tag());
+      auto func = unit::get_fn(callable);
+      expect(func->Arity() == args.size(), "arity mismatch");
+      for (uint i = 0; i < func->Arity(); ++i) {
+        if (!func->Params()[i].type.SameAs(TypeDeducer::Run(args[i]))) {
+          throw "type mismatch";
+        }
+      }
       return new VarCall{name, func, std::move(args)};
     } else {
       throw "FuncCall: called something that can not be called";
