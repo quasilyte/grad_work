@@ -57,28 +57,6 @@ int length(TokenStream toks) {
   return size;
 }
 
-std::vector<Token> eval_tokens(TokenStream& toks, uint min_count, uint max_count) {
-  std::vector<Token> items;
-  items.reserve(min_count);
-
-  while (!toks.NextToken().IsEof()) {
-    if (items.size() == max_count) {
-      throw "too much args!";
-    }
-    items.push_back(toks.CurrentToken());
-  }
-
-  if (items.size() < min_count) {
-    throw "too few args!";
-  }
-
-  return items;
-}
-
-std::vector<Token> eval_tokens(TokenStream toks, int count) {
-  return eval_tokens(toks, count, count);
-}
-
 sym::Type Parser::TypeByName(dt::StrView name) const {
   using namespace mn_hash;
 
@@ -90,11 +68,8 @@ sym::Type Parser::TypeByName(dt::StrView name) const {
 
   default:
     auto st = unit::get_struct(name);
-    if (st) {
-      return st->type;
-    } else {
-      throw "TypeByName: unknown type";
-    }
+    expect(st, "TypeByName: unknown type");
+    return st->type;
   }
 }
 
@@ -282,12 +257,8 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
 
   if (multi_fn) {
     auto named_fn = multi_fn->Find(util::map(args, TypeDeducer::Run));
-
-    if (named_fn) {
-      return new FuncCall{named_fn, std::move(args)};
-    } else {
-      throw "FuncCall: no signature matched arguments";
-    }
+    expect(named_fn, "FuncCall: no signature matched arguments");
+    return new FuncCall{named_fn, std::move(args)};
   } else {
     auto callable = module.Symbol(name);
 
@@ -449,21 +420,15 @@ std::vector<sym::Param> Parser::CollectParams(TokenStream& toks) {
 
   while (!toks.NextToken().IsEof()) {
     dt::StrView tok = toks.CurrentToken();
+    expect(is_type_name(tok), "first id must be a type name");
 
-    if (is_type_name(tok)) {
-      auto type = TypeByName(tok);
-      int count = param_seq_len(toks);
+    auto type = TypeByName(tok);
+    int count = param_seq_len(toks);
+    expect(count, "at least 1 typed param");
 
-      if (count) {
-        for (int i = 0; i < count; ++i) {
-          dt::StrView param_name = toks.NextToken();
-          params.push_back(Param{param_name, type});
-        }
-      } else {
-        throw "at least 1 typed param";
-      }
-    } else {
-      throw "first id must be a type name";
+    for (int i = 0; i < count; ++i) {
+      dt::StrView param_name = toks.NextToken();
+      params.push_back(Param{param_name, type});
     }
   }
 
@@ -495,19 +460,17 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
     auto expr = ParseToken(toks.NextToken());
     auto expr_type = TypeDeducer::Run(expr);
 
-    if (sym::is_type_name(type_name)) {
-      auto type = TypeByName(type_name);
+    expect(sym::is_type_name(type_name), "var: not a type name");
 
-      if (type.SameAs(expr_type)) {
-        return std::make_tuple(name, expr, type);
-      } else {
-        auto coerced_expr =
-            new IntrinsicCall1{intrinsic::cast(expr_type, type), expr};
+    auto type = TypeByName(type_name);
 
-        return std::make_tuple(name, coerced_expr, type);
-      }
+    if (type.SameAs(expr_type)) {
+      return std::make_tuple(name, expr, type);
     } else {
-      throw "var: not a type name";
+      auto coerced_expr =
+          new IntrinsicCall1{intrinsic::cast(expr_type, type), expr};
+
+      return std::make_tuple(name, coerced_expr, type);
     }
   }
   default:
