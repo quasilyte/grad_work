@@ -1,0 +1,15 @@
+(#fn (next Int x) (- x 1))
+(#fn (current Int x) x)
+(#fn (has_next Int x) (> x 0))
+
+(#struct Range Int low high step)
+(#fn (next Range r) (struct Range (+ (. r low) (. r step))
+                                  (. r high)
+                                  (. r step)))
+(#fn (current Range r) (. r low))
+(#fn (has_next Range r) (< (. r low) (. r high)))
+
+
+(each i (struct Range 0 10 1)
+  (each j 2
+    (+ i j)))

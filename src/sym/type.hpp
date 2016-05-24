@@ -37,7 +37,7 @@ public:
 
   enum: TypeId {
     // (real x)
-    ANY_TO_REAL,
+    ANY_TO_REAL = std::numeric_limits<TypeId>::min(),
     INT_TO_REAL,
     // (int x)
     ANY_TO_INT ,
