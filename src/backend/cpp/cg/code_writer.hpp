@@ -55,6 +55,7 @@ public:
   void Visit(ast::AttrAccess*) override;
   void Visit(ast::Intrinsic*) override;
   void Visit(ast::IntrinsicCall1*) override;
+  void Visit(ast::Each*) override;
 
 private:
   const cc::TranslationUnit& tu;

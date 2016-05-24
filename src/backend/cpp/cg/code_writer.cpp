@@ -263,6 +263,25 @@ void CodeWriter::Visit(ast::IntrinsicCall1* node) {
   module_writer()(')');
 }
 
+void CodeWriter::Visit(ast::Each* node) {
+  module_writer()("for(");
+  write_type(tu, node->next_fn->ret_type);
+  module_writer()(" _=");
+  node->init->Accept(this);
+  module_writer()(';');
+
+  write_func_name(node->has_next_fn);
+  module_writer()("(_);_=");
+  write_func_name(node->next_fn);
+  module_writer()("(_)){");
+  write_type(tu, node->current_fn->ret_type);
+  module_writer()(' ')(node->iter_name)('=');
+  write_func_name(node->current_fn);
+  module_writer()("(_);");
+  node->body->Accept(this);
+  module_writer()(";}");
+}
+
 void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
   module_writer()(name)('(');
   arg->Accept(this);

@@ -136,3 +136,7 @@ void TypeDeducer::Visit(ast::Intrinsic* node) {
 void TypeDeducer::Visit(ast::IntrinsicCall1* node) {
   result = intrinsic::ret_type_of(node->type);
 }
+
+void TypeDeducer::Visit(ast::Each*) {
+  throw "each is not an expression";
+}

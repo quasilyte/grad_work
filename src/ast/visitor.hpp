@@ -25,6 +25,7 @@ namespace ast {
   struct AttrAccess;
   struct Intrinsic;
   struct IntrinsicCall1;
+  struct Each;
 }
 
 class ast::Visitor {
@@ -51,5 +52,6 @@ public:
   virtual void Visit(AttrAccess*) = 0;
   virtual void Visit(Intrinsic*) = 0;
   virtual void Visit(IntrinsicCall1*) = 0;
+  virtual void Visit(Each*) = 0;
 };
 

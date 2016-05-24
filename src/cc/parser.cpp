@@ -30,6 +30,12 @@ using namespace ast;
 using namespace dt;
 using namespace sym;
 
+void expect(bool expr, const char* msg) {
+  if (!expr) {
+    throw msg;
+  }
+}
+
 int param_seq_len(lex::TokenStream toks) {
   int result = 0;
 
@@ -230,6 +236,7 @@ Node* Parser::ParseList(Token tok) {
     auto name_hash = encode9(name_tok.Data(), name_tok.Len());
 
     switch (name_hash) {
+    case encode9("each"): return ParseEach(list);
     case encode9("fn"): return ParseLambdaExpr(list);
     case encode9("<"): return ParseLt(list);
     case encode9(">"): return ParseGt(list);
@@ -293,6 +300,33 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
       throw "FuncCall: called something that can not be called";
     }
   }
+}
+
+Node* Parser::ParseEach(TokenStream& toks) {
+  auto iter_name = toks.NextToken();
+  auto seq_expr = ParseToken(toks.NextToken());
+  auto seq_type = TypeDeducer::Run(seq_expr);
+
+  sym::NamedFn* next_fn = unit::get_multi_fn("next")->Find({seq_type});
+  sym::NamedFn* has_next_fn = unit::get_multi_fn("has_next")->Find({seq_type});
+  sym::NamedFn* current_fn = unit::get_multi_fn("current")->Find({seq_type});
+  expect(next_fn, "next for type not found");
+  expect(has_next_fn, "has_next_fn for type not found");
+  expect(current_fn, "current for type not found");
+
+  module.CreateScopeLevel();
+  module.DefineLocal(iter_name, current_fn->ret_type);
+  auto body_expr = ParseToken(toks.NextToken());
+  module.DropScopeLevel();
+
+  return new Each{
+    seq_expr,
+    body_expr,
+    next_fn,
+    has_next_fn,
+    current_fn,
+    iter_name
+  };
 }
 
 Node* Parser::ParseSum(TokenStream& toks) {

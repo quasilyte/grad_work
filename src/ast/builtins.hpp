@@ -11,6 +11,7 @@ namespace sym {
 }
 
 namespace ast {
+  struct Each;
   struct Operation;
   struct Sum;
   struct Sub;
@@ -24,6 +25,19 @@ namespace ast {
   struct Intrinsic;
   struct IntrinsicCall1;
 }
+
+struct ast::Each: public Node {
+  Each(Node* init, Node* body, sym::NamedFn*, sym::NamedFn*, sym::NamedFn*, dt::StrView);
+
+  void Accept(Visitor*);
+
+  Node* init;
+  Node* body;
+  sym::NamedFn* next_fn;
+  sym::NamedFn* has_next_fn;
+  sym::NamedFn* current_fn;
+  dt::StrView iter_name;
+};
 
 struct ast::Operation: public Node {
   typedef std::vector<Node*> ArgList;

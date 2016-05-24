@@ -4,6 +4,23 @@
 
 using namespace ast;
 
+Each::Each(
+  Node *init,
+  Node *body,
+  sym::NamedFn* next_fn,
+  sym::NamedFn* has_next_fn,
+  sym::NamedFn* current_fn,
+  dt::StrView iter_name
+):
+init{init},
+body{body},
+next_fn{next_fn},
+has_next_fn{has_next_fn},
+current_fn{current_fn},
+iter_name{iter_name} {}
+
+void Each::Accept(Visitor* v) { v->Visit(this); }
+
 Operation::Operation(ArgList&& operands): operands{operands} {}
 
 Sum::Sum(ArgList&& operands): Operation{std::move(operands)} {

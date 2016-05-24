@@ -42,6 +42,7 @@ private:
   ast::Node* ParseIntrinsicCall1(lex::TokenStream&, sym::Type(*)(sym::Type));
 
   ast::Node* ParseFuncCall(lex::Token& name, lex::TokenStream& args);
+  ast::Node* ParseEach(lex::TokenStream&);
   ast::Node* ParseLambdaExpr(lex::TokenStream&);
   ast::Node* ParseSum(lex::TokenStream&);
   ast::Node* ParseSub(lex::TokenStream&);
