@@ -11,7 +11,6 @@ Implement (high priority):
 - ((fn (x) x) 10) should be evaluable (returns 10)
 - runtime generation based on usage
 - nested function definitions
-- lambdas
 - functions as explicit type (fn int int ...)
 - pattern matching
 - stack of errors
@@ -19,6 +18,7 @@ Implement (high priority):
 - call with apply (list or args)
 - constructors/destructors, some kind of encapsulation & invariants
 - tail recursion optimization
++ lambdas
 + all basic operations (< = + - / * ...)
 + function overloading
 + recursive functions
@@ -45,6 +45,7 @@ To check:
 - measure perfomance of ReMatch switch vs nested switch.
   http://www.stroustrup.com/OOPSLA-typeswitch-draft.pdf
 - check generator vs name mangling perfomance impact.
+- m9 hash switch vs hash table lookup 
 
 Fix:
 - want to use StrView inside token and other structs with {char*,len}, 
