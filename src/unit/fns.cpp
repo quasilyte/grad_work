@@ -12,7 +12,8 @@ using namespace dt;
 
 std::vector<UnnamedFn*> unnamed_fns;
 
-Dict<MultiFn*> multi_fns;
+Dict<MultiFn*> multi_fn_name_map;
+std::vector<MultiFn*> multi_fn_id_map;
 std::vector<NamedFn*> named_fns;
 
 TypeId unit::new_unnamed_fn(ParamList&& params, ExprList&& exprs, Type ret_ty) {
@@ -48,7 +49,7 @@ uint unit::unnamed_fn_count() {
 NamedFn* unit::declare_named_fn
 (StrView name, ParamList&& params, const MultiFn::Key& key) {
   NamedFn* named_fn;
-  auto multi_fn = multi_fns.Find(name);
+  auto multi_fn = multi_fn_name_map.Find(name);
 
   if (multi_fn) { // Has at least 1 definition
     if (multi_fn->arity != params.size()) {
@@ -61,19 +62,24 @@ NamedFn* unit::declare_named_fn
       throw "declare_named_fn: func already defined";
     } else {
       named_fn = new NamedFn{
-        name,
+        multi_fn,
         std::move(params),
         Type::Unknown(),
-        static_cast<u32>(multi_fn->funcs.size())
+        static_cast<u32>(multi_fn->funcs.size() + 1)
       };
       multi_fn->funcs[key] = named_fn;
     }
   } else { // First declaration, no overloadings yet
-    multi_fn = new sym::MultiFn{static_cast<uint>(params.size())};
-    named_fn = new NamedFn{name, std::move(params), Type::Unknown(), 0};
+    multi_fn = new sym::MultiFn{
+      multi_fn_name_map.Size(),
+      name,
+      static_cast<uint>(params.size())
+    };
+    named_fn = new NamedFn{multi_fn, std::move(params), Type::Unknown(), 1};
     multi_fn->funcs[key] = named_fn;
 
-    multi_fns.Put(name, multi_fn);
+    multi_fn_name_map.Put(name, multi_fn);
+    multi_fn_id_map.push_back(multi_fn);
   }
 
   named_fns.push_back(named_fn);
@@ -93,5 +99,9 @@ uint unit::named_fn_count() {
 }
 
 MultiFn* unit::get_multi_fn(StrView name) {
-  return multi_fns.Find(name);
+  return multi_fn_name_map.Find(name);
+}
+
+MultiFn* unit::get_multi_fn(Type ty) {
+  return multi_fn_id_map[Type::DynDispatcherKey(ty.Tag())];
 }

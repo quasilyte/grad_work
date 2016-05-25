@@ -8,24 +8,13 @@ namespace sym {
   typedef i32 TypeId;
 }
 
-/**
-  Type ladder:
-  min(int): intrinsics ++
-  max(int): builtin types --
-  1..max(int)-count(builtin types): user defined types ++
-  min(int)+count(intrinsics)..0: user defined functions --
-
-  functions |     types
-  [min]><[0]|[1]><[max]
-*/
-
 class sym::Type {
 public:
 
   enum: TypeId {
     // Never forget to increase this constant int literal.
     // If you will forget, compiler error will rise anyway (overflow).
-    END_STRUCT = std::numeric_limits<TypeId>::max() - 7,
+    END_DYN_DISPATCHER = std::numeric_limits<TypeId>::max() - 13,
     SYM,
     STR,
     UNKNOWN,
@@ -47,6 +36,8 @@ public:
   };
 
   static const TypeId BEGIN_STRUCT = 0;
+  static const TypeId END_STRUCT = std::numeric_limits<TypeId>::max() / 2;
+  static const TypeId BEGIN_DYN_DISPATCHER = END_STRUCT;
 
   static Type Void();
   static Type Any();
@@ -56,6 +47,8 @@ public:
   static Type Str();
   static Type Sym();
 
+  static TypeId DynDispatcherTag(uint idx);
+  static int DynDispatcherKey(TypeId);
   static TypeId LambdaTag(uint idx);
   static int LambdaKey(TypeId);
   static TypeId StructTag(uint idx);
@@ -80,6 +73,7 @@ public:
   bool IsFunc() const noexcept;
   bool IsArith() const noexcept;
   bool IsStruct() const noexcept;
+  bool IsDynDispatcher() const noexcept;
 
   Type ExtendedWith(Type);
 

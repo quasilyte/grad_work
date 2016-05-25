@@ -51,6 +51,7 @@ public:
   void Visit(ast::LambdaExpr*) override;
   void Visit(ast::FuncCall*) override;
   void Visit(ast::VarCall*) override;
+  void Visit(ast::DynamicCall*) override;
   void Visit(ast::CompoundLiteral*) override;
   void Visit(ast::AttrAccess*) override;
   void Visit(ast::Intrinsic*) override;

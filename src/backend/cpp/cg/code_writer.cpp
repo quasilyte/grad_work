@@ -116,6 +116,20 @@ void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
     module_writer()(')');
     write_ptr_params(lambda, tu);
     write_params(tu, deep_params(f));
+  } else if (f->ret_type.IsDynDispatcher()) {
+    MultiFn* multi_fn = unit::get_multi_fn(f->ret_type);
+
+    module_writer()("Any_(*");
+    write_func_name(f);
+    write_named_params(tu, f->Params());
+    module_writer()(')');
+
+    switch (multi_fn->arity) {
+    case 1: module_writer()("(Any_)"); break;
+    case 2: module_writer()("(Any_,Any_)"); break;
+    case 3: module_writer()("(Any_,Any_,Any_)"); break;
+    default: throw "dyn dispatcher arity overflow";
+    }
   } else {
     write_type(tu, f->ret_type);
     module_writer()(' ');
@@ -204,6 +218,13 @@ void CodeWriter::Visit(ast::DefVar* node) {
       module_writer()("(*")(node->name)(')');
       write_params(tu, lambda->params);
     }
+  } else if (node->type.IsDynDispatcher()) {
+    MultiFn* multi_fn = unit::get_multi_fn(node->type);
+    module_writer()("Any_(*")(node->name)(")(");
+    for (uint i = 0; i < multi_fn->arity - 1; ++i) {
+      module_writer()("Any_,");
+    }
+    module_writer()("Any_)");
   } else {
     write_type(tu, node->type);
     module_writer()(' ')(node->name);
@@ -238,6 +259,11 @@ void CodeWriter::Visit(ast::FuncCall* node) {
 
 void CodeWriter::Visit(ast::VarCall* node) {
   module_writer()(node->name);
+  RunGroupedList(',', node->args, tu);
+}
+
+void CodeWriter::Visit(ast::DynamicCall* node) {
+  module_writer()(node->func->name);
   RunGroupedList(',', node->args, tu);
 }
 

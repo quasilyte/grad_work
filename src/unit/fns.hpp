@@ -30,4 +30,5 @@ namespace unit {
   uint named_fn_count();
 
   sym::MultiFn* get_multi_fn(dt::StrView name);
+  sym::MultiFn* get_multi_fn(sym::Type);
 }

@@ -21,6 +21,7 @@
 #include "unit/syms.hpp"
 #include "unit/structs.hpp"
 #include "sym/rules.hpp"
+#include <algorithm>
 
 #include "dbg/lex.hpp"
 
@@ -45,6 +46,28 @@ int param_seq_len(lex::TokenStream toks) {
   }
 
   return result;
+}
+
+Node* resolve_named_call(std::vector<Node*>&& args, MultiFn* multi_fn) {
+  // #FIXME: should warn if there is no static variant found
+  // and arguments type are not "all Any".
+
+  auto types = util::map(args, TypeDeducer::Run);
+
+  auto named_fn = multi_fn->Find(types);
+
+  if (named_fn) {
+    auto is_fallback =
+        std::all_of(types.begin(), types.end(), [](Type t){ return t.IsAny(); });
+
+    if (is_fallback) {
+      return new DynamicCall{multi_fn, std::move(args)};
+    } else {
+      return new FuncCall{named_fn, std::move(args)};
+    }
+  } else {
+    return new DynamicCall{multi_fn, std::move(args)};
+  }
 }
 
 int length(TokenStream toks) {
@@ -256,13 +279,15 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
   sym::MultiFn* multi_fn = unit::get_multi_fn(name);
 
   if (multi_fn) {
-    auto named_fn = multi_fn->Find(util::map(args, TypeDeducer::Run));
-    expect(named_fn, "FuncCall: no signature matched arguments");
-    return new FuncCall{named_fn, std::move(args)};
+    return resolve_named_call(std::move(args), multi_fn);
   } else {
     auto callable = module.Symbol(name);
 
     if (callable.IsAny()) {
+      // How to call Any:
+      // 1) at run time check if tag belongs to funcs, panic if not
+      // 2) fetch function by tag, check arity
+      // 3) call dynamic dispatcher for args
       throw "FuncCall: polymorphic call is not supported yet";
     } else if (callable.IsFunc()) {
       auto func = unit::get_fn(callable);
@@ -273,6 +298,11 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
         }
       }
       return new VarCall{name, func, std::move(args)};
+    } else if (callable.IsDynDispatcher()) {
+      MultiFn* multi_fn = unit::get_multi_fn(callable.Tag());
+      expect(multi_fn->arity == args.size(), "arity mismatch");
+
+      return resolve_named_call(std::move(args), multi_fn);
     } else {
       throw "FuncCall: called something that can not be called";
     }

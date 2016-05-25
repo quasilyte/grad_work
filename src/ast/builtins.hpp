@@ -8,6 +8,7 @@
 
 namespace sym {
   struct NamedFn;
+  struct MultiFn;
   struct Fn;
 }
 
@@ -22,6 +23,7 @@ namespace ast {
   struct LambdaExpr;
   struct FuncCall;
   struct VarCall;
+  struct DynamicCall;
   struct AttrAccess;
   struct Intrinsic;
   struct IntrinsicCall1;
@@ -128,4 +130,15 @@ struct ast::IntrinsicCall1: public Node {
 
   Node* arg;
   sym::Type type;
+};
+
+struct ast::DynamicCall: public Node {
+  typedef std::vector<Node*> ArgList;
+
+  DynamicCall(sym::MultiFn*, ArgList&&);
+
+  void Accept(Visitor*);
+
+  sym::MultiFn* func;
+  std::vector<Node*> args;
 };

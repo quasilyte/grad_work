@@ -30,12 +30,13 @@ UnnamedFn::UnnamedFn(TypeId id, ParamList&& params, ExprList&& exprs, Type ret_t
 Fn{id, std::move(params), std::move(exprs), ret_type} {}
 
 NamedFn::NamedFn
-(dt::StrView name, ParamList&& params, Type ret_type, u32 suffix_idx):
-Fn{std::move(params), ret_type}, name{name}, suffix_idx{suffix_idx} {}
+(MultiFn* parent, ParamList&& params, Type ret_type, u32 suffix_idx):
+Fn{std::move(params), ret_type}, parent{parent}, suffix_idx{suffix_idx} {}
 
 void NamedFn::Define(ExprList &&exprs, Type ty) {
   this->exprs = exprs;
   ret_type = ty;
 }
 
-MultiFn::MultiFn(uint arity): arity{arity} {}
+MultiFn::MultiFn(TypeId type_id, dt::StrView name, uint arity):
+name{name}, arity{arity}, type_id{type_id} {}

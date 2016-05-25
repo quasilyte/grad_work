@@ -11,10 +11,12 @@ Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
 
+TypeId Type::DynDispatcherTag(uint idx) { return idx + BEGIN_DYN_DISPATCHER + 1; }
+int Type::DynDispatcherKey(TypeId id) { return id - BEGIN_DYN_DISPATCHER - 1; }
 TypeId Type::LambdaTag(uint idx) { return idx + END_INTRINSIC; }
-int Type::LambdaKey(TypeId id) { return id + (-END_INTRINSIC); }
+int Type::LambdaKey(TypeId id) { return id - END_INTRINSIC; }
 TypeId Type::StructTag(uint idx) { return idx + 1; }
-TypeId Type::StructKey(TypeId id) { return id - 1; }
+int Type::StructKey(TypeId id) { return id - 1; }
 
 Type::Type(): Type(VOID) {}
 Type::Type(const Type& other): tag{other.tag} {}
@@ -51,6 +53,10 @@ bool Type::IsArith() const noexcept {
 
 bool Type::IsStruct() const noexcept {
   return tag > BEGIN_STRUCT && tag < END_STRUCT;
+}
+
+bool Type::IsDynDispatcher() const noexcept {
+  return tag > BEGIN_DYN_DISPATCHER && tag < END_DYN_DISPATCHER;
 }
 
 // Merge rules:

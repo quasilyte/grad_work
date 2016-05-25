@@ -43,21 +43,23 @@ struct sym::UnnamedFn: public Fn {
 
 struct sym::NamedFn: public Fn {
   NamedFn(ParamList&&, sym::Type ret_ty);
-  NamedFn(dt::StrView name, ParamList&&, sym::Type ret_ty, u32 suffix_idx);
+  NamedFn(MultiFn* parent, ParamList&&, sym::Type ret_ty, u32 suffix_idx);
 
   void Define(ExprList&& exprs, sym::Type ty);
 
-  const dt::StrView name;
+  MultiFn* parent;
   u32 suffix_idx;
 };
 
 struct sym::MultiFn {
   typedef std::vector<sym::Type> Key;
 
-  MultiFn(uint arity);
+  MultiFn(sym::TypeId, dt::StrView name, uint arity);
 
   sym::NamedFn* Find(Key);
 
-  uint arity;
+  const dt::StrView name;
   std::map<Key, sym::NamedFn*> funcs;
+  uint arity;
+  sym::TypeId type_id;
 };

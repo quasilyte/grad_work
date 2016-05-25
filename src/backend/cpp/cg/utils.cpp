@@ -36,7 +36,7 @@ void cpp_cg::write_type(const cc::TranslationUnit& tu, Type ty) {
 }
 
 void cpp_cg::write_func_name(const NamedFn* f) {
-  module_writer()(f->name)(gen_suffix(f->suffix_idx));
+  module_writer()(f->parent->name)(gen_suffix(f->suffix_idx));
 }
 
 void cpp_cg::write_lambda_name(const Fn* l) {

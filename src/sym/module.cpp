@@ -55,7 +55,7 @@ Type Module::SymbolOrFunc(dt::StrView name) {
       if (1 == multi_fn->funcs.size()) { // Precise type exists
         return Type{multi_fn->funcs.begin()->second->type_id};
       } else {
-        throw "symbol or func: duck typing for func not implemented";
+        return Type::DynDispatcherTag(multi_fn->type_id);
       }
     } else {
       throw "symbol or func: unbound var referenced";

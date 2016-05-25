@@ -4,7 +4,7 @@
 
 namespace util {
   template<class IN, class OUT>
-  std::vector<OUT> map(std::vector<IN> elems, OUT(*fn)(IN));
+  std::vector<OUT> map(std::vector<IN> elems, OUT(*fn)(IN)); 
 }
 
 template<class IN, class OUT>

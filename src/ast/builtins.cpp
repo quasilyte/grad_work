@@ -85,3 +85,8 @@ IntrinsicCall1::IntrinsicCall1(sym::Type ty, Node* arg):
 arg{arg}, type{ty} {}
 
 void IntrinsicCall1::Accept(Visitor* v) { v->Visit(this); }
+
+DynamicCall::DynamicCall(sym::MultiFn* func, ArgList&& args):
+func{func}, args{args} {}
+
+void DynamicCall::Accept(Visitor* v) { v->Visit(this); }
