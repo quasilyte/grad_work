@@ -5,4 +5,5 @@
 namespace intrinsic {
   sym::Type int_overloading(sym::Type x);
   sym::Type real_overloading(sym::Type x);
+  sym::Type any_overloading(sym::Type x);
 }

@@ -48,6 +48,14 @@ int param_seq_len(lex::TokenStream toks) {
   return result;
 }
 
+Node* coerced_expr(Type from, Type to, Node* expr) {
+  if (from.SameAs(to)) {
+    return expr;
+  } else {
+    return new IntrinsicCall1{intrinsic::cast(from, to), expr};
+  }
+}
+
 Node* resolve_named_call(std::vector<Node*>&& args, MultiFn* multi_fn) {
   // #FIXME: should warn if there is no static variant found
   // and arguments type are not "all Any".
@@ -250,6 +258,7 @@ Node* Parser::ParseList(Token tok) {
     case encode9("."): return ParseAttrAccess(list);
     case encode9("int"): return ParseIntrinsicCall1(list, intrinsic::int_overloading);
     case encode9("real"): return ParseIntrinsicCall1(list, intrinsic::real_overloading);
+    case encode9("any"): return ParseIntrinsicCall1(list, intrinsic::any_overloading);
 
     default:
       return ParseFuncCall(name_tok, list);
@@ -268,6 +277,7 @@ ast::Node* Parser::ParseWord(Token word) {
   switch (word_hash) {
   case encode9("real"): return new Intrinsic{Type::ANY_TO_REAL};
   case encode9("int"): return new Intrinsic{Type::ANY_TO_INT};
+  // case encode9("any"): return new Intrinsic{Type::};
 
   default:
     return new Var{word, module.SymbolOrFunc(word)};
@@ -303,6 +313,8 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
       expect(multi_fn->arity == args.size(), "arity mismatch");
 
       return resolve_named_call(std::move(args), multi_fn);
+    } else if (callable.IsIntrinsic()) {
+
     } else {
       throw "FuncCall: called something that can not be called";
     }
@@ -388,7 +400,15 @@ Node* Parser::ParseIf(TokenStream& toks) {
   auto on_true = ParseToken(toks.NextToken());
   auto on_false = ParseToken(toks.NextToken());
 
-  return new If{cond, on_true, on_false};
+  auto ty1 = TypeDeducer::Run(on_true);
+  auto ty2 = TypeDeducer::Run(on_false);
+  auto ty = ty1.ExtendedWith(ty2);
+
+  return new If{
+    cond,
+    coerced_expr(ty1, ty, on_true),
+    coerced_expr(ty2, ty, on_false)
+  };
 }
 
 Node* Parser::ParseStruct(TokenStream& toks) {
@@ -499,15 +519,7 @@ Parser::VarInfo Parser::FetchVarInfo(TokenStream& toks) {
     expect(sym::is_type_name(type_name), "var: not a type name");
 
     auto type = TypeByName(type_name);
-
-    if (type.SameAs(expr_type)) {
-      return std::make_tuple(name, expr, type);
-    } else {
-      auto coerced_expr =
-          new IntrinsicCall1{intrinsic::cast(expr_type, type), expr};
-
-      return std::make_tuple(name, coerced_expr, type);
-    }
+    return std::make_tuple(name, coerced_expr(expr_type, type, expr), type);
   }
   default:
     throw "var: arity mismatch";

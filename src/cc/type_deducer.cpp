@@ -92,17 +92,7 @@ void TypeDeducer::Visit(ast::DefVar*) {
 }
 
 void TypeDeducer::Visit(ast::If* node) {
-  auto ty1 = TypeDeducer::Run(node->on_true);
-  auto ty2 = TypeDeducer::Run(node->on_false);
-
-  // #FIXME: maybe this "Unknown" handling should be moved to ExtendedWith()
-  if (ty1.IsUnknown()) {
-    result = ty2;
-  } else if (ty2.IsUnknown()) {
-    result = ty1;
-  } else {
-    result = ty1.ExtendedWith(ty2);
-  }
+  result = TypeDeducer::Run(node->on_true);
 }
 
 void TypeDeducer::Visit(ast::Var* node) {

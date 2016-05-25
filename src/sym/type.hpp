@@ -29,8 +29,11 @@ public:
     ANY_TO_REAL = std::numeric_limits<TypeId>::min(),
     INT_TO_REAL,
     // (int x)
-    ANY_TO_INT ,
+    ANY_TO_INT,
     REAL_TO_INT,
+    // (any x)
+    INT_TO_ANY,
+    REAL_TO_ANY,
 
     END_INTRINSIC
   };

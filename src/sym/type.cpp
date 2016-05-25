@@ -44,7 +44,7 @@ bool Type::IsLambda() const noexcept {
 }
 
 bool Type::IsFunc() const noexcept {
-  return tag <= 0;
+  return tag <= 0 && tag >= END_INTRINSIC;
 }
 
 bool Type::IsArith() const noexcept {
@@ -68,6 +68,13 @@ bool Type::IsDynDispatcher() const noexcept {
 // A + any -> any
 // A + parent_of(A) -> parent_of(A)
 Type Type::ExtendedWith(Type other) {
+  if (IsUnknown()) {
+    return other;
+  }
+  if (other.IsUnknown()) {
+    return *this;
+  }
+
   // No need to extend
   if (SameAs(other)) {
     return other;

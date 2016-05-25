@@ -18,6 +18,7 @@ Implement (high priority):
 - call with apply (list or args)
 - constructors/destructors, some kind of encapsulation & invariants
 - tail recursion optimization
+- type Any_
 + lambdas
 + all basic operations (< = + - / * ...)
 + function overloading

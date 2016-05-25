@@ -21,3 +21,13 @@ Type intrinsic::int_overloading(Type x) {
     throw "num_overloading: arg type not match";
   }
 }
+
+Type intrinsic::any_overloading(Type x) {
+  switch (x.Tag()) {
+  case Type::INT: return Type::INT_TO_ANY;
+  case Type::REAL: return Type::REAL_TO_ANY;
+
+  default:
+    throw "any_overloading: arg type not match";
+  }
+}

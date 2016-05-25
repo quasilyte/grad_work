@@ -20,6 +20,10 @@ Type intrinsic::ret_type_of(Type f) {
   case Type::INT_TO_REAL:
     return Type::Real();
 
+  case Type::INT_TO_ANY:
+  case Type::REAL_TO_ANY:
+    return Type::Any();
+
   default:
     throw "ret_type_of: unknown intrinsic";
   }
@@ -31,6 +35,8 @@ uint intrinsic::arity_of(Type f) {
   case Type::REAL_TO_INT:
   case Type::ANY_TO_REAL: // (real x)
   case Type::INT_TO_REAL:
+  case Type::INT_TO_ANY: // (any x)
+  case Type::REAL_TO_ANY:
    return 1;
 
   default:
@@ -45,9 +51,11 @@ Type intrinsic::param_of(Type f, uint idx) {
     return one_arg(idx, Type::Any());
 
   case Type::REAL_TO_INT:
+  case Type::REAL_TO_ANY:
     return one_arg(idx, Type::Real());
 
   case Type::INT_TO_REAL:
+  case Type::INT_TO_ANY:
     return one_arg(idx, Type::Int());
 
   default:
@@ -60,6 +68,7 @@ Type intrinsic::cast(Type from, Type to) {
   case Type::INT:
     switch (to.Tag()) {
     case Type::REAL: return Type::INT_TO_REAL;
+    case Type::ANY: return Type::INT_TO_ANY;
 
     default:
       throw "unsupported typecast";
@@ -68,6 +77,16 @@ Type intrinsic::cast(Type from, Type to) {
   case Type::REAL:
     switch (to.Tag()) {
     case Type::INT: return Type::REAL_TO_INT;
+    case Type::ANY: return Type::REAL_TO_ANY;
+
+    default:
+      throw "unsupported typecast";
+    }
+
+  case Type::ANY:
+    switch (to.Tag()) {
+    case Type::INT: return Type::ANY_TO_INT;
+    case Type::REAL: return Type::ANY_TO_REAL;
 
     default:
       throw "unsupported typecast";
