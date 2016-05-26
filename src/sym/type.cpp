@@ -23,6 +23,10 @@ Type Type::Struct(TypeId id) {
   return Type{STRUCT, id};
 }
 
+Type Type::Intrinsic(TypeId id) {
+  return Type{INTRINSIC, id};
+}
+
 /*
 TypeId Type::DynDispatcherTag(uint idx) { return idx + BEGIN_DYN_DISPATCHER + 1; }
 int Type::DynDispatcherKey(TypeId id) { return id - BEGIN_DYN_DISPATCHER - 1; }
@@ -54,7 +58,7 @@ bool Type::IsStruct() const noexcept { return tag == STRUCT; }
 bool Type::IsDynDispatcher() const noexcept { return tag == DYN_DISPATCHER; }
 
 bool Type::IsFn() const noexcept {
-  return IsNamedFn() || IsUnnamedFn();
+  return IsNamedFn() || IsUnnamedFn() || IsIntrinsic();
 }
 
 bool Type::IsArith() const noexcept {

@@ -275,8 +275,10 @@ ast::Node* Parser::ParseWord(Token word) {
   auto word_hash = encode9(word.Data(), word.Len());
 
   switch (word_hash) {
-  case encode9("real"): return new Intrinsic{Type::ANY_TO_REAL};
-  case encode9("int"): return new Intrinsic{Type::ANY_TO_INT};
+  case encode9("real"):
+    return new Intrinsic{Type::Intrinsic(Type::ANY_TO_REAL)};
+  case encode9("int"):
+    return new Intrinsic{Type::Intrinsic(Type::ANY_TO_INT)};
   // case encode9("any"): return new Intrinsic{Type::};
 
   default:

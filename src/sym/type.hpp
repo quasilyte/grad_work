@@ -53,6 +53,7 @@ public:
   static Type UnnamedFn(TypeId id);
   static Type DynDispatcher(TypeId id);
   static Type Struct(TypeId id);
+  static Type Intrinsic(TypeId id);
 
   /*
   static TypeId DynDispatcherTag(uint idx);

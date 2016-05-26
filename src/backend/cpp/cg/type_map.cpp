@@ -35,7 +35,7 @@ StrView& cpp_cg::intrinsic_name(Type ty) {
   static StrView int_to_any{"int_to_any"};
   static StrView real_to_any{"real_to_any"};
 
-  switch (ty.Tag()) {
+  switch (ty.Id()) {
   case Type::ANY_TO_INT: return any_to_int;
   case Type::REAL_TO_INT: return real_to_int;
   case Type::ANY_TO_REAL: return any_to_real;

@@ -9,9 +9,9 @@ Type one_arg(uint idx, Type ty) {
     throw "param_of: arity error";
   }
 }
-
+#include <cstdio>
 Type intrinsic::ret_type_of(Type f) {
-  switch (f.Tag()) {
+  switch (f.Id()) {
   case Type::ANY_TO_INT:
   case Type::REAL_TO_INT:
     return Type::Int();
@@ -30,7 +30,7 @@ Type intrinsic::ret_type_of(Type f) {
 }
 
 uint intrinsic::arity_of(Type f) {
-  switch (f.Tag()) {
+  switch (f.Id()) {
   case Type::ANY_TO_INT: // (int x)
   case Type::REAL_TO_INT:
   case Type::ANY_TO_REAL: // (real x)
@@ -40,12 +40,12 @@ uint intrinsic::arity_of(Type f) {
    return 1;
 
   default:
-    throw "ret_type_of: unknown intrinsic";
+    throw "arity_of: unknown intrinsic";
   }
 }
 
 Type intrinsic::param_of(Type f, uint idx) {
-  switch (f.Tag()) {
+  switch (f.Id()) {
   case Type::ANY_TO_REAL:
   case Type::ANY_TO_INT:
     return one_arg(idx, Type::Any());
