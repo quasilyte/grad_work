@@ -48,7 +48,7 @@ sym::Type deduce_arith_type(ast::Operation* op) {
     if (!result_type.SameAs(type)) {
       if (type.IsArith()) {
         throw "mixed arith types";
-      } else {
+      } else if (!type.IsUnknown()) {
         throw "invalid operand type in arith expression";
       }
     }
@@ -90,7 +90,13 @@ void TypeDeducer::Visit(ast::DefVar*) {
 }
 
 void TypeDeducer::Visit(ast::If* node) {
+  // Both `on_true` & `on_false` already coerced to the same
+  // types, so we can peek any of them.
   result = TypeDeducer::Run(node->on_true);
+}
+
+void TypeDeducer::Visit(ast::IntCase* node) {
+  result = node->ret_type;
 }
 
 void TypeDeducer::Visit(ast::Var* node) {

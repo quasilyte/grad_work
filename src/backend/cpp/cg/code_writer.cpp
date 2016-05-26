@@ -11,10 +11,12 @@
 #include "backend/cpp/cg/utils.hpp"
 #include "intrinsic/type_ops.hpp"
 #include "cc/translation_unit.hpp"
-#include "di/output.hpp"
 #include "io/file_writer.hpp"
 #include "unit/fns.hpp"
 #include "unit/structs.hpp"
+#include "backend/cpp/cg/state.hpp"
+#include "sym/sym.hpp"
+#include "di/pipe.hpp"
 
 using namespace cpp_cg;
 using namespace sym;
@@ -23,7 +25,7 @@ using namespace di;
 
 void write_ptr(Fn* lambda) {
   while (lambda->ret_type.IsFn()) {
-    module_writer()("(*");
+    get_pipe()("(*");
     lambda = unit::get_fn(lambda->ret_type);
   }
 }
@@ -31,7 +33,7 @@ void write_ptr(Fn* lambda) {
 void write_ptr_params(Fn* lambda, const cc::TranslationUnit& tu) {
   while (lambda->ret_type.IsFn()) {
     write_params(tu, lambda->Params());
-    module_writer()(')');
+    get_pipe()(')');
 
     lambda = unit::get_fn(lambda->ret_type);
   }
@@ -56,7 +58,7 @@ void CodeWriter::RunButLast(char delimiter, const NodeList& nodes, const cc::Tra
   if (nodes.size()) {
     for (uint i = 0; i < nodes.size() - 1; ++i) {
       nodes[i]->Accept(&self);
-      module_writer()(delimiter);
+      get_pipe()(delimiter);
     }
   }
 }
@@ -71,15 +73,15 @@ void CodeWriter::RunList(char delimiter, const NodeList& nodes, const cc::Transl
 }
 
 void CodeWriter::RunGroupedList(char delimiter, const NodeList& list, const cc::TranslationUnit& tu) {
-  module_writer()('(');
+  get_pipe()('(');
   RunList(delimiter, list, tu);
-  module_writer()(')');
+  get_pipe()(')');
 }
 
 void CodeWriter::RunReturn(ast::Node* node, const cc::TranslationUnit& tu) {
-  module_writer()("return ");
+  get_pipe()("return ");
   Run(node, tu);
-  module_writer()(';');
+  get_pipe()(';');
 }
 
 void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
@@ -88,15 +90,15 @@ void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
 
     write_type(tu, lambda->ret_type);
     write_ptr(lambda);
-    module_writer()("(*");
+    get_pipe()("(*");
     write_lambda_name(l);
     write_named_params(tu, l->Params());
-    module_writer()(')');
+    get_pipe()(')');
     write_ptr_params(lambda, tu);
     write_params(tu, deep_params(l));
   } else {
     write_type(tu, l->ret_type);
-    module_writer()(' ');
+    get_pipe()(' ');
     write_lambda_name(l);
     write_named_params(tu, l->Params());
   }
@@ -110,29 +112,29 @@ void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
 
     write_type(tu, lambda->ret_type);
     write_ptr(lambda);
-    module_writer()("(*");
+    get_pipe()("(*");
     write_func_name(f);
     write_named_params(tu, f->Params());
-    module_writer()(')');
+    get_pipe()(')');
     write_ptr_params(lambda, tu);
     write_params(tu, deep_params(f));
   } else if (f->ret_type.IsDynDispatcher()) {
     MultiFn* multi_fn = unit::get_multi_fn(f->ret_type);
 
-    module_writer()("Any(*");
+    get_pipe()("Any(*");
     write_func_name(f);
     write_named_params(tu, f->Params());
-    module_writer()(')');
+    get_pipe()(')');
 
     switch (multi_fn->arity) {
-    case 1: module_writer()("(Any)"); break;
-    case 2: module_writer()("(Any,Any)"); break;
-    case 3: module_writer()("(Any,Any,Any)"); break;
+    case 1: get_pipe()("(Any)"); break;
+    case 2: get_pipe()("(Any,Any)"); break;
+    case 3: get_pipe()("(Any,Any,Any)"); break;
     default: throw "dyn dispatcher arity overflow";
     }
   } else {
     write_type(tu, f->ret_type);
-    module_writer()(' ');
+    get_pipe()(' ');
     write_func_name(f);
     write_named_params(tu, f->Params());
   }
@@ -141,10 +143,10 @@ void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
 }
 
 void CodeWriter::RunBlock(const NodeList& exprs, const cc::TranslationUnit& tu) {
-  module_writer()('{');
+  get_pipe()('{');
   CodeWriter::RunButLast(';', exprs, tu);
   CodeWriter::RunReturn(exprs.back(), tu);
-  module_writer()('}');
+  get_pipe()('}');
 }
 
 CodeWriter::CodeWriter(const cc::TranslationUnit& tu): tu{tu} {}
@@ -154,19 +156,19 @@ void CodeWriter::Visit(ast::Node* node) {
 }
 
 void CodeWriter::Visit(ast::Int* node) {
-  module_writer()(node->datum);
+  get_pipe()(node->datum);
 }
 
 void CodeWriter::Visit(ast::Real* node) {
-  module_writer()(node->datum);
+  get_pipe()(node->datum);
 }
 
 void CodeWriter::Visit(ast::Str* node) {
-  module_writer()(node->datum);
+  get_pipe()(node->datum);
 }
 
 void CodeWriter::Visit(ast::Sym*) {
-  module_writer()("SYM", 3);
+  get_pipe()("SYM", 3);
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
@@ -195,12 +197,12 @@ void CodeWriter::Visit(ast::Gt* node) {
 }
 
 void CodeWriter::Visit(ast::SetVar* node) {
-  module_writer()(node->name)('=');
+  get_pipe()(node->name)('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::SetAttr* node) {
-  module_writer()(node->obj_name)('.')(node->attr->name)('=');
+  get_pipe()(node->obj_name)('.')(node->attr->name)('=');
   node->value->Accept(this);
 }
 
@@ -209,43 +211,65 @@ void CodeWriter::Visit(ast::DefVar* node) {
     if (node->type.IsIntrinsic()) {
       auto ty = node->type;
 
-      module_writer()(type_name(intrinsic::ret_type_of(ty)))("(*")(node->name)(')');
+      get_pipe()(type_name(intrinsic::ret_type_of(ty)))("(*")(node->name)(')');
       write_intrinsic_params(ty);
     } else {
       sym::Fn* lambda = unit::get_fn(node->type);
 
       write_type(tu, lambda->ret_type);
-      module_writer()("(*")(node->name)(')');
+      get_pipe()("(*")(node->name)(')');
       write_params(tu, lambda->params);
     }
   } else if (node->type.IsDynDispatcher()) {
     MultiFn* multi_fn = unit::get_multi_fn(node->type);
-    module_writer()("Any(*")(node->name)(")(");
+    get_pipe()("Any(*")(node->name)(")(");
     for (uint i = 0; i < multi_fn->arity - 1; ++i) {
-      module_writer()("Any,");
+      get_pipe()("Any,");
     }
-    module_writer()("Any)");
+    get_pipe()("Any)");
   } else {
     write_type(tu, node->type);
-    module_writer()(' ')(node->name);
+    get_pipe()(' ')(node->name);
   }
 
-  module_writer()('=');
+  get_pipe()('=');
   node->value->Accept(this);
 }
 
 void CodeWriter::Visit(ast::If* node) {
-  module_writer()("(");
+  get_pipe()("(");
   node->cond->Accept(this);
-  module_writer()(")?(");
+  get_pipe()(")?(");
   node->on_true->Accept(this);
-  module_writer()("):(");
+  get_pipe()("):(");
   node->on_false->Accept(this);
-  module_writer()(")");
+  get_pipe()(")");
+}
+
+void CodeWriter::Visit(ast::IntCase* node) {
+  set_pipe(runtime_fw);
+
+  auto suffix = gen_suffix(switch_count);
+
+  get_pipe()(type_name(node->ret_type))(" switch")(suffix);
+  get_pipe()("(Int x){switch(x){");
+  for (const ast::IntCase::Clause& clause : node->clauses) {
+    get_pipe()("case ")(clause.cond)(":return ");
+    clause.expr->Accept(this);
+    get_pipe()(';');
+  }
+  get_pipe()("}}");
+
+  switch_count += 1;
+  set_pipe(module_fw);
+
+  get_pipe()("switch")(suffix)('(');
+  node->cond_expr->Accept(this);
+  get_pipe()(')');
 }
 
 void CodeWriter::Visit(ast::Var* node) {
-  module_writer()(node->name);
+  get_pipe()(node->name);
 }
 
 void CodeWriter::Visit(ast::LambdaExpr* node) {
@@ -258,70 +282,70 @@ void CodeWriter::Visit(ast::FuncCall* node) {
 }
 
 void CodeWriter::Visit(ast::VarCall* node) {
-  module_writer()(node->name);
+  get_pipe()(node->name);
   RunGroupedList(',', node->args, tu);
 }
 
 void CodeWriter::Visit(ast::DynamicCall* node) {
-  module_writer()(node->func->name);
+  get_pipe()(node->func->name);
   RunGroupedList(',', node->args, tu);
 }
 
 void CodeWriter::Visit(ast::CompoundLiteral* node) {
   sym::Struct* st = unit::get_struct(node->type);
 
-  module_writer()("(struct ")(st->name)("){");
+  get_pipe()("(struct ")(st->name)("){");
   RunList(',', node->initializers, tu);
-  module_writer()('}');
+  get_pipe()('}');
 }
 
 void CodeWriter::Visit(ast::AttrAccess* node) {
-  module_writer()(node->obj_name)('.')(node->attr->name);
+  get_pipe()(node->obj_name)('.')(node->attr->name);
 }
 
 void CodeWriter::Visit(ast::Intrinsic* node) {
-  module_writer()(intrinsic_name(node->type));
+  get_pipe()(intrinsic_name(node->type));
 }
 
 void CodeWriter::Visit(ast::IntrinsicCall1* node) {
-  module_writer()(intrinsic_name(node->type))('(');
+  get_pipe()(intrinsic_name(node->type))('(');
   node->arg->Accept(this);
-  module_writer()(')');
+  get_pipe()(')');
 }
 
 void CodeWriter::Visit(ast::Each* node) {
-  module_writer()("for(");
+  get_pipe()("for(");
   write_type(tu, node->next_fn->ret_type);
-  module_writer()(" _=");
+  get_pipe()(" _=");
   node->init->Accept(this);
-  module_writer()(';');
+  get_pipe()(';');
 
   write_func_name(node->has_next_fn);
-  module_writer()("(_);_=");
+  get_pipe()("(_);_=");
   write_func_name(node->next_fn);
-  module_writer()("(_)){");
+  get_pipe()("(_)){");
   write_type(tu, node->current_fn->ret_type);
-  module_writer()(' ')(node->iter_name)('=');
+  get_pipe()(' ')(node->iter_name)('=');
   write_func_name(node->current_fn);
-  module_writer()("(_);");
+  get_pipe()("(_);");
   node->body->Accept(this);
-  module_writer()(";}");
+  get_pipe()(";}");
 }
 
 void CodeWriter::Call(dt::StrView name, ast::Node *arg) {
-  module_writer()(name)('(');
+  get_pipe()(name)('(');
   arg->Accept(this);
-  module_writer()(')');
+  get_pipe()(')');
 }
 
 void CodeWriter::Cast(ast::Node* expr, Type target_ty) {
-  module_writer()("((")(type_name(target_ty))(')');
+  get_pipe()("((")(type_name(target_ty))(')');
   expr->Accept(this);
-  module_writer()(')');
+  get_pipe()(')');
 }
 
 void CodeWriter::VisitUnary(char op, ast::Node* node) {
-  module_writer()('(')(op);
+  get_pipe()('(')(op);
   node->Accept(this);
-  module_writer()(')');
+  get_pipe()(')');
 }

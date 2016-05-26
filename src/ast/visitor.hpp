@@ -17,6 +17,7 @@ namespace ast {
   struct SetAttr;
   struct DefVar;
   struct If;
+  struct IntCase;
   struct Var;
   struct LambdaExpr;
   struct FuncCall;
@@ -45,6 +46,7 @@ public:
   virtual void Visit(SetAttr*) = 0;
   virtual void Visit(DefVar*) = 0;
   virtual void Visit(If*) = 0;
+  virtual void Visit(IntCase*) = 0;
   virtual void Visit(Var*) = 0;
   virtual void Visit(LambdaExpr*) = 0;
   virtual void Visit(FuncCall*) = 0;

@@ -257,6 +257,8 @@ Node* Parser::ParseList(Token tok) {
     case encode9("'"): return ParseQuote(list);
     case encode9("get"): return ParseGet(list);
     case encode9("."): return ParseAttrAccess(list);
+    case encode9("case"): return ParseCase(list);
+
     case encode9("int"): return ParseIntrinsicCall1(list, intrinsic::int_overloading);
     case encode9("real"): return ParseIntrinsicCall1(list, intrinsic::real_overloading);
     case encode9("any"): return ParseIntrinsicCall1(list, intrinsic::any_overloading);
@@ -470,6 +472,41 @@ Node* Parser::ParseAttrAccess(TokenStream& toks) {
   auto attr = unit::get_struct(var)->Attr(attr_name);
 
   return new AttrAccess{obj_name, attr};
+}
+
+
+
+/*
+  (case 10
+        4 "four"
+        5 "five"
+          "other")
+
+          int
+          int expr
+          int expr
+          expr?
+
+
+*/
+Node* Parser::ParseCase(TokenStream& toks) {
+  auto cond_expr = ParseToken(toks.NextToken());
+
+  IntCase::ClauseList clauses;
+  while (!toks.NextToken().IsEof()) {
+    auto cond = toks.CurrentToken();
+    expect(cond.IsInt(), "case supports only literal int as a label");
+    auto expr = ParseToken(toks.NextToken());
+
+    clauses.push_back(IntCase::Clause{cond, expr});
+  }
+
+  auto ret_type = TypeDeducer::Run(clauses[0].expr);
+  for (uint i = 1; i < clauses.size(); ++i) {
+    ret_type = ret_type.ExtendedWith(TypeDeducer::Run(clauses[i].expr));
+  }
+
+  return new IntCase{cond_expr, std::move(clauses), ret_type};
 }
 
 std::vector<sym::Param> Parser::CollectParams(TokenStream& toks) {

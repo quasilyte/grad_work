@@ -8,7 +8,7 @@ Type intrinsic::real_overloading(Type x) {
   case Type::INT: return Type::INT_TO_REAL;
 
   default:
-    throw "num_overloading: arg type not match";
+    throw "num_overloading: arg type not Case";
   }
 }
 
@@ -18,7 +18,7 @@ Type intrinsic::int_overloading(Type x) {
   case Type::REAL: return Type::REAL_TO_INT;
 
   default:
-    throw "num_overloading: arg type not match";
+    throw "num_overloading: arg type not Case";
   }
 }
 
@@ -28,6 +28,6 @@ Type intrinsic::any_overloading(Type x) {
   case Type::REAL: return Type::REAL_TO_ANY;
 
   default:
-    throw "any_overloading: arg type not match";
+    throw "any_overloading: arg type not Case";
   }
 }

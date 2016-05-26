@@ -56,6 +56,7 @@ private:
   ast::Node* ParseGet(lex::TokenStream&);
   ast::Node* ParseQuote(lex::TokenStream&);
   ast::Node* ParseAttrAccess(lex::TokenStream&);
+  ast::Node* ParseCase(lex::TokenStream&);
 
   std::vector<sym::Param> CollectParams(lex::TokenStream&);
   std::vector<ast::Node*> CollectParsed(lex::TokenStream&);

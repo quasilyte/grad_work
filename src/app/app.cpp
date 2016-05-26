@@ -1,7 +1,6 @@
 #include "app/app.hpp"
 
 #include <cstdlib>
-#include "di/output.hpp"
 
 using namespace app;
 
@@ -15,11 +14,6 @@ Instance::~Instance() {
 
 int Instance::Run(StartHandler handler) {
   is_running = true;
-
-  di::set_files(
-    fopen("./module.txt", "w"),
-    fopen("./runtime.txt", "w")
-  );
 
   handler();
 

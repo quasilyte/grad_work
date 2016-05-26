@@ -3,7 +3,7 @@
 #include "backend/cpp/cg/type_map.hpp"
 #include "sym/module.hpp"
 #include "sym/sym.hpp"
-#include "di/output.hpp"
+#include "di/pipe.hpp"
 #include "io/file_writer.hpp"
 #include "intrinsic/type_ops.hpp"
 #include "cc/translation_unit.hpp"
@@ -25,50 +25,50 @@ Type deep_ret_type(Fn* lambda) {
 
 void cpp_cg::write_type(const cc::TranslationUnit& tu, Type ty) {
   if (ty.IsStruct()) {
-    module_writer()("struct ")(unit::get_struct(ty)->name);
+    get_pipe()("struct ")(unit::get_struct(ty)->name);
   } else if (ty.IsFn()) {
     Fn* lambda = unit::get_fn(ty);
 
     write_type(tu, deep_ret_type(lambda));
   } else {
-    module_writer()(type_name(ty));
+    get_pipe()(type_name(ty));
   }
 }
 
 void cpp_cg::write_func_name(const NamedFn* f) {
-  module_writer()(f->parent->name)(gen_suffix(f->suffix_idx));
+  get_pipe()(f->parent->name)(gen_suffix(f->suffix_idx));
 }
 
 void cpp_cg::write_lambda_name(const Fn* l) {
-  module_writer()('l')(gen_suffix(l->type.Id()));
+  get_pipe()('l')(gen_suffix(l->type.Id()));
 }
 
 void cpp_cg::write_named_params(const cc::TranslationUnit& tu, const Fn::ParamList& params) {
   if (params.size()) {
-    module_writer()('(');
+    get_pipe()('(');
     for (uint i = 0; i < params.size() - 1; ++i) {
       write_type(tu, params[i].type);
-      module_writer()(' ')(params[i].name)(',');
+      get_pipe()(' ')(params[i].name)(',');
     }
     write_type(tu, params.back().type);
-    module_writer()(' ')(params.back().name);
-    module_writer()(')');
+    get_pipe()(' ')(params.back().name);
+    get_pipe()(')');
   } else {
-    module_writer()("(void)");
+    get_pipe()("(void)");
   }
 }
 
 void cpp_cg::write_params(const cc::TranslationUnit& tu, const Fn::ParamList& params) {
   if (params.size()) {
-    module_writer()('(');
+    get_pipe()('(');
     for (uint i = 0; i < params.size() - 1; ++i) {
       write_type(tu, params[i].type);
-      module_writer()(',');
+      get_pipe()(',');
     }
     write_type(tu, params.back().type);
-    module_writer()(')');
+    get_pipe()(')');
   } else {
-    module_writer()("(void)");
+    get_pipe()("(void)");
   }
 }
 
@@ -76,12 +76,12 @@ void cpp_cg::write_intrinsic_params(Type ty) {
   auto arity = intrinsic::arity_of(ty);
 
   if (arity) {
-    module_writer()('(');
+    get_pipe()('(');
     for (uint i = 0; i < arity - 1; ++i) {
-      module_writer()(type_name(intrinsic::param_of(ty, i)))(',');
+      get_pipe()(type_name(intrinsic::param_of(ty, i)))(',');
     }
-    module_writer()(type_name(intrinsic::param_of(ty, arity - 1)))(')');
+    get_pipe()(type_name(intrinsic::param_of(ty, arity - 1)))(')');
   } else {
-    module_writer()("(void)");
+    get_pipe()("(void)");
   }
 }

@@ -47,6 +47,7 @@ public:
   void Visit(ast::SetAttr*) override;
   void Visit(ast::DefVar*) override;
   void Visit(ast::If*) override;
+  void Visit(ast::IntCase*) override;
   void Visit(ast::Var*) override;
   void Visit(ast::LambdaExpr*) override;
   void Visit(ast::FuncCall*) override;

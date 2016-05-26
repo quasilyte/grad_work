@@ -2,7 +2,7 @@ project(di)
 
 set(
   di_src
-  output.cpp
+  pipe.cpp
 )
 
 add_library(di STATIC ${di_src})
