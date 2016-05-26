@@ -66,6 +66,7 @@ add_subdirectory(src/app)
 ## Tests
 enable_testing()
 add_subdirectory(tests/test_dt)
+add_subdirectory(tests/test_cc)
 # add_subdirectory(tests/test_sym)
 
 ## Main executable (mostly for debug purposes)
