@@ -53,9 +53,9 @@ Type Module::SymbolOrFunc(dt::StrView name) {
 
     if (multi_fn) {
       if (1 == multi_fn->funcs.size()) { // Precise type exists
-        return Type{multi_fn->funcs.begin()->second->type_id};
+        return multi_fn->funcs.begin()->second->type;
       } else {
-        return Type::DynDispatcherTag(multi_fn->type_id);
+        return multi_fn->type;
       }
     } else {
       throw "symbol or func: unbound var referenced";

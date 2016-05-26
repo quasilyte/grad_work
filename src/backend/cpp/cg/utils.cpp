@@ -16,7 +16,7 @@ using namespace dt;
 using namespace di;
 
 Type deep_ret_type(Fn* lambda) {
-  while (lambda->ret_type.IsFunc()) {
+  while (lambda->ret_type.IsFn()) {
     lambda = unit::get_fn(lambda->ret_type);
   }
 
@@ -26,7 +26,7 @@ Type deep_ret_type(Fn* lambda) {
 void cpp_cg::write_type(const cc::TranslationUnit& tu, Type ty) {
   if (ty.IsStruct()) {
     module_writer()("struct ")(unit::get_struct(ty)->name);
-  } else if (ty.IsFunc()) {
+  } else if (ty.IsFn()) {
     Fn* lambda = unit::get_fn(ty);
 
     write_type(tu, deep_ret_type(lambda));
@@ -40,7 +40,7 @@ void cpp_cg::write_func_name(const NamedFn* f) {
 }
 
 void cpp_cg::write_lambda_name(const Fn* l) {
-  module_writer()('l')(gen_suffix(Type::LambdaKey(l->type_id)));
+  module_writer()('l')(gen_suffix(l->type.Id()));
 }
 
 void cpp_cg::write_named_params(const cc::TranslationUnit& tu, const Fn::ParamList& params) {

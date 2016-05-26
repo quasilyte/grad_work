@@ -30,7 +30,7 @@ public:
   T& GetMut(const char* key, u32 key_len);
   T& GetMut(StrView key);
 
-  i32 Size() const noexcept;
+  u32 Size() const noexcept;
 
 private:
   Bag bag;

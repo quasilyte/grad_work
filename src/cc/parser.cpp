@@ -299,7 +299,7 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
       // 2) fetch function by tag, check arity
       // 3) call dynamic dispatcher for args
       throw "FuncCall: polymorphic call is not supported yet";
-    } else if (callable.IsFunc()) {
+    } else if (callable.IsFn()) {
       auto func = unit::get_fn(callable);
       expect(func->Arity() == args.size(), "arity mismatch");
       for (uint i = 0; i < func->Arity(); ++i) {

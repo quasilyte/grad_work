@@ -5,6 +5,6 @@
 namespace sym {
   const i32 MAX_UNIQ_SUFFIXES = 2015;
 
-  dt::StrView gen_suffix(u32 idx);
+  dt::StrView gen_suffix(uint idx);
   const char* mangle(char);
 }

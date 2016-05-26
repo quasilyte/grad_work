@@ -1,6 +1,6 @@
 #include "sym/sym.hpp"
 
-dt::StrView sym::gen_suffix(u32 idx) {
+dt::StrView sym::gen_suffix(uint idx) {
   // Up to 2015 unique identifiers
   if (idx > MAX_UNIQ_SUFFIXES) {
     throw "gen_suffix: idx overflows MAX_UNIQ_SUFFIXES";

@@ -16,18 +16,20 @@ Dict<MultiFn*> multi_fn_name_map;
 std::vector<MultiFn*> multi_fn_id_map;
 std::vector<NamedFn*> named_fns;
 
-TypeId unit::new_unnamed_fn(ParamList&& params, ExprList&& exprs, Type ret_ty) {
-  auto id = Type::LambdaTag(unnamed_fns.size());
+Type unit::new_unnamed_fn(ParamList&& params, ExprList&& exprs, Type ret_ty) {
+  auto type = Type::UnnamedFn(unnamed_fns.size());
 
   unnamed_fns.push_back(new UnnamedFn{
-    id, std::move(params), std::move(exprs), ret_ty
+    type,
+    std::move(params),
+    std::move(exprs), ret_ty
   });
 
-  return id;
+  return type;
 }
 
 Fn* unit::get_fn(Type ty) {
-  if (ty.IsLambda()) {
+  if (ty.IsUnnamedFn()) {
     return get_unnamed_fn(ty);
   } else {
     return get_named_fn(ty);
@@ -35,7 +37,7 @@ Fn* unit::get_fn(Type ty) {
 }
 
 UnnamedFn* unit::get_unnamed_fn(Type ty) {
-  return unnamed_fns[Type::LambdaKey(ty.Tag())];
+  return unnamed_fns[ty.Id()];
 }
 
 UnnamedFn* unit::get_unnamed_fn(uint id) {
@@ -71,7 +73,7 @@ NamedFn* unit::declare_named_fn
     }
   } else { // First declaration, no overloadings yet
     multi_fn = new sym::MultiFn{
-      multi_fn_name_map.Size(),
+      Type::DynDispatcher(multi_fn_name_map.Size()),
       name,
       static_cast<uint>(params.size())
     };
@@ -87,7 +89,7 @@ NamedFn* unit::declare_named_fn
 }
 
 NamedFn* unit::get_named_fn(Type ty) {
-  return named_fns[std::abs(ty.Tag())];
+  return named_fns[ty.Id()];
 }
 
 NamedFn* unit::get_named_fn(uint idx) {
@@ -103,5 +105,5 @@ MultiFn* unit::get_multi_fn(StrView name) {
 }
 
 MultiFn* unit::get_multi_fn(Type ty) {
-  return multi_fn_id_map[Type::DynDispatcherKey(ty.Tag())];
+  return multi_fn_id_map[ty.Id()];
 }

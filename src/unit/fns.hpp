@@ -19,7 +19,7 @@ namespace unit {
 
   sym::Fn* get_fn(sym::Type ty);
 
-  sym::TypeId new_unnamed_fn(ParamList&&, ExprList&&, sym::Type ret_ty);
+  sym::Type new_unnamed_fn(ParamList&&, ExprList&&, sym::Type ret_ty);
   sym::UnnamedFn* get_unnamed_fn(sym::Type id);
   sym::UnnamedFn* get_unnamed_fn(uint idx);
   uint unnamed_fn_count();

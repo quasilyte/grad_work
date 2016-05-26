@@ -11,20 +11,34 @@ Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
 
+Type Type::UnnamedFn(TypeId id) {
+  return Type{UNNAMED_FN, id};
+}
+
+Type Type::DynDispatcher(TypeId id) {
+  return Type{DYN_DISPATCHER, id};
+}
+
+Type Type::Struct(TypeId id) {
+  return Type{STRUCT, id};
+}
+
+/*
 TypeId Type::DynDispatcherTag(uint idx) { return idx + BEGIN_DYN_DISPATCHER + 1; }
 int Type::DynDispatcherKey(TypeId id) { return id - BEGIN_DYN_DISPATCHER - 1; }
 TypeId Type::LambdaTag(uint idx) { return idx + END_INTRINSIC; }
 int Type::LambdaKey(TypeId id) { return id - END_INTRINSIC; }
 TypeId Type::StructTag(uint idx) { return idx + 1; }
 int Type::StructKey(TypeId id) { return id - 1; }
+*/
 
-Type::Type(): Type(VOID) {}
-Type::Type(const Type& other): tag{other.tag} {}
-Type::Type(TypeId tag): tag{tag} {}
+Type::Type(): Type{VOID} {}
+Type::Type(const Type& other): tag{other.tag}, id{other.id} {}
+Type::Type(uint tag): tag{tag}, id{0} {}
+Type::Type(uint tag, TypeId id): tag{tag}, id{id} {}
 
-TypeId Type::Tag() const noexcept {
-  return tag;
-}
+uint Type::Tag() const noexcept { return tag; }
+TypeId Type::Id() const noexcept { return id; }
 
 bool Type::IsVoid() const noexcept { return tag == VOID; }
 bool Type::IsAny() const noexcept { return tag == ANY; }
@@ -33,30 +47,18 @@ bool Type::IsUnknown() const noexcept { return tag == UNKNOWN; }
 bool Type::IsReal() const noexcept { return tag == REAL; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
+bool Type::IsIntrinsic() const noexcept { return tag == INTRINSIC; }
+bool Type::IsUnnamedFn() const noexcept { return tag == UNNAMED_FN; }
+bool Type::IsNamedFn() const noexcept { return tag == NAMED_FN; }
+bool Type::IsStruct() const noexcept { return tag == STRUCT; }
+bool Type::IsDynDispatcher() const noexcept { return tag == DYN_DISPATCHER; }
 
-bool Type::IsIntrinsic() const noexcept {
-  return tag < END_INTRINSIC;
-}
-
-bool Type::IsLambda() const noexcept {
-  return tag >= END_INTRINSIC
-      && tag < (END_INTRINSIC + sym::MAX_UNIQ_SUFFIXES);
-}
-
-bool Type::IsFunc() const noexcept {
-  return tag <= 0 && tag >= END_INTRINSIC;
+bool Type::IsFn() const noexcept {
+  return IsNamedFn() || IsUnnamedFn();
 }
 
 bool Type::IsArith() const noexcept {
   return IsReal() || IsInt();
-}
-
-bool Type::IsStruct() const noexcept {
-  return tag > BEGIN_STRUCT && tag < END_STRUCT;
-}
-
-bool Type::IsDynDispatcher() const noexcept {
-  return tag > BEGIN_DYN_DISPATCHER && tag < END_DYN_DISPATCHER;
 }
 
 // Merge rules:

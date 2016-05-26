@@ -24,7 +24,7 @@ struct sym::Fn {
   typedef std::vector<sym::Param> ParamList;
   typedef std::vector<ast::Node*> ExprList;
 
-  Fn(sym::TypeId, ParamList&&, ExprList&&, sym::Type ret_type);
+  Fn(sym::Type, ParamList&&, ExprList&&, sym::Type ret_type);
   Fn(ParamList&&, sym::Type ret_type);
 
   uint Arity() const noexcept;
@@ -34,11 +34,11 @@ struct sym::Fn {
   ExprList exprs;
   ParamList params;
   sym::Type ret_type;
-  sym::TypeId type_id;
+  sym::Type type;
 };
 
 struct sym::UnnamedFn: public Fn {
-  UnnamedFn(sym::TypeId, ParamList&&, ExprList&&, sym::Type ret_type);
+  UnnamedFn(sym::Type, ParamList&&, ExprList&&, sym::Type ret_type);
 };
 
 struct sym::NamedFn: public Fn {
@@ -54,12 +54,12 @@ struct sym::NamedFn: public Fn {
 struct sym::MultiFn {
   typedef std::vector<sym::Type> Key;
 
-  MultiFn(sym::TypeId, dt::StrView name, uint arity);
+  MultiFn(sym::Type, dt::StrView name, uint arity);
 
   sym::NamedFn* Find(Key);
 
   const dt::StrView name;
   std::map<Key, sym::NamedFn*> funcs;
   uint arity;
-  sym::TypeId type_id;
+  sym::Type type;
 };

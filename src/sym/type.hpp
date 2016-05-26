@@ -5,28 +5,34 @@
 
 namespace sym {
   class Type;
-  typedef i32 TypeId;
+  typedef u32 TypeId;
 }
 
 class sym::Type {
 public:
+  static const int BITS_PER_TAG = 6;
+  static const int BITS_PER_VAL = (sizeof(u32) * 8) - BITS_PER_TAG;
 
-  enum: TypeId {
-    // Never forget to increase this constant int literal.
-    // If you will forget, compiler error will rise anyway (overflow).
-    END_DYN_DISPATCHER = std::numeric_limits<TypeId>::max() - 13,
+  // Any value should fit in BITS_PER_TAG bits
+  enum: unsigned {
+    VOID,
+    UNKNOWN,
+    ANY,
+    REAL,
+    INT,
+    STRUCT,
     SYM,
     STR,
-    UNKNOWN,
-    INT,
-    REAL,
-    ANY,
-    VOID,
+    INTRINSIC,
+    UNNAMED_FN,
+    NAMED_FN,
+    DYN_DISPATCHER,
   };
 
+  // Intrinsics TypeId
   enum: TypeId {
     // (real x)
-    ANY_TO_REAL = std::numeric_limits<TypeId>::min(),
+    ANY_TO_REAL,
     INT_TO_REAL,
     // (int x)
     ANY_TO_INT,
@@ -34,13 +40,7 @@ public:
     // (any x)
     INT_TO_ANY,
     REAL_TO_ANY,
-
-    END_INTRINSIC
   };
-
-  static const TypeId BEGIN_STRUCT = 0;
-  static const TypeId END_STRUCT = std::numeric_limits<TypeId>::max() / 2;
-  static const TypeId BEGIN_DYN_DISPATCHER = END_STRUCT;
 
   static Type Void();
   static Type Any();
@@ -50,18 +50,26 @@ public:
   static Type Str();
   static Type Sym();
 
+  static Type UnnamedFn(TypeId id);
+  static Type DynDispatcher(TypeId id);
+  static Type Struct(TypeId id);
+
+  /*
   static TypeId DynDispatcherTag(uint idx);
   static int DynDispatcherKey(TypeId);
   static TypeId LambdaTag(uint idx);
   static int LambdaKey(TypeId);
   static TypeId StructTag(uint idx);
   static int StructKey(TypeId);
+  */
 
   Type();
   Type(const Type&);
-  Type(TypeId Tag);
+  Type(uint Tag);
+  Type(uint Tag, TypeId id);
 
-  TypeId Tag() const noexcept;
+  uint Tag() const noexcept;
+  TypeId Id() const noexcept;
 
   bool IsVoid() const noexcept;
   bool IsAny() const noexcept;
@@ -70,13 +78,14 @@ public:
   bool IsReal() const noexcept;
   bool IsStr() const noexcept;
   bool IsSym() const noexcept;
-
-  bool IsIntrinsic() const noexcept;
-  bool IsLambda() const noexcept;
-  bool IsFunc() const noexcept;
-  bool IsArith() const noexcept;
   bool IsStruct() const noexcept;
   bool IsDynDispatcher() const noexcept;
+  bool IsIntrinsic() const noexcept;
+  bool IsUnnamedFn() const noexcept;
+  bool IsNamedFn() const noexcept;
+
+  bool IsFn() const noexcept;
+  bool IsArith() const noexcept;
 
   Type ExtendedWith(Type);
 
@@ -87,5 +96,11 @@ public:
   bool operator==(const Type&) const;
 
 private:
-  TypeId tag;
+  uint tag: BITS_PER_TAG;
+  TypeId id: BITS_PER_VAL;
 };
+
+static_assert(
+  sizeof(sym::Type) == sizeof(sym::TypeId),
+  "type size expectations failed"
+);

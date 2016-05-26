@@ -67,7 +67,7 @@ T& dt::Dict<T>::GetMut(StrView key) {
 }
 
 template<class T>
-i32 dt::Dict<T>::Size() const noexcept {
+u32 dt::Dict<T>::Size() const noexcept {
   return bag.size();
 }
 

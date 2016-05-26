@@ -58,7 +58,7 @@ Gt::Gt(ArgList&& operands): Operation{std::move(operands)} {
 }
 void Gt::Accept(Visitor* v) { v->Visit(this); }
 
-LambdaExpr::LambdaExpr(sym::TypeId id): id{id} {}
+LambdaExpr::LambdaExpr(sym::Type type): type{type} {}
 
 void LambdaExpr::Accept(Visitor* v) { v->Visit(this); }
 

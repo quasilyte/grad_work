@@ -22,14 +22,14 @@ using namespace dt;
 using namespace di;
 
 void write_ptr(Fn* lambda) {
-  while (lambda->ret_type.IsFunc()) {
+  while (lambda->ret_type.IsFn()) {
     module_writer()("(*");
     lambda = unit::get_fn(lambda->ret_type);
   }
 }
 
 void write_ptr_params(Fn* lambda, const cc::TranslationUnit& tu) {
-  while (lambda->ret_type.IsFunc()) {
+  while (lambda->ret_type.IsFn()) {
     write_params(tu, lambda->Params());
     module_writer()(')');
 
@@ -38,7 +38,7 @@ void write_ptr_params(Fn* lambda, const cc::TranslationUnit& tu) {
 }
 
 const std::vector<Param>& deep_params(Fn* lambda) {
-  while (lambda->ret_type.IsFunc()) {
+  while (lambda->ret_type.IsFn()) {
     lambda = unit::get_fn(lambda->ret_type);
   }
 
@@ -83,7 +83,7 @@ void CodeWriter::RunReturn(ast::Node* node, const cc::TranslationUnit& tu) {
 }
 
 void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
-  if (l->ret_type.IsFunc()) {
+  if (l->ret_type.IsFn()) {
     Fn* lambda = unit::get_fn(l->ret_type);
 
     write_type(tu, lambda->ret_type);
@@ -105,7 +105,7 @@ void CodeWriter::RunLambda(UnnamedFn* l, const cc::TranslationUnit& tu) {
 }
 
 void CodeWriter::RunFunc(NamedFn* f, const cc::TranslationUnit& tu) {
-  if (f->ret_type.IsFunc()) {
+  if (f->ret_type.IsFn()) {
     Fn* lambda = unit::get_fn(f->ret_type);
 
     write_type(tu, lambda->ret_type);
@@ -205,7 +205,7 @@ void CodeWriter::Visit(ast::SetAttr* node) {
 }
 
 void CodeWriter::Visit(ast::DefVar* node) {
-  if (node->type.IsFunc()) {
+  if (node->type.IsFn()) {
     if (node->type.IsIntrinsic()) {
       auto ty = node->type;
 
@@ -249,7 +249,7 @@ void CodeWriter::Visit(ast::Var* node) {
 }
 
 void CodeWriter::Visit(ast::LambdaExpr* node) {
-  write_lambda_name(unit::get_fn(node->id));
+  write_lambda_name(unit::get_fn(node->type.Id()));
 }
 
 void CodeWriter::Visit(ast::FuncCall* node) {

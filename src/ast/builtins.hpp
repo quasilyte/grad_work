@@ -76,11 +76,11 @@ struct ast::Gt: public Operation {
 };
 
 struct ast::LambdaExpr: public Node {
-  LambdaExpr(sym::TypeId);
+  LambdaExpr(sym::Type);
 
   void Accept(Visitor*);
 
-  sym::TypeId id;
+  sym::Type type;
 };
 
 struct ast::FuncCall: public Node {

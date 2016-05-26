@@ -2,6 +2,7 @@
 
 #include "dt/dict.hpp"
 #include "sym/rules.hpp"
+#include "dev_assert.hpp"
 
 using namespace sym;
 using namespace dt;
@@ -17,8 +18,11 @@ void unit::def_struct(dt::StrView name, Struct::AttrList&& attrs) {
   if (type_name_map.Find(name)) {
     throw "def_struct: redefinition of struct";
   } else {
-    auto st_id = Type::StructTag(type_name_map.Size());
-    auto st = new sym::Struct{name, std::move(attrs), sym::Type{st_id}};
+    auto st = new sym::Struct{
+      name,
+      std::move(attrs),
+      sym::Type::Struct(type_name_map.Size())
+    };
 
     type_name_map.Put(name, st);
     type_id_map.push_back(st);
@@ -30,7 +34,8 @@ sym::Struct* unit::get_struct(dt::StrView name) {
 }
 
 sym::Struct* unit::get_struct(Type type) {
-  return type_id_map[Type::StructKey(type.Tag())];
+  dev_assert(type.IsStruct());
+  return type_id_map[type.Id()];
 }
 
 sym::Struct* unit::get_struct(uint idx) {
