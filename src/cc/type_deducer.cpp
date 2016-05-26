@@ -69,8 +69,6 @@ void TypeDeducer::Visit(ast::Sub* sub) {
   result = deduce_arith_type(sub);
 }
 
-// #FIXME: those can be refactored in 1 visit of base BoolOp node,
-// but perfomance should be tested.
 void TypeDeducer::Visit(ast::Lt*) {
   result = Type::Int();
 }
@@ -80,15 +78,15 @@ void TypeDeducer::Visit(ast::Gt*) {
 }
 
 void TypeDeducer::Visit(ast::SetVar*) {
-  throw "set! is not an expression";
+  result = Type::Void();
 }
 
 void TypeDeducer::Visit(ast::SetAttr*) {
-  throw "set! is not an expression";
+  result = Type::Void();
 }
 
 void TypeDeducer::Visit(ast::DefVar*) {
-  throw "def is not an expression";
+  result = Type::Void();
 }
 
 void TypeDeducer::Visit(ast::If* node) {
@@ -132,5 +130,5 @@ void TypeDeducer::Visit(ast::IntrinsicCall1* node) {
 }
 
 void TypeDeducer::Visit(ast::Each*) {
-  throw "each is not an expression";
+  result = Type::Void();
 }

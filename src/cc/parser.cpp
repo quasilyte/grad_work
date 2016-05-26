@@ -150,6 +150,7 @@ Node* Parser::ParseVar(TokenStream& toks) {
   Type ty;
 
   std::tie(name, expr, ty) = FetchVarInfo(toks);
+  expect(!ty.IsVoid(), "assigned void value");
 
   module.DefineLocal(name, ty);
   return new DefVar{name, expr, ty};
@@ -315,8 +316,6 @@ ast::Node* Parser::ParseFuncCall(lex::Token& name, lex::TokenStream& toks) {
       expect(multi_fn->arity == args.size(), "arity mismatch");
 
       return resolve_named_call(std::move(args), multi_fn);
-    } else if (callable.IsIntrinsic()) {
-
     } else {
       throw "FuncCall: called something that can not be called";
     }
