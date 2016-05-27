@@ -1,1 +1,7 @@
 - SSA
+- multimethods
+- GC for memory constrained systems (custom allocators)
+- static multimethod dispatching via function pointer
+- array and other builtins semantics
+- "Or" type and type "Any"
+
