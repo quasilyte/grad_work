@@ -65,14 +65,6 @@ bool Type::IsArith() const noexcept {
   return IsReal() || IsInt();
 }
 
-// Merge rules:
-// A + A -> A
-// int + real -> num
-// A + B -> either<A, B>
-// either<A, B> + C -> any
-// either<A, B> + A -> either<A, B>
-// A + any -> any
-// A + parent_of(A) -> parent_of(A)
 Type Type::ExtendedWith(Type other) {
   if (IsUnknown()) {
     return other;
@@ -81,17 +73,9 @@ Type Type::ExtendedWith(Type other) {
     return *this;
   }
 
-  // No need to extend
   if (SameAs(other)) {
     return other;
   }
-
-  // Nothing can extend Any
-  if (IsAny() || other.IsAny()) {
-    return Type::Any();
-  }
-
-  // #FIXME: handle structs
 
   return Type::Any();
 }
