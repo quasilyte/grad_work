@@ -3,5 +3,5 @@
 #include "lex/token.hpp"
 
 namespace dbg {
-  void dump_token(lex::Token, int depth = 0);
+  void dump(lex::Token, int depth = 0);
 }
