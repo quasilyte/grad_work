@@ -2,14 +2,14 @@
 
 #include "unit/structs.hpp"
 #include "unit/fns.hpp"
-#include "cc/type_deducer.hpp"
-#include "ast/atoms.hpp"
+#include "ast/literals.hpp"
 #include "test_utils.hpp"
 #include "dt/str_view.hpp"
 
-using cc::TypeDeducer;
+// using cc::TypeDeducer;
 using sym::Type;
 
+/*
 void test_prim_types_deduce() {
   TRUE(TypeDeducer::Run(new ast::Int{"10"}).IsInt());
   TRUE(TypeDeducer::Run(new ast::Real{"1.0"}).IsReal());
@@ -52,3 +52,4 @@ void test_unnamed_fn_types_deduce() {
   TRUE(unnamed_fn2.IsUnnamedFn());
   TRUE(1 == unnamed_fn2.Id());
 }
+*/

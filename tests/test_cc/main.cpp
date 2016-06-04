@@ -20,9 +20,11 @@ void init() {
 int main() {
   init();
 
+  /*
   RUN(prim_types_deduce);
   RUN(struct_types_deduce);
   RUN(unnamed_fn_types_deduce);
+  */
 
   FINISH();
 }

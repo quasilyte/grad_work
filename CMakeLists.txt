@@ -48,31 +48,43 @@ include_directories("src" "tests")
 file(GLOB_RECURSE header_files "src/*.hpp" "tests/*.hpp" "src/backend/cpp/rt/*.h")
 add_custom_target(headers SOURCES ${header_files})
 
-add_subdirectory(src/lex)
-add_subdirectory(src/dbg)
-add_subdirectory(src/cc)
-add_subdirectory(src/ast)
-add_subdirectory(src/io)
-add_subdirectory(src/sym)
-add_subdirectory(src/intrinsic)
-add_subdirectory(src/dt)
-add_subdirectory(src/fmt)
-add_subdirectory(src/backend/cpp/cg)
-add_subdirectory(src/di)
-add_subdirectory(src/util)
-add_subdirectory(src/unit)
-add_subdirectory(src/app)
+function(add_subdirectories)
+  foreach (dir ${ARGN})
+    add_subdirectory(${dir})
+  endforeach(dir)
+endfunction()
+
+add_subdirectories(
+  src/lex
+  src/dbg
+  src/cc
+  src/ast
+  src/io
+  src/sym
+  src/intrinsic
+  src/dt
+  src/fmt
+  src/backend/c/cg
+  src/frontend/go_cc
+  src/di
+  src/util
+  src/unit
+  src/app
+)
 
 ## Tests
 enable_testing()
-add_subdirectory(tests/test_dt)
-add_subdirectory(tests/test_cc)
-# add_subdirectory(tests/test_sym)
+add_subdirectories(
+  tests/test_dt
+  tests/test_cc
+)
 
 ## Main executable (mostly for debug purposes)
 add_executable(${PROJECT_NAME} lisp.cpp)
 target_link_libraries(
-  ${PROJECT_NAME} cpp_cg cc ast lex unit fmt dbg sym intrinsic app di io dt
+  ${PROJECT_NAME} cpp_cg go_cc
+  cc
+  ast unit fmt dbg sym lex intrinsic app di io dt
 )
 
 add_executable(rt rt.cpp)
