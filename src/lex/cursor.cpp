@@ -150,12 +150,15 @@ bool lex::try_consume(Cursor* cur, char to_consume) {
 bool lex::try_consume(Cursor* cur, const char* to_consume) {
   const char* p = cur->pos;
 
-  while (*p++ == *to_consume++) {}
+  while (*p == *to_consume) {
+    p += 1;
+    to_consume += 1;
+  }
 
   if (*to_consume) { // Not fully matched
     return false;
   } else {
-    cur->pos = p - 1; // Position after match
+    cur->pos = p; // Position after match
     return true;
   }
 }

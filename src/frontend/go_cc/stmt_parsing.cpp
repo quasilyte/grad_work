@@ -13,12 +13,10 @@
 #include "cc/strict_arith.hpp"
 
 using namespace lex;
-#include <cstdio>
+
 ast::Node* go_cc::parse_return(Cursor* cur) {
   skip(cur, SPACES);
-
-  // auto ret = new ast::Return{parse_expr(next_expr(cur))};
-  auto ret = new ast::Return{parse_expr(cur, ";\n")};
+  auto ret = new ast::Return{parse_expr(cur, ";\n}")};
   skip(cur, 1);
   return ret;
 }
@@ -46,17 +44,18 @@ ast::Node* go_cc::parse_if(Cursor* cur) {
   auto cond = parse_expr(skip(cur, SPACES), "{");
   skip(cur, 1);
 
-  // while (can_read(skip(&body_cur, SPACES))) {
   while (!try_consume(skip(cur, SPACES), '}')) {
-    // Cursor cur{next_expr(&body_cur)};
     on_true.push_back(parse(cur));
   }
 
   if (try_consume(skip(cur, SPACES), "else")) {
-    Cursor false_cur{read_group(skip(cur, SPACES), '{', '}').Truncate(1)};
-    while (can_read(skip(&false_cur, SPACES))) {
-      Cursor cur{next_expr(&false_cur)};
-      on_false.push_back(parse(&cur));
+
+    if (try_consume(skip(cur, SPACES), '{')) {
+      while (!try_consume(skip(cur, SPACES), '}')) {
+        on_false.push_back(parse(cur));
+      }
+    } else {
+      throw "expected `{`";
     }
   }
 
