@@ -20,12 +20,14 @@ public:
     ANY,
     REAL,
     INT,
+    BOOL,
     STRUCT,
     SYM,
     STR,
     INTRINSIC,
     UNNAMED_FN,
     NAMED_FN,
+    MONO_FN,
     DYN_DISPATCHER,
   };
 
@@ -46,11 +48,13 @@ public:
   static Type Any();
   static Type Real();
   static Type Int();
+  static Type Bool();
   static Type Unknown();
   static Type Str();
   static Type Sym();
 
   static Type UnnamedFn(TypeId id);
+  static Type MonoFn(TypeId id);
   static Type DynDispatcher(TypeId id);
   static Type Struct(TypeId id);
   static Type Intrinsic(TypeId id);
@@ -75,6 +79,7 @@ public:
   bool IsVoid() const noexcept;
   bool IsAny() const noexcept;
   bool IsInt() const noexcept;
+  bool IsBool() const noexcept;
   bool IsUnknown() const noexcept;
   bool IsReal() const noexcept;
   bool IsStr() const noexcept;
@@ -83,6 +88,7 @@ public:
   bool IsDynDispatcher() const noexcept;
   bool IsIntrinsic() const noexcept;
   bool IsUnnamedFn() const noexcept;
+  bool IsMonoFn() const noexcept;
   bool IsNamedFn() const noexcept;
 
   bool IsFn() const noexcept;

@@ -29,6 +29,12 @@ namespace unit {
   sym::NamedFn* get_named_fn(uint idx);
   uint named_fn_count();
 
+  sym::MonoFn* declare_mono_fn(dt::StrView name, ParamList&&, sym::Type ret_type);
+  sym::MonoFn* get_mono_fn(dt::StrView name);
+  sym::MonoFn* get_mono_fn(sym::Type);
+  sym::MonoFn* get_mono_fn(uint idx);
+  uint mono_fn_count();
+
   sym::MultiFn* get_multi_fn(dt::StrView name);
   sym::MultiFn* get_multi_fn(sym::Type);
 }

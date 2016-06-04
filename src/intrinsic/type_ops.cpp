@@ -9,7 +9,7 @@ Type one_arg(uint idx, Type ty) {
     throw "param_of: arity error";
   }
 }
-#include <cstdio>
+
 Type intrinsic::ret_type_of(Type f) {
   switch (f.Id()) {
   case Type::ANY_TO_INT:

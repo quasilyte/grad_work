@@ -4,17 +4,29 @@
 
 namespace util {
   template<class IN, class OUT>
-  std::vector<OUT> map(std::vector<IN> elems, OUT(*fn)(IN)); 
+  std::vector<OUT> map(std::vector<IN> vec, OUT(*fn)(IN));
+
+  template<class T>
+  T pop(std::vector<T>& vec);
 }
 
 template<class IN, class OUT>
-std::vector<OUT> util::map(std::vector<IN> elems, OUT(*fn)(IN)) {
+std::vector<OUT> util::map(std::vector<IN> vec, OUT(*fn)(IN)) {
   std::vector<OUT> result;
-  result.reserve(elems.size());
+  result.reserve(vec.size());
 
-  for (IN elem : elems) {
+  for (IN elem : vec) {
     result.push_back(fn(elem));
   }
 
   return result;
+}
+#include <cstdio>
+template<class T>
+T util::pop(std::vector<T>& vec) {
+  printf("POP(%lu)\n", vec.size());
+  auto elem = vec.back();
+  vec.pop_back();
+
+  return elem;
 }

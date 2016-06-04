@@ -36,6 +36,7 @@ struct ast::DefVar: public Node {
   DefVar(dt::StrView name, Node* value, sym::Type);
 
   void Accept(Visitor*) override;
+  sym::Type Type() override;
 
   dt::StrView name;
   Node* value;

@@ -1,8 +1,9 @@
 #include "sym/module.hpp"
 
+/*
 #include <cmath>
 #include "unit/fns.hpp"
-#include "unit/syms.hpp"
+#include "unit/globals.hpp"
 
 using namespace sym;
 
@@ -81,3 +82,4 @@ void Module::DropScopeLevel() {
   scope.DropLevel();
 }
 
+*/

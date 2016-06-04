@@ -10,6 +10,7 @@ namespace sym {
   struct UnnamedFn;
   struct NamedFn;
   struct MultiFn;
+  struct MonoFn;
 }
 
 namespace ast {
@@ -25,6 +26,7 @@ struct sym::Fn {
   typedef std::vector<ast::Node*> ExprList;
 
   Fn(sym::Type, ParamList&&, ExprList&&, sym::Type ret_type);
+  Fn(sym::Type, ParamList&&, sym::Type ret_type);
   Fn(ParamList&&, sym::Type ret_type);
 
   uint Arity() const noexcept;
@@ -35,6 +37,14 @@ struct sym::Fn {
   ParamList params;
   sym::Type ret_type;
   sym::Type type;
+};
+
+struct sym::MonoFn: public Fn {
+  MonoFn(dt::StrView name, ParamList&&, sym::Type ret_type, sym::Type type);
+
+  void Define(ExprList&& exprs);
+
+  dt::StrView name;
 };
 
 struct sym::UnnamedFn: public Fn {

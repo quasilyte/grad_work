@@ -16,6 +16,9 @@ Dict<MultiFn*> multi_fn_name_map;
 std::vector<MultiFn*> multi_fn_id_map;
 std::vector<NamedFn*> named_fns;
 
+Dict<MonoFn*> mono_fn_name_map;
+std::vector<MonoFn*> mono_fn_id_map;
+
 Type unit::new_unnamed_fn(ParamList&& params, ExprList&& exprs, Type ret_ty) {
   auto type = Type::UnnamedFn(unnamed_fns.size());
 
@@ -29,10 +32,12 @@ Type unit::new_unnamed_fn(ParamList&& params, ExprList&& exprs, Type ret_ty) {
 }
 
 Fn* unit::get_fn(Type ty) {
-  if (ty.IsUnnamedFn()) {
-    return get_unnamed_fn(ty);
-  } else {
-    return get_named_fn(ty);
+  switch ((ty).Tag()) {
+  case Type::MONO_FN: return get_named_fn(ty);
+  case Type::UNNAMED_FN: return get_unnamed_fn(ty);
+  case Type::NAMED_FN: return get_mono_fn(ty);
+
+  default: throw "get_fn: not a function";
   }
 }
 
@@ -106,4 +111,38 @@ MultiFn* unit::get_multi_fn(StrView name) {
 
 MultiFn* unit::get_multi_fn(Type ty) {
   return multi_fn_id_map[ty.Id()];
+}
+
+MonoFn* unit::declare_mono_fn(StrView name, ParamList&& params, Type ret_type) {
+  if (mono_fn_name_map.Find(name)) {
+    throw "declare_mono_fn: already defined";
+  } else {
+    auto mono_fn = new MonoFn{
+      name,
+      std::move(params),
+      ret_type,
+      static_cast<u32>(mono_fn_name_map.Size())
+    };
+
+    mono_fn_name_map.Put(name, mono_fn);
+    mono_fn_id_map.push_back(mono_fn);
+
+    return mono_fn;
+  }
+}
+
+MonoFn* unit::get_mono_fn(StrView name) {
+  return mono_fn_name_map.Find(name);
+}
+
+MonoFn* unit::get_mono_fn(Type type) {
+  return mono_fn_id_map[type.Id()];
+}
+
+MonoFn* unit::get_mono_fn(uint idx) {
+  return mono_fn_id_map[idx];
+}
+
+uint unit::mono_fn_count() {
+  return mono_fn_name_map.Size();
 }

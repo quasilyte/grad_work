@@ -19,3 +19,7 @@ DefVar::DefVar(dt::StrView name, Node* value, sym::Type ty):
 name{name}, value{value}, type{ty} {}
 
 void DefVar::Accept(Visitor* v) { v->Visit(this); }
+
+sym::Type DefVar::Type() {
+  return sym::Type::Void();
+}

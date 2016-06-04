@@ -33,3 +33,11 @@ bool StrView::operator==(const StrView& other) const {
 char StrView::operator[](std::size_t pos) const {
   return data[pos];
 }
+
+bool StrView::IsEmpty() const noexcept {
+  return Len() == 0;
+}
+
+dt::StrView StrView::Truncate(uint n) const noexcept {
+  return dt::StrView{data + n, len - n * 2};
+}

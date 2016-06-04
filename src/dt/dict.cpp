@@ -2,6 +2,8 @@
 
 #include "sym/module.hpp"
 #include "sym/fn.hpp"
+#include "sym/global.hpp"
+#include "sym/struct.hpp"
 
 using namespace dt;
 
@@ -74,6 +76,8 @@ u32 dt::Dict<T>::Size() const noexcept {
 template class dt::Dict<sym::Struct*>;
 template class dt::Dict<sym::Type>;
 template class dt::Dict<sym::MultiFn*>;
+template class dt::Dict<sym::MonoFn*>;
+template class dt::Dict<sym::Global*>;
 
 template<class T>
 dt::DictIter<T>::DictIter(const typename Dict<T>::Bag& bag): bag{bag} {}

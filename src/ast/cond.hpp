@@ -1,18 +1,30 @@
 #pragma once
 
 #include "ast/node.hpp"
-#include "ast/atoms.hpp"
+#include "ast/literals.hpp"
 
 namespace ast {
-  struct If;
+  struct IfStmt;
+  struct IfExpr;
   struct IntCase;
 }
 
-struct ast::If: public Node {
-public:
-  If(Node* cond, Node* on_true, Node* on_false);
+struct ast::IfStmt: Node {
+  IfStmt(Node* cond, std::vector<Node*>&& on_true, std::vector<Node*>&& on_false);
 
-  void Accept(Visitor*);
+  void Accept(Visitor*) override;
+  sym::Type Type() override;
+
+  Node* cond;
+  std::vector<Node*> on_true;
+  std::vector<Node*> on_false;
+};
+
+struct ast::IfExpr: Node {
+  IfExpr(Node* cond, Node* on_true, Node* on_false);
+
+  void Accept(Visitor*) override;
+  sym::Type Type() override;
 
   Node* cond;
   Node* on_true;

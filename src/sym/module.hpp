@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include "dt/str_view.hpp"
 #include "dt/dict.hpp"
 #include "sym/type.hpp"
@@ -37,4 +38,4 @@ private:
 
   Scope scope;
 };
-
+*/

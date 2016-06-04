@@ -1,6 +1,7 @@
 #include "ast/builtins.hpp"
 
 #include "ast/visitor.hpp"
+#include "sym/fn.hpp"
 
 using namespace ast;
 
@@ -21,42 +22,14 @@ iter_name{iter_name} {}
 
 void Each::Accept(Visitor* v) { v->Visit(this); }
 
-Operation::Operation(ArgList&& operands): operands{operands} {}
+SumAssign::SumAssign(dt::StrView target, Node *val):
+target{target}, val{val} {}
 
-Sum::Sum(ArgList&& operands): Operation{std::move(operands)} {
-  if (operands.size() < 1) {
-    throw "Sum: min arity is 1";
-  }
-}
-void Sum::Accept(Visitor* v) { v->Visit(this); }
+void SumAssign::Accept(Visitor* v) { v->Visit(this); }
 
-Sub::Sub(ArgList&& operands): Operation{std::move(operands)} {
-  if (operands.size() < 1) {
-    throw "Sub: min arity is 1";
-  }
+sym::Type SumAssign::Type() {
+  return sym::Type::Void();
 }
-void Sub::Accept(Visitor* v) { v->Visit(this); }
-
-Mul::Mul(ArgList&& operands): Operation{std::move(operands)} {
-  if (operands.size() < 1) {
-    throw "Mul: min arity is 1";
-  }
-}
-void Mul::Accept(Visitor* v) { v->Visit(this); }
-
-Lt::Lt(ArgList&& operands): Operation{std::move(operands)} {
-  if (operands.size() < 2) {
-    throw "Lt: min arity is 2";
-  }
-}
-void Lt::Accept(Visitor* v) { v->Visit(this); }
-
-Gt::Gt(ArgList&& operands): Operation{std::move(operands)} {
-  if (operands.size() < 2) {
-    throw "Gt: min arity is 2";
-  }
-}
-void Gt::Accept(Visitor* v) { v->Visit(this); }
 
 LambdaExpr::LambdaExpr(sym::Type type): type{type} {}
 
@@ -66,6 +39,15 @@ FuncCall::FuncCall(sym::NamedFn* func, ArgList&& args):
 func{func}, args{args} {}
 
 void FuncCall::Accept(Visitor* v) { v->Visit(this); }
+
+MonoFnCall::MonoFnCall(sym::MonoFn* fn, ArgList&& args):
+fn{fn}, args{args} {}
+
+void MonoFnCall::Accept(Visitor* v) { v->Visit(this); }
+
+sym::Type MonoFnCall::Type() {
+  return fn->ret_type;
+}
 
 VarCall::VarCall(dt::StrView name, sym::Fn* func, ArgList&& args):
 name{name}, func{func}, args{args} {}
@@ -90,3 +72,12 @@ DynamicCall::DynamicCall(sym::MultiFn* func, ArgList&& args):
 func{func}, args{args} {}
 
 void DynamicCall::Accept(Visitor* v) { v->Visit(this); }
+
+Var::Var(dt::StrView name, sym::Type type):
+name{name}, type{type} {}
+
+void Var::Accept(Visitor* v) { v->Visit(this); }
+
+sym::Type Var::Type() {
+  return type;
+}

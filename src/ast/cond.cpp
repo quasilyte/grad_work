@@ -4,10 +4,23 @@
 
 using namespace ast;
 
-If::If(Node *cond, Node *on_true, Node *on_false):
+IfStmt::IfStmt(Node* cond, std::vector<Node*>&& on_true, std::vector<Node*>&& on_false):
 cond{cond}, on_true{on_true}, on_false{on_false} {}
 
-void If::Accept(Visitor* v) { v->Visit(this); }
+void IfStmt::Accept(Visitor* v) { v->Visit(this); }
+
+sym::Type IfStmt::Type() {
+  return sym::Type::Void();
+}
+
+IfExpr::IfExpr(Node* cond, Node* on_true, Node* on_false):
+cond{cond}, on_true{on_true}, on_false{on_false} {}
+
+void IfExpr::Accept(Visitor* v) { v->Visit(this); }
+
+sym::Type IfExpr::Type() {
+  return on_true->Type().ExtendedWith(on_false->Type());
+}
 
 /*
 IntCase::IntCase(Node* cond_expr, ClauseList&& clauses, Node* default_expr):

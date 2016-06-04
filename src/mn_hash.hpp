@@ -12,6 +12,21 @@ namespace mn_hash {
   constexpr u64 encode9(const char* cstr, u64 hash = 0);
 
   inline u64 encode9(const char* bytes, u32 count);
+
+  constexpr u64 operator "" _m9(const char* bytes, unsigned long count);
+  constexpr u32 operator "" _m4(const char* bytes, unsigned long count);
+}
+
+constexpr u64 mn_hash::operator "" _m9(const char* bytes, unsigned long count) {
+  dev_assert(count < 10);
+
+  return mn_hash::encode9(bytes);
+}
+
+constexpr u32 mn_hash::operator "" _m4(const char* bytes, unsigned long count) {
+  dev_assert(count < 5);
+
+  return mn_hash::encode4(bytes);
 }
 
 constexpr u64 mn_hash::encode1(u64 hash, char ch) {

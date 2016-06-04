@@ -15,6 +15,9 @@ NamedFn* MultiFn::Find(Key key) {
 Fn::Fn(Type type, ParamList&& params, ExprList&& exprs, Type ret_type):
 exprs{exprs}, params{params}, ret_type{ret_type}, type{type} {}
 
+Fn::Fn(Type type, ParamList&& params, Type ret_type):
+params{params}, ret_type{ret_type}, type{type} {}
+
 Fn::Fn(ParamList&& params, Type ret_type):
 params{params}, ret_type{ret_type} {}
 
@@ -24,6 +27,13 @@ uint Fn::Arity() const noexcept {
 
 const Fn::ParamList& Fn::Params() const noexcept {
   return params;
+}
+
+MonoFn::MonoFn(dt::StrView name, ParamList&& params, Type ret_type, Type type):
+Fn{type, std::move(params), ret_type}, name{name} {}
+
+void MonoFn::Define(ExprList&& exprs) {
+  this->exprs = exprs;
 }
 
 UnnamedFn::UnnamedFn(Type type, ParamList&& params, ExprList&& exprs, Type ret_type):

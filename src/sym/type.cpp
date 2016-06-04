@@ -7,12 +7,17 @@ Type Type::Void() { return Type{VOID}; }
 Type Type::Any() { return Type{ANY}; }
 Type Type::Real() { return Type{REAL}; }
 Type Type::Int() { return Type{INT}; }
+Type Type::Bool() { return Type{BOOL}; }
 Type Type::Unknown() { return Type{UNKNOWN}; }
 Type Type::Str() { return Type{STR}; }
 Type Type::Sym() { return Type{SYM}; }
 
 Type Type::UnnamedFn(TypeId id) {
   return Type{UNNAMED_FN, id};
+}
+
+Type Type::MonoFn(TypeId id) {
+  return Type{MONO_FN, id};
 }
 
 Type Type::DynDispatcher(TypeId id) {
@@ -47,12 +52,14 @@ TypeId Type::Id() const noexcept { return id; }
 bool Type::IsVoid() const noexcept { return tag == VOID; }
 bool Type::IsAny() const noexcept { return tag == ANY; }
 bool Type::IsInt() const noexcept { return tag == INT; }
+bool Type::IsBool() const noexcept { return tag == BOOL; }
 bool Type::IsUnknown() const noexcept { return tag == UNKNOWN; }
 bool Type::IsReal() const noexcept { return tag == REAL; }
 bool Type::IsStr() const noexcept { return tag == STR; }
 bool Type::IsSym() const noexcept { return tag == SYM; }
 bool Type::IsIntrinsic() const noexcept { return tag == INTRINSIC; }
 bool Type::IsUnnamedFn() const noexcept { return tag == UNNAMED_FN; }
+bool Type::IsMonoFn() const noexcept { return tag == MONO_FN; }
 bool Type::IsNamedFn() const noexcept { return tag == NAMED_FN; }
 bool Type::IsStruct() const noexcept { return tag == STRUCT; }
 bool Type::IsDynDispatcher() const noexcept { return tag == DYN_DISPATCHER; }

@@ -19,7 +19,16 @@ public:
   bool operator==(const StrView& other) const;
   char operator[](std::size_t pos) const;
 
+  bool IsEmpty() const noexcept;
+
+  dt::StrView Truncate(uint n) const noexcept;
+
 private:
   const char* data;
   u32 len;
 };
+
+static_assert(
+  sizeof(dt::StrView) == 16 || sizeof(dt::StrView) == 8,
+  "type size expectations failed"
+);
