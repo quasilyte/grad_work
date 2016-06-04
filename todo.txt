@@ -28,7 +28,6 @@ Implement (high priority):
 
 Implement (delayed):
 - closures
-- better error reporting
 - emit warnings
 - optimizations phase
 - support command line flags

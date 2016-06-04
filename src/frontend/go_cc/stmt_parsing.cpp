@@ -44,10 +44,13 @@ ast::Node* go_cc::parse_if(Cursor* cur) {
   auto cond = parse_expr(skip(cur, SPACES), "{");
   skip(cur, 1);
 
+  unit::create_scope_level();
   while (!try_consume(skip(cur, SPACES), '}')) {
     on_true.push_back(parse(cur));
   }
+  unit::drop_scope_level();
 
+  unit::create_scope_level();
   if (try_consume(skip(cur, SPACES), "else")) {
 
     if (try_consume(skip(cur, SPACES), '{')) {
@@ -58,6 +61,7 @@ ast::Node* go_cc::parse_if(Cursor* cur) {
       throw "expected `{`";
     }
   }
+  unit::drop_scope_level();
 
   return cc::strict_if_stmt(cond, std::move(on_true), std::move(on_false));
 }
