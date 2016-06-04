@@ -21,10 +21,9 @@ std::vector<OUT> util::map(std::vector<IN> vec, OUT(*fn)(IN)) {
 
   return result;
 }
-#include <cstdio>
+
 template<class T>
 T util::pop(std::vector<T>& vec) {
-  printf("POP(%lu)\n", vec.size());
   auto elem = vec.back();
   vec.pop_back();
 
