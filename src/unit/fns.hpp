@@ -39,8 +39,8 @@ namespace unit {
   sym::MonoFn* get_mono_fn(uint idx);
   uint mono_fn_count();
 
-  sym::MultiFn* get_multi_fn(StrView name);
-  sym::MultiFn* get_multi_fn(sym::Type);
+  MultiFn* get_multi_fn(StrView name);
+  MultiFn* get_multi_fn(sym::Type);
 
 # undef ParamList
 # undef NodeList

@@ -7,7 +7,6 @@
 #include "ast/statements.hpp"
 #include "ast/literals.hpp"
 #include "ast/cond.hpp"
-#include "sym/module.hpp"
 #include "sym/struct.hpp"
 #include "backend/c/cg/type_map.hpp"
 #include "backend/c/cg/utils.hpp"

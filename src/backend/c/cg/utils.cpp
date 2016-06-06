@@ -1,7 +1,6 @@
 #include "backend/c/cg/utils.hpp"
 
 #include "backend/c/cg/type_map.hpp"
-#include "sym/module.hpp"
 #include "sym/sym.hpp"
 #include "di/pipe.hpp"
 #include "io/file_writer.hpp"

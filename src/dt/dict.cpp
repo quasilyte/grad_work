@@ -1,6 +1,5 @@
 #include "dt/dict.hpp"
 
-#include "sym/module.hpp"
 #include "sym/fn.hpp"
 #include "sym/global.hpp"
 #include "sym/struct.hpp"
