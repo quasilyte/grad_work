@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdio>
+#include <deps/c/stdio.hpp>
 #include "typedefs.hpp"
 
 namespace io {

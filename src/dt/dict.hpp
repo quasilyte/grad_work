@@ -3,7 +3,7 @@
 #include "typedefs.hpp"
 #include "dt/str_view.hpp"
 #include "djb2_hash.hpp"
-#include <unordered_map>
+#include <deps/cxx/unordered_map.hpp>
 
 namespace dt {
   template<class T> class Dict;

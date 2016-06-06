@@ -1,7 +1,7 @@
 #include "unit/globals.hpp"
 
 #include "dt/dict.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 using namespace sym;
 

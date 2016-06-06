@@ -2,7 +2,7 @@
 
 #include "typedefs.hpp"
 #include "dt/str_view.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace sym {
   class Generator;

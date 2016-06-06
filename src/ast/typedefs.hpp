@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace ast {
   struct Node;

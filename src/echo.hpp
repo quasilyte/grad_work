@@ -1,8 +1,8 @@
 #pragma once
 
 #include "dt/str_view.hpp"
-#include <cstdio>
-#include <cstdlib>
+#include <deps/c/stdio.hpp>
+#include <deps/c/stdlib.hpp>
 
 namespace echo {
   [[ noreturn ]] void error(const char* fmt, dt::StrView a1);

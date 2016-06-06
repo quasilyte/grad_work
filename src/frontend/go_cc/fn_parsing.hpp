@@ -3,5 +3,6 @@
 namespace go_cc {
   struct FnDecl;
 
-  void parse_fn(const FnDecl&);
+  void declare_fn(const FnDecl&);
+  void define_fn(const FnDecl&);
 }

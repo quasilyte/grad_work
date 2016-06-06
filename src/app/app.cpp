@@ -1,6 +1,6 @@
 #include "app/app.hpp"
 
-#include <cstdlib>
+#include <deps/c/stdlib.hpp>
 
 using namespace app;
 

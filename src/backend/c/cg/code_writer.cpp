@@ -17,6 +17,7 @@
 #include "unit/structs.hpp"
 #include "backend/c/cg/state.hpp"
 #include "sym/sym.hpp"
+#include "sym/typedefs.hpp"
 #include "di/pipe.hpp"
 
 using namespace c_cg;
@@ -40,7 +41,7 @@ void write_ptr_params(Fn* lambda) {
   }
 }
 
-const std::vector<Param>& deep_params(Fn* lambda) {
+const sym::ParamList& deep_params(Fn* lambda) {
   while (lambda->ret_type.IsFn()) {
     lambda = unit::get_fn(lambda->ret_type);
   }

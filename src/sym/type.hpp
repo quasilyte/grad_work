@@ -1,7 +1,7 @@
 #pragma once
 
-#include "typedefs.hpp"
-#include <limits>
+#include <typedefs.hpp>
+#include <deps/cxx/limits.hpp>
 
 namespace sym {
   class Type;

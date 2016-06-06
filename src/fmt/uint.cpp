@@ -1,6 +1,6 @@
 #include "fmt/uint.hpp"
 
-#include <cmath>
+#include <deps/c/math.hpp>
 
 namespace fmt {
   constexpr u64 operator "" _zeros(unsigned long long n) {

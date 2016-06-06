@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
-#include <cstddef>
+#include <deps/c/stdint.hpp>
+#include <deps/c/stddef.hpp>
 
 typedef size_t usize;
 typedef unsigned int uint;

@@ -1,7 +1,7 @@
 #include "sym/module.hpp"
 
 /*
-#include <cmath>
+#include <deps/c/math.hpp>
 #include "unit/fns.hpp"
 #include "unit/globals.hpp"
 

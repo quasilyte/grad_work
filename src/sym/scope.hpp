@@ -3,7 +3,7 @@
 #include "dt/alist.hpp"
 #include "dt/hlist.hpp"
 #include "sym/type.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace sym {
   class Scope;

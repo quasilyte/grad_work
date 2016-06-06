@@ -20,8 +20,8 @@ namespace c_cg {
 
   void write_func_name(const sym::NamedFn*);
   void write_lambda_name(const Fn*);
-  void write_named_params(const Fn::ParamList&);
-  void write_params(const Fn::ParamList&);
+  void write_named_params(const ParamList&);
+  void write_params(const ParamList&);
   void write_intrinsic_params(Type);
 }
 

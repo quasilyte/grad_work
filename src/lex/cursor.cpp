@@ -3,7 +3,7 @@
 #include "mn_hash.hpp"
 #include "errors.hpp"
 #include "unit/source.hpp"
-#include <cstring>
+#include <deps/c/string.hpp>
 
 using namespace lex;
 

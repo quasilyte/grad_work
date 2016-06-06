@@ -1,6 +1,6 @@
 #include "dbg/sym.hpp"
 
-#include <cstdio>
+#include <deps/c/stdio.hpp>
 
 using namespace sym;
 

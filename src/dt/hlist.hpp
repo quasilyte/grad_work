@@ -3,7 +3,7 @@
 #include "typedefs.hpp"
 #include "dt/str_view.hpp"
 #include "mn_hash.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace dt {
   template<class T> class Hlist;

@@ -3,11 +3,12 @@
 #include "mn_hash.hpp"
 #include "dbg/dt.hpp"
 #include "unit/globals.hpp"
+#include "unit/structs.hpp"
 #include "sym/type.hpp"
 #include "ast/literals.hpp"
 #include "ast/defs.hpp"
-#include <cstring>
-#include <cstdio>
+#include <deps/c/string.hpp>
+#include <deps/c/stdio.hpp>
 #include "frontend/go_cc/char_groups.hpp"
 #include "frontend/go_cc/types.hpp"
 #include "frontend/go_cc/cursor_ext.hpp"
@@ -26,12 +27,13 @@ Classifier::Classifier(const char* input_cstr): cur{lex::Cursor{input_cstr}} {}
 TopLevel Classifier::Classify() {
   using mn_hash::operator "" _m9;
 
-  while (lex::can_read(lex::skip(&cur, SPACES))) {
-    auto keyword = lex::read_m9(&cur, IDENT);
+  while (can_read(skip(&cur, SPACES))) {
+    auto keyword = read_m9(&cur, IDENT);
 
     switch (keyword) {
     case "var"_m9: ClassifyVar(); break;
     case "func"_m9: ClassifyFn(); break;
+    case "type"_m9: ClassifyType(); break;
 
     default:
 
@@ -41,33 +43,6 @@ TopLevel Classifier::Classify() {
 
   return result;
 }
-
-
-
-/*
-ast::Node* parse_token(lex::Token tok) {
-  switch (tok.Tag()) {
-  case Token::INT:
-    return new ast::Int{tok};
-  case Token::REAL:
-    return new ast::Real{tok};
-  case Token::STR:
-    return new ast::Str{tok};
-
-  case Token::LIST:
-    throw "cant parse list yet";
-
-  default:
-    throw "parse_token: unexpected token";
-  }
-}
-*/
-
-/*
-        func sum (x int, y int) int {
-          return x + y
-        }
-*/
 
 void Classifier::ClassifyFn() {
   auto name = next_ident(&cur);
@@ -98,25 +73,25 @@ void Classifier::ClassifyVar() {
       throw "expected `=` token";
     }
   }
-  /*
-  auto maybeType = toks.NextToken();
+}
 
-  if (maybeType.Is(EQ)) {
-    puts("decl");
-    auto expr = toks.NextToken();
+void Classifier::ClassifyType() {
+  using mn_hash::operator "" _m9;
 
-    result.globals.push_back(
-      Decl{name, expr}
-    );
+  auto name = next_ident(&cur);
+  auto type = next_ident(&cur);
+  auto body = read_group(skip(&cur, SPACES), '{', '}').Truncate(1);
 
+  if (type.Len() < 10) {
+    switch (mn_hash::encode9(type.Data(), type.Len())) {
+    case "struct"_m9:
+      result.structs.push_back(StructDecl{name, body});
+      break;
+
+    case "interface"_m9: throw "no interfaces yet";
+    default: throw "no type aliases yet";
+    }
   } else {
-    puts("typed decl");
-    auto eq = toks.NextToken();
-    auto expr = toks.NextToken();
-
-    result.typed_globals.push_back(
-      TypedDecl{name, type_by_name(maybeType), expr}
-    );
+    throw "no type aliases yet";
   }
-  */
 }

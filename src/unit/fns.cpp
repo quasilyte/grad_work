@@ -3,8 +3,8 @@
 #include "sym/fn.hpp"
 #include "sym/type.hpp"
 #include "dt/dict.hpp"
-#include <cmath>
-#include <vector>
+#include <deps/c/math.hpp>
+#include <deps/cxx/vector.hpp>
 
 using namespace unit;
 using namespace sym;

@@ -10,6 +10,7 @@
 #include "frontend/go_cc/types.hpp"
 #include "frontend/go_cc/cursor_ext.hpp"
 #include "frontend/go_cc/parsing.hpp"
+#include "sym/typedefs.hpp"
 #include "lex/cursor.hpp"
 #include "errors.hpp"
 #include "mn_hash.hpp"
@@ -17,8 +18,9 @@
 using namespace go_cc;
 using namespace lex;
 
-std::vector<sym::Param> collect_params(Cursor cur) {
-  std::vector<sym::Param> params;
+
+sym::ParamList collect_params(Cursor cur) {
+  sym::ParamList params;
 
   while (can_read(skip(&cur, SPACES))) {
     auto name = next_ident(&cur);
@@ -52,18 +54,36 @@ void parse_fn_decl(const FnDecl& fn, Cursor* cur) {
   }
 
   auto mono_fn = unit::declare_mono_fn(
-    fn.name, std::move(collect_params(Cursor{fn.params})), fn.ret_type
+    fn.name, std::move(params), fn.ret_type
   );
 
   mono_fn->Define(std::move(collect_exprs(cur)));
 }
 
-void go_cc::parse_fn(const FnDecl& fn) {
+void go_cc::declare_fn(const FnDecl& fn) {
+  auto params = collect_params(Cursor{fn.params});
+
+  unit::declare_mono_fn(
+    fn.name, std::move(params), fn.ret_type
+  );
+}
+
+void define_fn(Cursor* cur, const FnDecl& fn) {
+  auto mono_fn = unit::get_mono_fn(fn.name);
+
+  for (const sym::Param& param : mono_fn->Params()) {
+    unit::scope_push(param.name, param.type);
+  }
+
+  mono_fn->Define(std::move(collect_exprs(cur)));
+}
+
+void go_cc::define_fn(const FnDecl& fn) {
   Cursor cur{fn.body};
 
   try {
     unit::create_scope_level();
-    parse_fn_decl(fn, &cur);
+    ::define_fn(&cur, fn);
     unit::drop_scope_level();
   } catch (err::FnCallArity e) {
     std::fprintf(

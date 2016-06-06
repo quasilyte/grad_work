@@ -3,7 +3,7 @@
 #include "ast/visitor.hpp"
 #include "dt/str_view.hpp"
 #include "sym/type.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace ast {
   struct BinaryNode;

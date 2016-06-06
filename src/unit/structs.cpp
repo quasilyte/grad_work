@@ -3,12 +3,24 @@
 #include "dt/dict.hpp"
 #include "sym/rules.hpp"
 #include "dev_assert.hpp"
+#include "errors.hpp"
 
 using namespace sym;
 using namespace dt;
 
 std::vector<sym::Struct*> type_id_map;
 Dict<sym::Struct*> type_name_map;
+
+void unit::declare_struct(dt::StrView name) {
+  if (type_name_map.Find(name)) {
+    throw err::Redefinition{name, "struct"};
+  } else {
+    auto st = new sym::Struct{name, sym::Type::Struct(type_name_map.Size())};
+
+    type_name_map.Put(name, st);
+    type_id_map.push_back(st);
+  }
+}
 
 void unit::def_struct(dt::StrView name, Struct::AttrList&& attrs) {
   if (!is_type_name(name)) {

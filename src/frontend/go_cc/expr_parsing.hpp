@@ -12,5 +12,5 @@ namespace lex {
 
 namespace go_cc {
   ast::Node* parse_expr(lex::Cursor*, const char* terms);
-  ast::Node* parse_expr(dt::StrView expr, const char* terms);
+  ast::Node* parse_expr(lex::Cursor);
 }

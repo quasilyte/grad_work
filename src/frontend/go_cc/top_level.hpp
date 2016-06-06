@@ -1,7 +1,7 @@
 #pragma once
 
 #include "frontend/go_cc/decl.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace ast {
   struct DefVar;
@@ -12,10 +12,8 @@ namespace go_cc {
 }
 
 struct go_cc::TopLevel {
-  // std::vector<lex::Token> exprs;
-  // std::vector<lex::TokenStream> funcs;
   std::vector<go_cc::TypedDecl> typed_globals;
   std::vector<go_cc::Decl> globals;
   std::vector<go_cc::FnDecl> fns;
-  // std::vector<lex::TokenStream> structs;
+  std::vector<go_cc::StructDecl> structs;
 };

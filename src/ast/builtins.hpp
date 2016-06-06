@@ -5,7 +5,7 @@
 #include "sym/type.hpp"
 #include "sym/param.hpp"
 #include "ast/typedefs.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace sym {
   struct NamedFn;

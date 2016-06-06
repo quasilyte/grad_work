@@ -6,8 +6,8 @@
 #include "dt/str_view.hpp"
 #include "lex/char_type.hpp"
 #include "lex/char_case.hpp"
-#include <cstdio>
-#include <cstdlib>
+#include <deps/c/stdio.hpp>
+#include <deps/c/stdlib.hpp>
 
 using namespace lex;
 

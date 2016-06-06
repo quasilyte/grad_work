@@ -39,6 +39,7 @@ struct ast::CompoundLit: public Node {
   CompoundLit(ast::NodeList&&, sym::Type);
 
   void Accept(Visitor*) override;
+  sym::Type Type() override;
 
   ast::NodeList initializers;
   sym::Type type;

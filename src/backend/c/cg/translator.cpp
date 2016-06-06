@@ -26,11 +26,22 @@ void Translator::Translate() {
   for (uint i = 0; i < unit::global_count(); ++i) {
     sym::Global* glob = unit::get_global(i);
     write_type(glob->type);
-    get_pipe()(' ')(glob->name);
+    get_pipe()(' ')(glob->name)(";\n");
+    /*
     get_pipe()('=');
     CodeWriter::Run(glob->val);
-    get_pipe()(";\n");
+    get_pipe()(";\n");*/
   }
+
+  get_pipe()("void init(){");
+  for (uint i = 0; i < unit::global_count(); ++i) {
+    sym::Global* glob = unit::get_global(i);
+
+    get_pipe()(glob->name)('=');
+    CodeWriter::Run(glob->val);
+    get_pipe()(';');
+  }
+  get_pipe()("}\n");
 
   for (uint i = 0; i < unit::mono_fn_count(); ++i) {
     // sym::MonoFn* fn = ;
@@ -38,18 +49,18 @@ void Translator::Translate() {
     get_pipe()('\n');
   }
 
-  /*
   for (uint i = 0; i < unit::struct_count(); ++i) {
     sym::Struct* st = unit::get_struct(i);
 
     get_pipe()("struct ")(st->name)('{');
     for (sym::Param attr : st->attrs) {
-      write_type(tu, attr.type);
+      write_type(attr.type);
       get_pipe()(' ')(attr.name)(';');
     }
     get_pipe()("};\n");
   }
 
+  /*
   for (ast::DefVar* global : tu.globals) {
     CodeWriter::Run(global, tu);
     get_pipe()('\n');

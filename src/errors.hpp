@@ -12,12 +12,14 @@ namespace err {
   struct FnCallArity;
   struct FnCallArgType;
   struct UndefinedSymbol;
+  struct UndefinedType;
   struct UnexpectedKeyword;
   struct UnexpectedToken;
   struct MixedArithTypes;
   struct SkipUntilFailure;
   struct NonBoolCondition;
   struct InvalidTypeInArith;
+  struct Redefinition;
 }
 
 struct err::MixedArithTypes {
@@ -42,6 +44,10 @@ struct err::UndefinedSymbol {
   dt::StrView name;
 };
 
+struct err::UndefinedType {
+  dt::StrView name;
+};
+
 struct err::UnexpectedKeyword {
   const char* given_keyword;
   const char* expected_what;
@@ -62,4 +68,9 @@ struct err::InvalidTypeInArith {
 
 struct err::UnexpectedToken {
   char token[4];
+};
+
+struct err::Redefinition {
+  dt::StrView name;
+  const char* type;
 };

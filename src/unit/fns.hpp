@@ -3,7 +3,7 @@
 #include "sym/type.hpp"
 #include "dt/str_view.hpp"
 #include "sym/fn.hpp"
-#include <vector>
+#include <deps/cxx/vector.hpp>
 
 namespace ast {
   struct Node;

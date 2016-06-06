@@ -1,6 +1,6 @@
 #include "sym/scope.hpp"
 
-#include <cstdio>
+#include <deps/c/stdio.hpp>
 
 using namespace sym;
 

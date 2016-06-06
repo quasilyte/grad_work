@@ -12,6 +12,7 @@ set(
   parsing.cpp
   fn_parsing.cpp
   cursor_ext.cpp
+  type_parsing.cpp
 )
 
 add_library(go_cc STATIC ${go_cc_src})

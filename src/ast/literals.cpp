@@ -18,3 +18,7 @@ GEN_ATOM(Str)
 CompoundLit::CompoundLit(ast::NodeList&& initializers, sym::Type type):
 initializers{initializers}, type{type} {}
 void CompoundLit::Accept(Visitor* v) { v->Visit(this); }
+
+sym::Type CompoundLit::Type() {
+  return type;
+}

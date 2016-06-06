@@ -42,7 +42,7 @@ void c_cg::write_lambda_name(const Fn* l) {
   get_pipe()('l')(gen_suffix(l->type.Id()));
 }
 
-void c_cg::write_named_params(const Fn::ParamList& params) {
+void c_cg::write_named_params(const ParamList& params) {
   if (params.size()) {
     get_pipe()('(');
     for (uint i = 0; i < params.size() - 1; ++i) {
@@ -57,7 +57,7 @@ void c_cg::write_named_params(const Fn::ParamList& params) {
   }
 }
 
-void c_cg::write_params(const Fn::ParamList& params) {
+void c_cg::write_params(const ParamList& params) {
   if (params.size()) {
     get_pipe()('(');
     for (uint i = 0; i < params.size() - 1; ++i) {

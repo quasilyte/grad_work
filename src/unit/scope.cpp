@@ -9,9 +9,8 @@ sym::Scope scope;
 void unit::create_scope_level() {
   scope.CreateLevel();
 }
-#include <cstdio>
+
 void unit::drop_scope_level() {
-  // printf("%d\n", scope.LevelSize());
   scope.DropLevel();
 }
 

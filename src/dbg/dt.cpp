@@ -1,6 +1,6 @@
 #include "dbg/dt.hpp"
 
-#include <cstdio>
+#include <deps/c/stdio.hpp>
 
 void dbg::dump(const dt::StrView& str_view) {
   std::printf(

@@ -2,6 +2,8 @@
 
 #include "mn_hash.hpp"
 #include "dt/str_view.hpp"
+#include "errors.hpp"
+#include "unit/structs.hpp"
 
 using namespace go_cc;
 using sym::Type;
@@ -16,7 +18,13 @@ sym::Type go_cc::type_by_name(const dt::StrView& name) {
   case encode9("string"): return Type::Str();
 
   default:
-    throw "type_by_name: unknown type";
+    auto st = unit::get_struct(name);
+
+    if (st) {
+      return st->type;
+    } else {
+      throw err::UndefinedType{name};
+    }
   }
 }
 

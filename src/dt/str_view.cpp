@@ -1,6 +1,6 @@
 #include "dt/str_view.hpp"
 
-#include <cstring>
+#include <deps/c/string.hpp>
 
 using namespace dt;
 

@@ -12,7 +12,7 @@ NamedFn* MultiFn::Find(Key key) {
   }
 }
 
-Fn::Fn(Type type, ParamList&& params, ExprList&& exprs, Type ret_type):
+Fn::Fn(Type type, ParamList&& params, ast::NodeList&& exprs, Type ret_type):
 exprs{exprs}, params{params}, ret_type{ret_type}, type{type} {}
 
 Fn::Fn(Type type, ParamList&& params, Type ret_type):
@@ -25,25 +25,25 @@ uint Fn::Arity() const noexcept {
   return params.size();
 }
 
-const Fn::ParamList& Fn::Params() const noexcept {
+const ParamList& Fn::Params() const noexcept {
   return params;
 }
 
 MonoFn::MonoFn(dt::StrView name, ParamList&& params, Type ret_type, Type type):
 Fn{type, std::move(params), ret_type}, name{name} {}
 
-void MonoFn::Define(ExprList&& exprs) {
+void MonoFn::Define(ast::NodeList&& exprs) {
   this->exprs = exprs;
 }
 
-UnnamedFn::UnnamedFn(Type type, ParamList&& params, ExprList&& exprs, Type ret_type):
+UnnamedFn::UnnamedFn(Type type, ParamList&& params, ast::NodeList&& exprs, Type ret_type):
 Fn{type, std::move(params), std::move(exprs), ret_type} {}
 
 NamedFn::NamedFn
 (MultiFn* parent, ParamList&& params, Type ret_type, u32 suffix_idx):
 Fn{std::move(params), ret_type}, parent{parent}, suffix_idx{suffix_idx} {}
 
-void NamedFn::Define(ExprList &&exprs, Type ty) {
+void NamedFn::Define(ast::NodeList&& exprs, Type ty) {
   this->exprs = exprs;
   ret_type = ty;
 }

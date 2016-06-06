@@ -32,7 +32,7 @@ dt::StrView go_cc::next_expr(Cursor* cur) {
   dt::StrView expr_s;
 
   if ('(' == at(skip(cur, SPACES))) {
-    expr_s = read_group(cur, '(', ')').Truncate(1);
+    expr_s = read_group(cur, '(', ')');
   } else {
     expr_s = read(cur, input_consumer);
   }
