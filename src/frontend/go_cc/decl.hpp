@@ -8,6 +8,7 @@ namespace go_cc {
   struct Decl;
   struct TypedDecl;
   struct FnDecl;
+  struct StructDecl;
 }
 
 struct go_cc::Decl {
@@ -26,4 +27,9 @@ struct go_cc::FnDecl {
   dt::StrView params;
   dt::StrView body;
   sym::Type ret_type;
+};
+
+struct go_cc::StructDecl {
+  dt::StrView name;
+  dt::StrView body;
 };
