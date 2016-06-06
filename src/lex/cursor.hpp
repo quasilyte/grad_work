@@ -30,8 +30,6 @@ namespace lex {
   bool try_consume(Cursor*, char);
   bool try_consume(Cursor*, const char*);
   int try_consume(Cursor*, const int* to_consume);
-
-  int line_number(const Cursor*);
 }
 
 struct lex::Cursor {

@@ -8,6 +8,30 @@ namespace sym {
   struct Fn;
 }
 
+#define BLAME(FORMAT, LINE_NUMBER_PROVIDER, ...) \
+  std::fprintf( \
+    stderr, \
+    "line %d: " \
+    FORMAT \
+    "\n", \
+    unit::get_line_number(LINE_NUMBER_PROVIDER), \
+    __VA_ARGS__ \
+  )
+
+#define BLAME_POSITIONAL(FORMAT, LINE_NUMBER_PROVIDER, ...) \
+  std::fprintf( \
+    stderr, \
+    "line %1$d: " \
+    FORMAT \
+    "\n", \
+    unit::get_line_number(LINE_NUMBER_PROVIDER), \
+    __VA_ARGS__ \
+  )
+
+#define BUF_FMT(X) \
+  X.Len(), \
+  X.Data()
+
 namespace err {
   struct FnCallArity;
   struct FnCallArgType;

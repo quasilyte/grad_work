@@ -17,13 +17,10 @@ void go_cc::declare_struct(const StructDecl& st_decl) {
   try {
     unit::declare_struct(st_decl.name);
   } catch (err::Redefinition e) {
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "redefinition of {%.*s} {%s}\n",
-      unit::get_line_number(st_decl.name.Data()),
-      e.name.Len(),
-      e.name.Data(),
+    BLAME(
+      "redefinition of {%.*s} {%s}",
+      st_decl.name,
+      BUF_FMT(e.name),
       e.type
     );
   }
@@ -48,13 +45,10 @@ void go_cc::define_struct(const StructDecl& st_decl) {
 
       st->Define(std::move(attrs));
     } catch (err::UndefinedType e) {
-      std::fprintf(
-        stderr,
-        "line %d: "
-        "unknown type {%.*s}\n",
-        unit::get_line_number(e.name.Data()),
-        e.name.Len(),
-        e.name.Data()
+      BLAME(
+        "unknown type {%.*s}",
+        e.name,
+        BUF_FMT(e.name)
       );
     }
   }

@@ -4,6 +4,7 @@
 #include <unit/globals.hpp>
 #include <unit/scope.hpp>
 #include <unit/fns.hpp>
+#include <unit/source.hpp>
 #include <frontend/go_cc/reader.hpp>
 #include <frontend/go_cc/char_groups.hpp>
 #include <frontend/go_cc/decl.hpp>
@@ -86,94 +87,50 @@ void go_cc::define_fn(const FnDecl& fn) {
     ::define_fn(&cur, fn);
     unit::drop_scope_level();
   } catch (err::FnCallArity e) {
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "function {%.*s} expects {%u} arguments, {%u} given\n",
-      line_number(&cur),
-      e.fn_name.Len(),
-      e.fn_name.Data(),
+    BLAME(
+      "function {%.*s} expects {%u} arguments, {%u} given",
+      &cur,
+      BUF_FMT(e.fn_name),
       e.fn->Arity(),
       e.args_given
     );
   } catch (err::FnCallArgType e) {
-    auto type_expected_name = name_by_type(e.arg.type);
-    auto type_given_name = name_by_type(e.type_given);
-
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "function {%.*s} {%.*s} param has type {%s}, {%s} given\n",
-      line_number(&cur),
-      e.fn_name.Len(),
-      e.fn_name.Data(),
-      e.arg.name.Len(),
-      e.arg.name.Data(),
-      type_expected_name,
-      type_given_name
+    BLAME(
+      "function {%.*s} {%.*s} param has type {%s}, {%s} given",
+      &cur,
+      BUF_FMT(e.fn_name),
+      BUF_FMT(e.arg.name),
+      name_by_type(e.arg.type),
+      name_by_type(e.type_given)
     );
   } catch (err::UndefinedSymbol e) {
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "symbol {%.*s} is undefined\n",
-      line_number(&cur),
-      e.name.Len(),
-      e.name.Data()
-    );
+    BLAME("symbol {%.*s} is undefined", &cur, BUF_FMT(e.name));
   } catch (err::UnexpectedKeyword e) {
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "unexpected {%s}, expecting {%s}\n",
-      line_number(&cur),
-      e.given_keyword,
-      e.expected_what
+    BLAME(
+      "unexpected {%s}, expecting {%s}", &cur, e.given_keyword, e.expected_what
     );
   } catch (err::MixedArithTypes e) {
-    auto lhs_type_name = name_by_type(e.lhs_type);
-    auto rhs_type_name = name_by_type(e.rhs_type);
-
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "expected {%s %s %s}, found {%s %s %s}\n",
-      line_number(&cur),
-      lhs_type_name,
+    BLAME_POSITIONAL(
+      "expected {%2$s %3$s %2$s}, found {%2$s %3$s %4$s}",
+      &cur,
+      name_by_type(e.lhs_type),
       e.op_symbol,
-      lhs_type_name,
-      lhs_type_name,
-      e.op_symbol,
-      rhs_type_name
+      name_by_type(e.rhs_type)
     );
   } catch (err::NonBoolCondition e) {
-    auto cond_type_name = name_by_type(e.cond_type);
-
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "only bool is alowed inside conditional, got {%s}\n",
-      line_number(&cur),
-      cond_type_name
+    BLAME(
+      "only bool is alowed inside conditional, got {%s}",
+      &cur,
+      name_by_type(e.cond_type)
     );
   } catch (err::InvalidTypeInArith e) {
-    auto given_type_name = name_by_type(e.given_type);
-
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "{%s} expects int|real type, {%s} given\n",
-      line_number(&cur),
+    BLAME(
+      "{%s} expects int|real type, {%s} given",
+      &cur,
       e.op_symbol,
-      given_type_name
+      name_by_type(e.given_type)
     );
   } catch (err::UnexpectedToken e) {
-    std::fprintf(
-      stderr,
-      "line %d: "
-      "operator {%s} does not exist\n",
-      line_number(&cur),
-      e.token
-    );
+    BLAME("operator {%s} does not exist", &cur, e.token);
   }
 }

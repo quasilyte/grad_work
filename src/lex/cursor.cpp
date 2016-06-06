@@ -170,9 +170,5 @@ int lex::try_consume(Cursor* cur, const int *to_consume) {
   return cur->pos - begin;
 }
 
-int lex::line_number(const Cursor* cur) {
-  return unit::get_line_number(cur->pos);
-}
-
 Cursor::Cursor(dt::StrView input):
 pos{input.Data()}, pos_max{input.Data() + input.Len()} {}
