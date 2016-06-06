@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ast/visitor.hpp"
+#include <ast/typedefs.hpp>
 #include "dt/str_view.hpp"
 #include "sym/type.hpp"
 #include <deps/cxx/vector.hpp>
@@ -25,16 +26,14 @@ namespace c_cg {
 
 class c_cg::CodeWriter: public ast::Visitor {
 public:
-  typedef std::vector<ast::Node*> NodeList;
-
   static void Run(ast::Node*);
-  static void RunGroupedList(char delimiter, const NodeList&);
-  static void RunButLast(char delimiter, const NodeList&);
-  static void RunList(char delimiter, const NodeList&);
+  static void RunGroupedList(char delimiter, const ast::NodeList&);
+  static void RunButLast(char delimiter, const ast::NodeList&);
+  static void RunList(char delimiter, const ast::NodeList&);
   static void RunLambda(sym::UnnamedFn*);
   static void RunFunc(sym::NamedFn*);
   static void RunMonoFn(sym::MonoFn*);
-  static void RunBlock(const NodeList&);
+  static void RunBlock(const ast::NodeList&);
 
   void Visit(ast::Node*) override;
   void Visit(ast::Int*) override;

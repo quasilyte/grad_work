@@ -4,7 +4,7 @@
 #include "dt/str_view.hpp"
 #include "sym/type.hpp"
 #include "sym/param.hpp"
-#include "ast/typedefs.hpp"
+#include <ast/typedefs.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace sym {

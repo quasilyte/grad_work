@@ -70,6 +70,7 @@ add_subdirectories(
   src/util
   src/unit
   src/app
+  src/xtern
 )
 
 ## Tests

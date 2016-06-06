@@ -19,7 +19,7 @@ std::vector<NamedFn*> named_fns;
 Dict<MonoFn*> mono_fn_name_map;
 std::vector<MonoFn*> mono_fn_id_map;
 
-Type unit::new_unnamed_fn(ParamList&& params, ExprList&& exprs, Type ret_ty) {
+Type unit::new_unnamed_fn(ParamList&& params, ast::NodeList&& exprs, Type ret_ty) {
   auto type = Type::UnnamedFn(unnamed_fns.size());
 
   unnamed_fns.push_back(new UnnamedFn{

@@ -6,6 +6,7 @@
 #include "ast/literals.hpp"
 #include "ast/builtins.hpp"
 #include "ast/defs.hpp"
+#include <ast/typedefs.hpp>
 #include "mn_hash.hpp"
 #include "frontend/go_cc/cursor_ext.hpp"
 #include "frontend/go_cc/char_groups.hpp"
@@ -23,7 +24,7 @@
 using namespace go_cc;
 using namespace lex;
 
-std::vector<ast::Node*> expr_stash;
+ast::NodeList expr_stash;
 
 ast::Node* parse_operand(Cursor* cur);
 

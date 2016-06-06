@@ -36,8 +36,8 @@ sym::ParamList collect_params(Cursor cur) {
   return params;
 }
 
-std::vector<ast::Node*> collect_exprs(Cursor* cur) {
-  std::vector<ast::Node*> exprs;
+ast::NodeList collect_exprs(Cursor* cur) {
+  ast::NodeList exprs;
 
   while (can_read(skip(cur, SPACES))) {
     exprs.push_back(parse(cur));

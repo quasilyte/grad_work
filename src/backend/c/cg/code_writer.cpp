@@ -54,7 +54,7 @@ void CodeWriter::Run(ast::Node* node) {
   self.Visit(node);
 }
 
-void CodeWriter::RunButLast(char delimiter, const NodeList& nodes) {
+void CodeWriter::RunButLast(char delimiter, const ast::NodeList& nodes) {
   CodeWriter self;
 
   if (nodes.size()) {
@@ -65,7 +65,7 @@ void CodeWriter::RunButLast(char delimiter, const NodeList& nodes) {
   }
 }
 
-void CodeWriter::RunList(char delimiter, const NodeList& nodes) {
+void CodeWriter::RunList(char delimiter, const ast::NodeList& nodes) {
   CodeWriter self;
 
   if (nodes.size()) {
@@ -74,7 +74,7 @@ void CodeWriter::RunList(char delimiter, const NodeList& nodes) {
   }
 }
 
-void CodeWriter::RunGroupedList(char delimiter, const NodeList& list) {
+void CodeWriter::RunGroupedList(char delimiter, const ast::NodeList& list) {
   get_pipe()('(');
   RunList(delimiter, list);
   get_pipe()(')');
@@ -147,7 +147,7 @@ void CodeWriter::RunFunc(NamedFn* f) {
   RunBlock(f->exprs);
 }
 
-void CodeWriter::RunBlock(const NodeList& exprs) {
+void CodeWriter::RunBlock(const ast::NodeList& exprs) {
   get_pipe()('{');
   CodeWriter::RunList(';', exprs);
   get_pipe()('}');

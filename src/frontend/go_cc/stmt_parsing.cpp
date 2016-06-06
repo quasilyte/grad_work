@@ -38,8 +38,8 @@ ast::Node* go_cc::parse_plus_assignment(dt::StrView id, Cursor* cur) {
 }
 
 ast::Node* go_cc::parse_if(Cursor* cur) {
-  std::vector<ast::Node*> on_true;
-  std::vector<ast::Node*> on_false;
+  ast::NodeList on_true;
+  ast::NodeList on_false;
 
   auto cond = parse_expr(skip(cur, SPACES), "{");
   skip(cur, 1);
