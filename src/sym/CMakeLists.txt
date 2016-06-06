@@ -4,7 +4,6 @@ set(
   sym_src
   sym.cpp
   type.cpp
-  module.cpp
   generator.cpp
   scope.cpp
   struct.cpp
