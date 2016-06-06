@@ -1,4 +1,4 @@
-#include "lex/gen_alphabet.hpp"
+#include <lex/gen_alphabet.hpp>
 
 const int* lex::new_whitelist(const char* pattern) {
   int* whitelist = new int[255](); // All to 0

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "typedefs.hpp"
+#include <typedefs.hpp>
 
 namespace djb2_hash {
   inline u64 encode(const char* cstr);

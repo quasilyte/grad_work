@@ -2,9 +2,9 @@
 
 #include <ast/typedefs.hpp>
 #include <sym/typedefs.hpp>
-#include "sym/type.hpp"
-#include "dt/str_view.hpp"
-#include "sym/fn.hpp"
+#include <sym/type.hpp>
+#include <dt/str_view.hpp>
+#include <sym/fn.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace ast {

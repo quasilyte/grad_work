@@ -1,7 +1,7 @@
 #pragma once
 
-#include "typedefs.hpp"
-#include "dt/str_view.hpp"
+#include <typedefs.hpp>
+#include <dt/str_view.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace dt {

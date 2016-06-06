@@ -1,9 +1,9 @@
-#include "cc/fn_check.hpp"
+#include <cc/fn_check.hpp>
 
-#include "typedefs.hpp"
-#include "sym/fn.hpp"
-#include "errors.hpp"
-#include "ast/node.hpp"
+#include <typedefs.hpp>
+#include <sym/fn.hpp>
+#include <errors.hpp>
+#include <ast/node.hpp>
 
 void cc::check_arity(sym::MonoFn* fn, const ast::ArgList& args) {
   if (args.size() != fn->Arity()) {

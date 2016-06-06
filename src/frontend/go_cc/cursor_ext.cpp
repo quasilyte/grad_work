@@ -1,7 +1,7 @@
-#include "frontend/go_cc/cursor_ext.hpp"
+#include <frontend/go_cc/cursor_ext.hpp>
 
-#include "lex/cursor.hpp"
-#include "frontend/go_cc/char_groups.hpp"
+#include <lex/cursor.hpp>
+#include <frontend/go_cc/char_groups.hpp>
 
 using namespace go_cc;
 using namespace lex;

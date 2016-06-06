@@ -1,19 +1,19 @@
-#include "frontend/go_cc/fn_parsing.hpp"
+#include <frontend/go_cc/fn_parsing.hpp>
 
-#include "lex/char_type.hpp"
-#include "unit/globals.hpp"
-#include "unit/scope.hpp"
-#include "unit/fns.hpp"
-#include "frontend/go_cc/reader.hpp"
-#include "frontend/go_cc/char_groups.hpp"
-#include "frontend/go_cc/decl.hpp"
-#include "frontend/go_cc/types.hpp"
-#include "frontend/go_cc/cursor_ext.hpp"
-#include "frontend/go_cc/parsing.hpp"
-#include "sym/typedefs.hpp"
-#include "lex/cursor.hpp"
-#include "errors.hpp"
-#include "mn_hash.hpp"
+#include <lex/char_type.hpp>
+#include <unit/globals.hpp>
+#include <unit/scope.hpp>
+#include <unit/fns.hpp>
+#include <frontend/go_cc/reader.hpp>
+#include <frontend/go_cc/char_groups.hpp>
+#include <frontend/go_cc/decl.hpp>
+#include <frontend/go_cc/types.hpp>
+#include <frontend/go_cc/cursor_ext.hpp>
+#include <frontend/go_cc/parsing.hpp>
+#include <sym/typedefs.hpp>
+#include <lex/cursor.hpp>
+#include <errors.hpp>
+#include <mn_hash.hpp>
 
 using namespace go_cc;
 using namespace lex;

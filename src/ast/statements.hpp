@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ast/node.hpp"
+#include <ast/node.hpp>
 
 namespace ast {
   struct Return;

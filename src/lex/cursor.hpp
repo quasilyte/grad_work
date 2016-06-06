@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lex/token.hpp"
-#include "dt/str_view.hpp"
+#include <lex/token.hpp>
+#include <dt/str_view.hpp>
 
 namespace lex {
   struct Cursor;

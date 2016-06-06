@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ast/node.hpp"
-#include "ast/literals.hpp"
+#include <ast/node.hpp>
+#include <ast/literals.hpp>
 
 namespace ast {
   struct IfStmt;

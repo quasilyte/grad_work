@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ast/visitor.hpp"
+#include <ast/visitor.hpp>
 #include <ast/typedefs.hpp>
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace ast {

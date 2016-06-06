@@ -1,4 +1,4 @@
-#include "sym/struct.hpp"
+#include <sym/struct.hpp>
 
 using namespace sym;
 

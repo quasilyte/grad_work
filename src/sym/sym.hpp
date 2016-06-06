@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dt/str_view.hpp"
+#include <dt/str_view.hpp>
 
 namespace sym {
   const i32 MAX_UNIQ_SUFFIXES = 2015;

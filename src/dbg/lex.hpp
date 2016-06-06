@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lex/token.hpp"
+#include <lex/token.hpp>
 
 /*
 namespace dbg {

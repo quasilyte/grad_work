@@ -1,4 +1,4 @@
-#include "char_type.hpp"
+#include <lex/char_type.hpp>
 
 bool lex::is_space(char ch) {
   return ch == ' ' || ch == '\t' || ch == '\n';

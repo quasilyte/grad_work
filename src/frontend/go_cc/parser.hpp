@@ -1,7 +1,7 @@
 #pragma once
 
-#include "frontend/go_cc/top_level.hpp"
-#include "frontend/go_cc/reader.hpp"
+#include <frontend/go_cc/top_level.hpp>
+#include <frontend/go_cc/reader.hpp>
 
 namespace go_cc {
   class Parser;

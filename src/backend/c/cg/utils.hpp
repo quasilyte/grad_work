@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sym/fn.hpp"
+#include <sym/fn.hpp>
 
 namespace sym {
   class Module;

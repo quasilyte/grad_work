@@ -1,8 +1,8 @@
 #pragma once
 
-#include "typedefs.hpp"
-#include "dt/str_view.hpp"
-#include "mn_hash.hpp"
+#include <typedefs.hpp>
+#include <dt/str_view.hpp>
+#include <mn_hash.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace dt {

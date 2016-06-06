@@ -1,9 +1,9 @@
 #pragma once
 
 #include <deps/cxx/vector.hpp>
-#include "dt/str_view.hpp"
-#include "sym/param.hpp"
-#include "sym/type.hpp"
+#include <dt/str_view.hpp>
+#include <sym/param.hpp>
+#include <sym/type.hpp>
 
 namespace sym {
   struct Struct;

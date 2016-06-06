@@ -1,6 +1,6 @@
 #pragma once
 
-#include "frontend/go_cc/decl.hpp"
+#include <frontend/go_cc/decl.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace ast {

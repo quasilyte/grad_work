@@ -1,4 +1,4 @@
-#include "sym/sym.hpp"
+#include <sym/sym.hpp>
 
 dt::StrView sym::gen_suffix(uint idx) {
   // Up to 2015 unique identifiers

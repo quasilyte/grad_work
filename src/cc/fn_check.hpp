@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ast/typedefs.hpp"
+#include <ast/typedefs.hpp>
 
 namespace sym {
   struct MonoFn;

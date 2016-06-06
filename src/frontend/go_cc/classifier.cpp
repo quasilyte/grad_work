@@ -1,17 +1,17 @@
-#include "frontend/go_cc/classifier.hpp"
+#include <frontend/go_cc/classifier.hpp>
 
-#include "mn_hash.hpp"
-#include "dbg/dt.hpp"
-#include "unit/globals.hpp"
-#include "unit/structs.hpp"
-#include "sym/type.hpp"
-#include "ast/literals.hpp"
-#include "ast/defs.hpp"
+#include <mn_hash.hpp>
+#include <dbg/dt.hpp>
+#include <unit/globals.hpp>
+#include <unit/structs.hpp>
+#include <sym/type.hpp>
+#include <ast/literals.hpp>
+#include <ast/defs.hpp>
 #include <deps/c/string.hpp>
 #include <deps/c/stdio.hpp>
-#include "frontend/go_cc/char_groups.hpp"
-#include "frontend/go_cc/types.hpp"
-#include "frontend/go_cc/cursor_ext.hpp"
+#include <frontend/go_cc/char_groups.hpp>
+#include <frontend/go_cc/types.hpp>
+#include <frontend/go_cc/cursor_ext.hpp>
 
 using namespace go_cc;
 using namespace lex;

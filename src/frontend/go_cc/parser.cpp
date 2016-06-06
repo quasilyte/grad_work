@@ -1,14 +1,14 @@
-#include "frontend/go_cc/parser.hpp"
+#include <frontend/go_cc/parser.hpp>
 
-#include "unit/globals.hpp"
-#include "unit/scope.hpp"
-#include "unit/fns.hpp"
-#include "unit/structs.hpp"
-#include "frontend/go_cc/expr_parsing.hpp"
-#include "frontend/go_cc/fn_parsing.hpp"
-#include "frontend/go_cc/type_parsing.hpp"
-#include "lex/cursor.hpp"
-#include "errors.hpp"
+#include <unit/globals.hpp>
+#include <unit/scope.hpp>
+#include <unit/fns.hpp>
+#include <unit/structs.hpp>
+#include <frontend/go_cc/expr_parsing.hpp>
+#include <frontend/go_cc/fn_parsing.hpp>
+#include <frontend/go_cc/type_parsing.hpp>
+#include <lex/cursor.hpp>
+#include <errors.hpp>
 
 using namespace go_cc;
 using namespace lex;

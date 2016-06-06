@@ -2,7 +2,7 @@
 
 using namespace xtern;
 
-#include "sym/attr.hpp"
+#include <sym/attr.hpp>
 
 using sym::AttrList;
 using dt::StrView;

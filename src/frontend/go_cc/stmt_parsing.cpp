@@ -1,16 +1,16 @@
-#include "frontend/go_cc/stmt_parsing.hpp"
+#include <frontend/go_cc/stmt_parsing.hpp>
 
-#include "ast/builtins.hpp"
-#include "ast/defs.hpp"
-#include "ast/cond.hpp"
-#include "ast/statements.hpp"
-#include "frontend/go_cc/expr_parsing.hpp"
-#include "frontend/go_cc/parsing.hpp"
-#include "frontend/go_cc/char_groups.hpp"
-#include "frontend/go_cc/cursor_ext.hpp"
-#include "lex/cursor.hpp"
-#include "unit/scope.hpp"
-#include "cc/strict_arith.hpp"
+#include <ast/builtins.hpp>
+#include <ast/defs.hpp>
+#include <ast/cond.hpp>
+#include <ast/statements.hpp>
+#include <frontend/go_cc/expr_parsing.hpp>
+#include <frontend/go_cc/parsing.hpp>
+#include <frontend/go_cc/char_groups.hpp>
+#include <frontend/go_cc/cursor_ext.hpp>
+#include <lex/cursor.hpp>
+#include <unit/scope.hpp>
+#include <cc/strict_arith.hpp>
 
 using namespace lex;
 

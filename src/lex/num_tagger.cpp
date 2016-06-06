@@ -1,7 +1,7 @@
-#include "lex/num_tagger.hpp"
+#include <lex/num_tagger.hpp>
 
-#include "lex/char_groups.hpp"
-#include "lex/cursor.hpp"
+#include <lex/char_groups.hpp>
+#include <lex/cursor.hpp>
 
 using namespace lex;
 

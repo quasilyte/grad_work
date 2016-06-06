@@ -1,8 +1,8 @@
-#include "frontend/go_cc/reader.hpp"
+#include <frontend/go_cc/reader.hpp>
 
 /*
-#include "lex/char_case.hpp"
-#include "frontend/go_cc/char_groups.hpp"
+#include <lex/char_case.hpp>
+#include <frontend/go_cc/char_groups.hpp>
 
 using namespace go_cc;
 

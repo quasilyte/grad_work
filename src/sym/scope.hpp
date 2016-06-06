@@ -1,8 +1,8 @@
 #pragma once
 
-#include "dt/alist.hpp"
-#include "dt/hlist.hpp"
-#include "sym/type.hpp"
+#include <dt/alist.hpp>
+#include <dt/hlist.hpp>
+#include <sym/type.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace sym {

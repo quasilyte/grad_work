@@ -1,8 +1,8 @@
 #pragma once
 
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
-#include "ast/node.hpp"
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
+#include <ast/node.hpp>
 
 namespace sym {
   struct Global;

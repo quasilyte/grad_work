@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ast/typedefs.hpp"
-#include "sym/type.hpp"
-#include "sym/param.hpp"
-#include "sym/typedefs.hpp"
+#include <ast/typedefs.hpp>
+#include <sym/type.hpp>
+#include <sym/param.hpp>
+#include <sym/typedefs.hpp>
 #include <deps/cxx/vector.hpp>
 #include <deps/cxx/map.hpp>
 

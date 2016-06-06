@@ -1,4 +1,4 @@
-#include "di/pipe.hpp"
+#include <di/pipe.hpp>
 
 io::FileWriter pipe;
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ast/node.hpp"
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
-#include "ast/typedefs.hpp"
+#include <ast/node.hpp>
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
+#include <ast/typedefs.hpp>
 
 namespace ast {
   struct Atom;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ast/binary_ops.hpp"
-#include "ast/typedefs.hpp"
+#include <ast/binary_ops.hpp>
+#include <ast/typedefs.hpp>
 
 namespace ast {
   struct Node;

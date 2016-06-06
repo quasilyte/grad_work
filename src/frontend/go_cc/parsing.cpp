@@ -1,10 +1,10 @@
-#include "frontend/go_cc/parsing.hpp"
+#include <frontend/go_cc/parsing.hpp>
 
-#include "lex/cursor.hpp"
-#include "frontend/go_cc/char_groups.hpp"
-#include "frontend/go_cc/expr_parsing.hpp"
-#include "frontend/go_cc/stmt_parsing.hpp"
-#include "mn_hash.hpp"
+#include <lex/cursor.hpp>
+#include <frontend/go_cc/char_groups.hpp>
+#include <frontend/go_cc/expr_parsing.hpp>
+#include <frontend/go_cc/stmt_parsing.hpp>
+#include <mn_hash.hpp>
 
 using namespace lex;
 

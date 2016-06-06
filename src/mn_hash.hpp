@@ -1,7 +1,7 @@
 #pragma once
 
-#include "typedefs.hpp"
-#include "dev_assert.hpp"
+#include <typedefs.hpp>
+#include <dev_assert.hpp>
 
 namespace mn_hash {
   const int MAX_HASHABLE_LEN = 9;

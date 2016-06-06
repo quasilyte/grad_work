@@ -1,7 +1,7 @@
-#include "frontend/go_cc/char_groups.hpp"
+#include <frontend/go_cc/char_groups.hpp>
 
-#include "dev_assert.hpp"
-#include "lex/gen_alphabet.hpp"
+#include <dev_assert.hpp>
+#include <lex/gen_alphabet.hpp>
 
 using namespace go_cc;
 

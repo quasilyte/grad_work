@@ -1,8 +1,8 @@
-#include "lex/char_groups.hpp"
+#include <lex/char_groups.hpp>
 
-#include "lex/gen_alphabet.hpp"
+#include <lex/gen_alphabet.hpp>
 
-#include "dev_assert.hpp"
+#include <dev_assert.hpp>
 
 using namespace lex;
 

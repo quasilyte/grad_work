@@ -1,7 +1,7 @@
-#include "backend/c/cg/type_map.hpp"
+#include <backend/c/cg/type_map.hpp>
 
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
 
 using namespace sym;
 using namespace dt;

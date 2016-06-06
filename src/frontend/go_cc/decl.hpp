@@ -1,8 +1,8 @@
 #pragma once
 
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
-#include "lex/token.hpp"
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
+#include <lex/token.hpp>
 
 namespace go_cc {
   struct Decl;

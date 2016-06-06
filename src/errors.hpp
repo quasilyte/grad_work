@@ -1,8 +1,8 @@
 #pragma once
 
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
-#include "sym/param.hpp"
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
+#include <sym/param.hpp>
 
 namespace sym {
   struct Fn;

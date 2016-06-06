@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ast/node.hpp"
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
-#include "sym/param.hpp"
+#include <ast/node.hpp>
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
+#include <sym/param.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace ast {

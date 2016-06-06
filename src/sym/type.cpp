@@ -1,5 +1,5 @@
-#include "sym/type.hpp"
-#include "sym/sym.hpp"
+#include <sym/type.hpp>
+#include <sym/sym.hpp>
 
 using namespace sym;
 

@@ -1,8 +1,8 @@
-#include "cc/strict_arith.hpp"
+#include <cc/strict_arith.hpp>
 
-#include "ast/builtins.hpp"
-#include "ast/cond.hpp"
-#include "errors.hpp"
+#include <ast/builtins.hpp>
+#include <ast/cond.hpp>
+#include <errors.hpp>
 
 using namespace cc;
 using namespace ast;

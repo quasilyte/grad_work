@@ -1,8 +1,8 @@
 #pragma once
 
-#include "typedefs.hpp"
-#include "dt/str_view.hpp"
-#include "djb2_hash.hpp"
+#include <typedefs.hpp>
+#include <dt/str_view.hpp>
+#include <djb2_hash.hpp>
 #include <deps/cxx/unordered_map.hpp>
 
 namespace dt {

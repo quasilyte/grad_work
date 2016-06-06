@@ -1,13 +1,13 @@
-#include "frontend/go_cc/type_parsing.hpp"
+#include <frontend/go_cc/type_parsing.hpp>
 
-#include "unit/source.hpp"
-#include "unit/structs.hpp"
-#include "frontend/go_cc/decl.hpp"
-#include "frontend/go_cc/char_groups.hpp"
-#include "frontend/go_cc/cursor_ext.hpp"
-#include "frontend/go_cc/types.hpp"
-#include "errors.hpp"
-#include "lex/cursor.hpp"
+#include <unit/source.hpp>
+#include <unit/structs.hpp>
+#include <frontend/go_cc/decl.hpp>
+#include <frontend/go_cc/char_groups.hpp>
+#include <frontend/go_cc/cursor_ext.hpp>
+#include <frontend/go_cc/types.hpp>
+#include <errors.hpp>
+#include <lex/cursor.hpp>
 #include <deps/c/stdio.hpp>
 
 using namespace go_cc;

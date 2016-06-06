@@ -1,11 +1,11 @@
-#include "dbg/lex.hpp"
+#include <dbg/lex.hpp>
 
 /*
-#include "lex/token.hpp"
-#include "lex/reader.hpp"
-#include "dt/str_view.hpp"
-#include "lex/char_type.hpp"
-#include "lex/char_case.hpp"
+#include <lex/token.hpp>
+#include <lex/reader.hpp>
+#include <dt/str_view.hpp>
+#include <lex/char_type.hpp>
+#include <lex/char_case.hpp>
 #include <deps/c/stdio.hpp>
 #include <deps/c/stdlib.hpp>
 

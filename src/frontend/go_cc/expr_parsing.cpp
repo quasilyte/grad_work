@@ -1,24 +1,24 @@
-#include "frontend/go_cc/expr_parsing.hpp"
+#include <frontend/go_cc/expr_parsing.hpp>
 
-#include "cc/strict_arith.hpp"
-#include "cc/fn_check.hpp"
-#include "cc/parse_lit.hpp"
-#include "ast/literals.hpp"
-#include "ast/builtins.hpp"
-#include "ast/defs.hpp"
+#include <cc/strict_arith.hpp>
+#include <cc/fn_check.hpp>
+#include <cc/parse_lit.hpp>
+#include <ast/literals.hpp>
+#include <ast/builtins.hpp>
+#include <ast/defs.hpp>
 #include <ast/typedefs.hpp>
-#include "mn_hash.hpp"
-#include "frontend/go_cc/cursor_ext.hpp"
-#include "frontend/go_cc/char_groups.hpp"
-#include "lex/char_case.hpp"
-#include "lex/cursor.hpp"
-#include "unit/globals.hpp"
-#include "unit/scope.hpp"
-#include "unit/fns.hpp"
-#include "unit/structs.hpp"
-#include "errors.hpp"
-#include "dev_assert.hpp"
-#include "util/std_vector.hpp"
+#include <mn_hash.hpp>
+#include <frontend/go_cc/cursor_ext.hpp>
+#include <frontend/go_cc/char_groups.hpp>
+#include <lex/char_case.hpp>
+#include <lex/cursor.hpp>
+#include <unit/globals.hpp>
+#include <unit/scope.hpp>
+#include <unit/fns.hpp>
+#include <unit/structs.hpp>
+#include <errors.hpp>
+#include <dev_assert.hpp>
+#include <util/std_vector.hpp>
 #include <deps/c/string.hpp>
 
 using namespace go_cc;

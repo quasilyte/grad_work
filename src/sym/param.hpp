@@ -1,7 +1,7 @@
 #pragma once
 
-#include "dt/str_view.hpp"
-#include "sym/type.hpp"
+#include <dt/str_view.hpp>
+#include <sym/type.hpp>
 
 namespace sym {
   struct Param;

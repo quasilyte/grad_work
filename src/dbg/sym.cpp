@@ -1,4 +1,4 @@
-#include "dbg/sym.hpp"
+#include <dbg/sym.hpp>
 
 #include <deps/c/stdio.hpp>
 

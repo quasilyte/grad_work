@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sym/type.hpp"
+#include <sym/type.hpp>
 
 namespace xtern {
   class PkgEncoder;

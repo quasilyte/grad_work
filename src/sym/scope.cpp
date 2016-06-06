@@ -1,4 +1,4 @@
-#include "sym/scope.hpp"
+#include <sym/scope.hpp>
 
 #include <deps/c/stdio.hpp>
 

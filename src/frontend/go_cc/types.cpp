@@ -1,9 +1,9 @@
-#include "frontend/go_cc/types.hpp"
+#include <frontend/go_cc/types.hpp>
 
-#include "mn_hash.hpp"
-#include "dt/str_view.hpp"
-#include "errors.hpp"
-#include "unit/structs.hpp"
+#include <mn_hash.hpp>
+#include <dt/str_view.hpp>
+#include <errors.hpp>
+#include <unit/structs.hpp>
 
 using namespace go_cc;
 using sym::Type;

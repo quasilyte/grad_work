@@ -1,7 +1,7 @@
 #pragma once
 
 #include <deps/c/stdio.hpp>
-#include "typedefs.hpp"
+#include <typedefs.hpp>
 
 namespace io {
   class FileWriter;

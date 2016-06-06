@@ -1,8 +1,8 @@
 #pragma once
 
 /*
-#include "lex/reader.hpp"
-#include "frontend/go_cc/expr.hpp"
+#include <lex/reader.hpp>
+#include <frontend/go_cc/expr.hpp>
 
 namespace go_cc {
   class Reader;

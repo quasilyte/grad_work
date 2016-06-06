@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lex/cursor.hpp"
-#include "frontend/go_cc/top_level.hpp"
+#include <lex/cursor.hpp>
+#include <frontend/go_cc/top_level.hpp>
 
 namespace go_cc {
   class Classifier;
