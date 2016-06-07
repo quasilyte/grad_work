@@ -18,7 +18,9 @@ namespace sym {
     __VA_ARGS__ \
   )
 
-#define BLAME_POSITIONAL(FORMAT, LINE_NUMBER_PROVIDER, ...) \
+// Differs from BLAME in format string. `line` has index-based
+// argument, so all format string placeholders ought to be index-based
+#define BLAME_INDEXED(FORMAT, LINE_NUMBER_PROVIDER, ...) \
   std::fprintf( \
     stderr, \
     "line %1$d: " \
@@ -28,9 +30,9 @@ namespace sym {
     __VA_ARGS__ \
   )
 
-#define BUF_FMT(X) \
-  X.Len(), \
-  X.Data()
+#define BUF_FMT(BUF) \
+  BUF.Len(), \
+  BUF.Data()
 
 namespace err {
   struct FnCallArity;

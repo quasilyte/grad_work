@@ -110,7 +110,7 @@ void go_cc::define_fn(const FnDecl& fn) {
       "unexpected {%s}, expecting {%s}", &cur, e.given_keyword, e.expected_what
     );
   } catch (err::MixedArithTypes e) {
-    BLAME_POSITIONAL(
+    BLAME_INDEXED(
       "expected {%2$s %3$s %2$s}, found {%2$s %3$s %4$s}",
       &cur,
       name_by_type(e.lhs_type),
