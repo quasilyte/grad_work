@@ -1,0 +1,5 @@
+- combine [string]&[int] key indexes into bi-index
+- write lex::Reader in terms of lex::Cursor
+- rewrite some if/else to assertions like "expect(...)"
+- make code generation chainable
+- rewrite char_group allocations
