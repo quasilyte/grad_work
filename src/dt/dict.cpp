@@ -42,7 +42,7 @@ const T& dt::Dict<T>::Get(StrView key) {
 }
 
 template<class T>
-T dt::Dict<T>::Find(StrView key) {
+T dt::Dict<T>::Find(StrView key) const {
   auto it = bag.find(key);
 
   if (it == bag.end()) {
