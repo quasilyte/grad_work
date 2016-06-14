@@ -5,6 +5,7 @@
 #include <dt/dict.hpp>
 #include <deps/c/math.hpp>
 #include <deps/cxx/vector.hpp>
+#include <deps/cxx/unordered_map.hpp>
 
 using namespace unit;
 using namespace sym;
@@ -18,6 +19,7 @@ std::vector<NamedFn*> named_fns;
 
 Dict<MonoFn*> mono_fn_name_map;
 std::vector<MonoFn*> mono_fn_id_map;
+std::unordered_map<dt::QualifiedId, MonoFn*> mono_fn_qid_map;
 
 Type unit::new_unnamed_fn(ParamList&& params, ast::NodeList&& exprs, Type ret_ty) {
   auto type = Type::UnnamedFn(unnamed_fns.size());
@@ -33,9 +35,9 @@ Type unit::new_unnamed_fn(ParamList&& params, ast::NodeList&& exprs, Type ret_ty
 
 Fn* unit::get_fn(Type ty) {
   switch ((ty).Tag()) {
-  case Type::MONO_FN: return get_named_fn(ty);
+  case Type::MONO_FN: return get_mono_fn(ty);
   case Type::UNNAMED_FN: return get_unnamed_fn(ty);
-  case Type::NAMED_FN: return get_mono_fn(ty);
+  case Type::NAMED_FN: return get_named_fn(ty);
 
   default: throw "get_fn: not a function";
   }
@@ -121,7 +123,7 @@ MonoFn* unit::declare_mono_fn(StrView name, ParamList&& params, Type ret_type) {
       name,
       std::move(params),
       ret_type,
-      static_cast<u32>(mono_fn_name_map.Size())
+      Type::MonoFn(mono_fn_id_map.size())
     };
 
     mono_fn_name_map.Put(name, mono_fn);
@@ -143,6 +145,26 @@ MonoFn* unit::get_mono_fn(uint idx) {
   return mono_fn_id_map[idx];
 }
 
+MonoFn* unit::get_mono_fn(QualifiedId qid) {
+  return mono_fn_qid_map[qid];
+}
+
 uint unit::mono_fn_count() {
-  return mono_fn_name_map.Size();
+  return mono_fn_id_map.size();
+}
+
+void unit::ffn_register(QualifiedId key, ParamList&& params, Type ret_type) {
+  if (mono_fn_qid_map[key]) {
+    throw "ffn_register: already registered";
+  } else {
+    auto mono_fn = new MonoFn{
+      key.identifier,
+      std::move(params),
+      ret_type,
+      Type::MonoFn(mono_fn_id_map.size())
+    };
+
+    mono_fn_id_map.push_back(mono_fn);
+    mono_fn_qid_map[key] = mono_fn;
+  }
 }

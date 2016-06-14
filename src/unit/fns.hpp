@@ -4,6 +4,7 @@
 #include <sym/typedefs.hpp>
 #include <sym/type.hpp>
 #include <dt/str_view.hpp>
+#include <dt/qualified_id.hpp>
 #include <sym/fn.hpp>
 #include <deps/cxx/vector.hpp>
 
@@ -37,7 +38,10 @@ namespace unit {
   sym::MonoFn* get_mono_fn(StrView name);
   sym::MonoFn* get_mono_fn(sym::Type);
   sym::MonoFn* get_mono_fn(uint idx);
+  sym::MonoFn* get_mono_fn(dt::QualifiedId);
   uint mono_fn_count();
+
+  void ffn_register(dt::QualifiedId, ParamList&&, sym::Type ret_type);
 
   MultiFn* get_multi_fn(StrView name);
   MultiFn* get_multi_fn(sym::Type);

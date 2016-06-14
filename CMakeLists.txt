@@ -37,7 +37,7 @@ set(
   "-Wall \
    -Wextra"
 )
-set(project_flags "-std=c++1z")
+set(project_flags "-std=c++1z -O2")
 set(
   CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${project_flags} ${clang_warn_flags}"
 )
@@ -85,7 +85,7 @@ add_executable(${PROJECT_NAME} lisp.cpp)
 target_link_libraries(
   ${PROJECT_NAME} cpp_cg go_cc
   cc
-  ast unit fmt dbg sym lex intrinsic app di io dt
+  ast unit xtern fmt dbg sym lex intrinsic app di io dt
 )
 
 add_executable(rt rt.cpp)

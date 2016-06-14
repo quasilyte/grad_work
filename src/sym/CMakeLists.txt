@@ -9,6 +9,7 @@ set(
   struct.cpp
   fn.cpp
   rules.cpp
+  qualified_id.cpp
 )
 
 add_library(sym STATIC ${sym_src})

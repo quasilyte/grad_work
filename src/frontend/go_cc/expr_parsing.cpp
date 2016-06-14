@@ -161,7 +161,22 @@ ast::Node* parse_word(Cursor* cur) {
     throw err::UnexpectedKeyword{"return", "expr"};
   case "if"_m9:
     throw err::UnexpectedKeyword{"if", "expr"};
+  case "ffn"_m9: {
+    if (!try_consume(cur, '(')) { throw "expected `(`"; }
+    if (!try_consume(cur, '"')) { throw "expected `\"`"; }
+    auto pkg_name = read(cur, IDENT);
+    if (!try_consume(cur, '.')) { throw "expected `.`"; }
+    auto fn_name = read(cur, IDENT);
+    if (!try_consume(cur, '"')) { throw "expected `\"`"; }
+    if (!try_consume(cur, ')')) { throw "expected `)`"; }
 
+    auto fn = unit::get_mono_fn(dt::QualifiedId{pkg_name, fn_name});
+    if (fn) {
+      return new ast::Var{fn->name, fn->type};
+    } else {
+      throw "not found";
+    }
+  }
   default:
     switch (at(cur)) {
     case '(': return parse_fn_call(name, skip(cur, 1));
