@@ -36,5 +36,6 @@ struct lex::Cursor {
   const char* pos;
   const char* pos_max;
 
+  Cursor() = default;
   Cursor(dt::StrView input);
 };
