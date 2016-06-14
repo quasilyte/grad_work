@@ -8,7 +8,7 @@ namespace djb2_hash {
 }
 
 inline u64 djb2_hash::encode(const char* cstr) {
-  usize hash = static_cast<u64>(5381);
+  u64 hash = static_cast<u64>(5381);
 
   for (auto p = cstr; *p; ++p) {
     hash = ((hash << 5) + hash) + *p;
