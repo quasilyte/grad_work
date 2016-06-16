@@ -10,6 +10,9 @@ data{cstr}, len{static_cast<u32>(std::strlen(cstr))} {}
 StrView::StrView(const char* bytes, u32 count):
 data{bytes}, len{count} {}
 
+StrView::StrView(const char* begin, const char* end):
+StrView{begin, static_cast<u32>(end - begin)} {}
+
 const char* StrView::Data() const noexcept {
   return data;
 }

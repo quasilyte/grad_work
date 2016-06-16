@@ -11,6 +11,7 @@ public:
   StrView() = default;
   StrView(const char* cstr);
   StrView(const char* bytes, u32 count);
+  StrView(const char* begin, const char* end);
 
   const char* Data() const noexcept;
   u32 Len() const noexcept;
