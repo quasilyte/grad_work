@@ -2,6 +2,11 @@
 
 #include <cstdio>
 
+struct FailedCase {
+  const char* case_name;
+  const char* msg;
+};
+
 inline int errors_count(int value = -1) {
   static int errors = 0;
 
@@ -11,6 +16,21 @@ inline int errors_count(int value = -1) {
     return errors = value;
   }
 }
+
+template<class LAMBDA>
+void test_case(const char* name, LAMBDA code) {
+  try {
+    code();
+  } catch (const char* msg) {
+    throw FailedCase{name, msg};
+  }
+}
+
+#define THROWS(EXPR) \
+  try { \
+    EXPR; \
+    throw "not throws: {" #EXPR "}"; \
+  } catch (...) {}
 
 #define TRUE(COND) \
   if (!(COND)) { \
@@ -29,6 +49,9 @@ inline int errors_count(int value = -1) {
   } catch (const char* msg) { \
     errors_count(errors_count() + 1); \
     printf(#NAME " FAILED! %s\n", msg); \
+  } catch (FailedCase e) { \
+    errors_count(errors_count() + 1); \
+    printf(#NAME " FAILED at %s! %s\n", e.case_name, e.msg); \
   }
 
 #define FINISH() \
