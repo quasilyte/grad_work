@@ -5,10 +5,10 @@ namespace ast {
 }
 
 namespace lex {
-  struct Cursor;
+  class Reader;
 }
 
 namespace cc {
-  ast::Node* parse_num(lex::Cursor*);
-  ast::Node* parse_str(lex::Cursor*);
+  ast::Node* parse_num(lex::Reader*);
+  ast::Node* parse_str(lex::Reader*);
 }

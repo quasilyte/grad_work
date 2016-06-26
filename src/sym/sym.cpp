@@ -1,16 +1,12 @@
 #include <sym/sym.hpp>
+#include <rodata/cstrings.hpp>
 
 dt::StrView sym::gen_suffix(uint idx) {
   // Up to 2015 unique identifiers
   if (idx > MAX_UNIQ_SUFFIXES) {
     throw "gen_suffix: idx overflows MAX_UNIQ_SUFFIXES";
   }
-
-  static const char alphabet[] =
-    "0123456789"                 // 10
-    "abcdefghijklmnopqrstuvwxyz" // 26
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" // 26
-    "_";                         // 1
+  // 10 digits, 26 lcase, 26 ucase, 1 underscore
   static const uint alphabet_size = 10 + 26 + 26 + 1;
 
   u32 len = 1;
@@ -20,7 +16,7 @@ dt::StrView sym::gen_suffix(uint idx) {
     len += 1;
   }
 
-  return dt::StrView{alphabet + idx, len};
+  return dt::StrView{rodata::C_IDENT + idx, len};
 }
 
 const char* sym::mangle(char ch) {

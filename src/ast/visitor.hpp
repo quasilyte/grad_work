@@ -7,7 +7,6 @@ namespace ast {
   struct Real;
   struct Str;
   struct Sum;
-  struct SumAssign;
   struct Sub;
   struct Mul;
   struct Div;
@@ -17,7 +16,6 @@ namespace ast {
   struct SetVar;
   struct SetAttr;
   struct DefVar;
-  struct IfStmt;
   struct IfExpr;
   struct IntCase;
   struct Var;
@@ -32,6 +30,10 @@ namespace ast {
   struct IntrinsicCall1;
   struct Each;
   struct Return;
+  // Statements:
+  struct Assign;
+  struct SumAssign;
+  struct IfStmt;
 }
 
 class ast::Visitor {
@@ -41,7 +43,6 @@ public:
   virtual void Visit(Real*) = 0;
   virtual void Visit(Str*) = 0;
   virtual void Visit(Sum*) = 0;
-  virtual void Visit(SumAssign*) = 0;
   virtual void Visit(Mul*) = 0;
   virtual void Visit(Div*) = 0;
   virtual void Visit(NumLt*) = 0;
@@ -51,7 +52,6 @@ public:
   virtual void Visit(SetVar*) = 0;
   virtual void Visit(SetAttr*) = 0;
   virtual void Visit(DefVar*) = 0;
-  virtual void Visit(IfStmt*) = 0;
   virtual void Visit(IfExpr*) = 0;
   virtual void Visit(IntCase*) = 0;
   virtual void Visit(Var*) = 0;
@@ -66,5 +66,9 @@ public:
   virtual void Visit(IntrinsicCall1*) = 0;
   virtual void Visit(Each*) = 0;
   virtual void Visit(Return*) = 0;
+  // Statements:
+  virtual void Visit(Assign*) = 0;
+  virtual void Visit(SumAssign*) = 0;
+  virtual void Visit(IfStmt*) = 0;
 };
 

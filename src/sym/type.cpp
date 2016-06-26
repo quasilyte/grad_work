@@ -65,7 +65,16 @@ bool Type::IsStruct() const noexcept { return tag == STRUCT; }
 bool Type::IsDynDispatcher() const noexcept { return tag == DYN_DISPATCHER; }
 
 bool Type::IsFn() const noexcept {
-  return IsNamedFn() || IsUnnamedFn() || IsIntrinsic() || IsMonoFn();
+  switch (tag) {
+  case NAMED_FN:
+  case UNNAMED_FN:
+  case MONO_FN:
+  case INTRINSIC:
+    return true;
+
+  default:
+    return false;
+  }
 }
 
 bool Type::IsArith() const noexcept {

@@ -4,6 +4,8 @@
 
 using namespace dt;
 
+StrView::StrView(): data{nullptr}, len{0} {}
+
 StrView::StrView(const char* cstr):
 data{cstr}, len{static_cast<u32>(std::strlen(cstr))} {}
 
@@ -31,6 +33,10 @@ bool StrView::operator<(const StrView& other) const {
 
 bool StrView::operator==(const StrView& other) const {
   return len == other.len && std::strncmp(data, other.data, other.len) == 0;
+}
+
+StrView::operator bool() const {
+  return nullptr != data;
 }
 
 char StrView::operator[](std::size_t pos) const {

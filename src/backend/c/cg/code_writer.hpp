@@ -65,6 +65,7 @@ public:
   void Visit(ast::IntrinsicCall1*) override;
   void Visit(ast::Each*) override;
   void Visit(ast::Return*) override;
+  void Visit(ast::Assign*) override;
 
 private:
   void VisitUnary(char op, ast::Node*);

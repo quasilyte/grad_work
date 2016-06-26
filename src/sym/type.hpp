@@ -1,7 +1,6 @@
 #pragma once
 
 #include <typedefs.hpp>
-#include <deps/cxx/limits.hpp>
 
 namespace sym {
   class Type;
@@ -58,15 +57,6 @@ public:
   static Type DynDispatcher(TypeId id);
   static Type Struct(TypeId id);
   static Type Intrinsic(TypeId id);
-
-  /*
-  static TypeId DynDispatcherTag(uint idx);
-  static int DynDispatcherKey(TypeId);
-  static TypeId LambdaTag(uint idx);
-  static int LambdaKey(TypeId);
-  static TypeId StructTag(uint idx);
-  static int StructKey(TypeId);
-  */
 
   Type();
   Type(const Type&);

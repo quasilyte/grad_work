@@ -32,10 +32,10 @@ Type unit::new_unnamed_fn(ParamList&& params, ast::NodeList&& exprs, Type ret_ty
 }
 
 Fn* unit::get_fn(Type ty) {
-  switch ((ty).Tag()) {
-  case Type::MONO_FN: return get_named_fn(ty);
+  switch (ty.Tag()) {
+  case Type::MONO_FN: return get_mono_fn(ty);
   case Type::UNNAMED_FN: return get_unnamed_fn(ty);
-  case Type::NAMED_FN: return get_mono_fn(ty);
+  case Type::NAMED_FN: return get_named_fn(ty);
 
   default: throw "get_fn: not a function";
   }
@@ -121,7 +121,7 @@ MonoFn* unit::declare_mono_fn(StrView name, ParamList&& params, Type ret_type) {
       name,
       std::move(params),
       ret_type,
-      static_cast<u32>(mono_fn_name_map.Size())
+      sym::Type::MonoFn(mono_fn_name_map.Size())
     };
 
     mono_fn_name_map.Put(name, mono_fn);

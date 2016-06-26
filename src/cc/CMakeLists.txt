@@ -2,7 +2,9 @@ project(cc)
 
 set(
   cc_src
-  strict_arith.cpp
+  strict/arith.cpp
+  strict/type_check.cpp
+  strict/statements.cpp
   fn_check.cpp
   parse_lit.cpp
 )

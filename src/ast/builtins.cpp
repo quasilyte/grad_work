@@ -22,15 +22,6 @@ iter_name{iter_name} {}
 
 void Each::Accept(Visitor* v) { v->Visit(this); }
 
-SumAssign::SumAssign(dt::StrView target, Node *val):
-target{target}, val{val} {}
-
-void SumAssign::Accept(Visitor* v) { v->Visit(this); }
-
-sym::Type SumAssign::Type() {
-  return sym::Type::Void();
-}
-
 LambdaExpr::LambdaExpr(sym::Type type): type{type} {}
 
 void LambdaExpr::Accept(Visitor* v) { v->Visit(this); }

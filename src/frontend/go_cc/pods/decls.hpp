@@ -5,21 +5,15 @@
 #include <lex/token.hpp>
 
 namespace go_cc {
-  struct Decl;
-  struct TypedDecl;
+  struct VarDecl;
   struct FnDecl;
   struct StructDecl;
 }
 
-struct go_cc::Decl {
+struct go_cc::VarDecl {
   dt::StrView name;
   dt::StrView init;
-};
-
-struct go_cc::TypedDecl {
-  dt::StrView name;
   sym::Type type;
-  dt::StrView init;
 };
 
 struct go_cc::FnDecl {

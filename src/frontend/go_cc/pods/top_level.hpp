@@ -1,6 +1,6 @@
 #pragma once
 
-#include <frontend/go_cc/decl.hpp>
+#include <frontend/go_cc/pods/decls.hpp>
 #include <deps/cxx/vector.hpp>
 
 namespace ast {
@@ -12,8 +12,7 @@ namespace go_cc {
 }
 
 struct go_cc::TopLevel {
-  std::vector<go_cc::TypedDecl> typed_globals;
-  std::vector<go_cc::Decl> globals;
+  std::vector<go_cc::VarDecl> globals;
   std::vector<go_cc::FnDecl> fns;
   std::vector<go_cc::StructDecl> structs;
 };

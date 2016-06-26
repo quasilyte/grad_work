@@ -165,7 +165,7 @@ void CodeWriter::Visit(ast::Real* node) {
 }
 
 void CodeWriter::Visit(ast::Str* node) {
-  get_pipe()(node->datum);
+  get_pipe()('"')(node->datum)('"');
 }
 
 void CodeWriter::Visit(ast::Sum* node) {
@@ -173,9 +173,8 @@ void CodeWriter::Visit(ast::Sum* node) {
 }
 
 void CodeWriter::Visit(ast::SumAssign* node) {
-  // x += expr
-  get_pipe()(node->target)("+=");
-  node->val->Accept(this);
+  get_pipe()(node->recv_name)("+=");
+  node->expr->Accept(this);
 }
 
 void CodeWriter::Visit(ast::Sub* node) {
@@ -212,7 +211,9 @@ void CodeWriter::Visit(ast::SetAttr* node) {
   node->value->Accept(this);
 }
 
+#include <cstdio>
 void CodeWriter::Visit(ast::DefVar* node) {
+
   if (node->type.IsFn()) {
     if (node->type.IsIntrinsic()) {
       auto ty = node->type;
@@ -360,6 +361,12 @@ void CodeWriter::Visit(ast::Each* node) {
 void CodeWriter::Visit(ast::Return* node) {
   get_pipe()("return ");
   node->val->Accept(this);
+  get_pipe()(';');
+}
+
+void CodeWriter::Visit(ast::Assign* node) {
+  get_pipe()(node->recv_name)('=');
+  node->expr->Accept(this);
   get_pipe()(';');
 }
 

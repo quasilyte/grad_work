@@ -1,4 +1,4 @@
-#include <frontend/go_cc/classifier.hpp>
+#include <frontend/go_cc/phase1/classifier.hpp>
 
 #include <mn_hash.hpp>
 #include <dbg/dt.hpp>
@@ -9,12 +9,13 @@
 #include <ast/defs.hpp>
 #include <deps/c/string.hpp>
 #include <deps/c/stdio.hpp>
-#include <frontend/go_cc/char_groups.hpp>
-#include <frontend/go_cc/types.hpp>
-#include <frontend/go_cc/cursor_ext.hpp>
+#include <frontend/go_cc/common/types.hpp>
+#include <frontend/go_cc/common/reader.hpp>
+#include <chars/categories.hpp>
+#include <lex/c/comment.hpp>
 
 using namespace go_cc;
-using namespace lex;
+using namespace chars;
 using sym::Type;
 
 TopLevel Classifier::Run(const char* input_cstr) {
@@ -22,22 +23,20 @@ TopLevel Classifier::Run(const char* input_cstr) {
   return self.Classify();
 }
 
-Classifier::Classifier(const char* input_cstr): cur{lex::Cursor{input_cstr}} {}
+Classifier::Classifier(const char* input_cstr):
+reader{Reader{input_cstr}} {}
 
 TopLevel Classifier::Classify() {
   using mn_hash::operator "" _m9;
 
-  while (can_read(skip(&cur, SPACES))) {
-    auto keyword = read_m9(&cur, IDENT);
-
-    switch (keyword) {
+  while (reader.Skip()->CanRead()) {
+    switch (reader.ReadM9(C_IDENT)) {
     case "var"_m9: ClassifyVar(); break;
     case "func"_m9: ClassifyFn(); break;
     case "type"_m9: ClassifyType(); break;
 
     default:
-
-      throw "invalid top level declaration";
+      throw "expected var|func|type";
     }
   }
 
@@ -45,10 +44,12 @@ TopLevel Classifier::Classify() {
 }
 
 void Classifier::ClassifyFn() {
-  auto name = next_ident(&cur);
-  auto params = read_group(skip(&cur, SPACES), '(', ')').Truncate(1);
-  auto ret_type_name = next_ident(&cur);
-  auto body = read_group(skip(&cur, SPACES), '{', '}').Truncate(1);
+  auto name = reader.Skip()->Read(C_IDENT);
+  auto params = reader.Skip()->ReadGroup('(', ')');
+
+  auto ret_type_name = reader.Skip()->Read(C_IDENT);
+
+  auto body = reader.Skip()->ReadGroup('{', '}');
 
   auto ret_type = ret_type_name.IsEmpty()
       ? sym::Type::Void()
@@ -58,29 +59,25 @@ void Classifier::ClassifyFn() {
 }
 
 void Classifier::ClassifyVar() {
-  auto name = next_ident(&cur);
+  auto name = reader.Skip()->Read(C_IDENT);
 
-  if (try_consume(skip(&cur, SPACES), '=')) {
-    result.globals.push_back(Decl{name, next_expr(&cur)});
+  if (reader.Skip()->TryConsume('=')) {
+    auto expr = reader.Skip()->ReadExpr();
+    result.globals.push_back(VarDecl{name, expr, Type::Unknown()});
   } else {
-    auto type = type_by_name(next_ident(&cur));
-
-    if (try_consume(skip(&cur, SPACES), '=')) {
-      result.typed_globals.push_back(
-        TypedDecl{name, type, next_expr(&cur)}
-      );
-    } else {
-      throw "expected `=` token";
-    }
+    auto type = type_by_name(reader.Read(C_IDENT));
+    reader.Skip()->MustConsume('=');
+    auto expr = reader.Skip()->ReadExpr();
+    result.globals.push_back(VarDecl{name, expr, type});
   }
 }
 
 void Classifier::ClassifyType() {
   using mn_hash::operator "" _m9;
 
-  auto name = next_ident(&cur);
-  auto type = next_ident(&cur);
-  auto body = read_group(skip(&cur, SPACES), '{', '}').Truncate(1);
+  auto name = reader.Skip()->Read(C_IDENT);
+  auto type = reader.Skip()->Read(C_IDENT);
+  auto body = reader.Skip()->ReadGroup('{', '}');
 
   if (type.Len() < 10) {
     switch (mn_hash::encode9(type.Data(), type.Len())) {

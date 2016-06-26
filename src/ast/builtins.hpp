@@ -16,7 +16,6 @@ namespace sym {
 
 namespace ast {
   struct Each;
-  struct SumAssign;
   struct LambdaExpr;
   struct FuncCall;
   struct MonoFnCall;
@@ -39,16 +38,6 @@ struct ast::Each: public Node {
   sym::NamedFn* has_next_fn;
   sym::NamedFn* current_fn;
   dt::StrView iter_name;
-};
-
-struct ast::SumAssign: Node {
-  SumAssign(dt::StrView target, Node* val);
-
-  void Accept(Visitor*) override;
-  sym::Type Type() override;
-
-  dt::StrView target;
-  Node* val;
 };
 
 struct ast::LambdaExpr: public Node {

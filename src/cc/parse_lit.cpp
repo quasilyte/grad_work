@@ -1,13 +1,13 @@
 #include <cc/parse_lit.hpp>
 
 #include <lex/num_tagger.hpp>
-#include <lex/cursor.hpp>
+#include <lex/reader.hpp>
 #include <ast/literals.hpp>
 
 using namespace lex;
 
-ast::Node* cc::parse_num(Cursor* cur) {
-  auto num = read_token(cur, NumTagger::Run);
+ast::Node* cc::parse_num(Reader* reader) {
+  auto num = reader->ReadToken<NumTagger>();
 
   switch (num.tag) {
   case NumTagger::INT:
@@ -20,6 +20,6 @@ ast::Node* cc::parse_num(Cursor* cur) {
   }
 }
 
-ast::Node* cc::parse_str(Cursor* cur) {
-  return new ast::Str{read_group(cur, '"')};
+ast::Node* cc::parse_str(Reader* reader) {
+  return new ast::Str{reader->ReadLiteral('"')};
 }

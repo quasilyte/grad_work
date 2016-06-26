@@ -8,7 +8,6 @@ namespace lex {
 }
 
 namespace unit {
-  int get_line_number(const lex::Cursor*);
   int get_line_number(dt::StrView);
   int get_line_number(const char* location);
 

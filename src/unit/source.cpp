@@ -1,17 +1,11 @@
 #include <unit/source.hpp>
 
-#include <lex/cursor.hpp>
-
 const char* last_location = nullptr;
 int line_number = 1;
 int error_count = 0;
 
 int unit::get_line_number(dt::StrView str_view) {
   return get_line_number(str_view.Data());
-}
-
-int unit::get_line_number(const lex::Cursor* cur) {
-  return get_line_number(cur->pos);
 }
 
 int unit::get_line_number(const char *location) {

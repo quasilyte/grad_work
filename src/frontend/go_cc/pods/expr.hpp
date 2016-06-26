@@ -2,6 +2,7 @@
 
 #include <typedefs.hpp>
 
+/*
 namespace go_cc {
   struct Expr;
 }
@@ -19,3 +20,4 @@ struct go_cc::Expr {
   u32 len;
   const char* val;
 };
+*/

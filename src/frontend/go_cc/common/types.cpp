@@ -1,8 +1,8 @@
-#include <frontend/go_cc/types.hpp>
+#include <frontend/go_cc/common/types.hpp>
 
 #include <mn_hash.hpp>
 #include <dt/str_view.hpp>
-#include <errors.hpp>
+#include <err/type_errors.hpp>
 #include <unit/structs.hpp>
 
 using namespace go_cc;
@@ -34,6 +34,7 @@ const char* go_cc::name_by_type(sym::Type type) {
   case Type::REAL: return "real";
   case Type::BOOL: return "bool";
   case Type::VOID: return "void";
+  case Type::STR: return "string";
 
   default: return "???";
   }

@@ -6,38 +6,39 @@
 #include <ast/statements.hpp>
 #include <frontend/go_cc/expr_parsing.hpp>
 #include <frontend/go_cc/parsing.hpp>
-#include <frontend/go_cc/char_groups.hpp>
-#include <frontend/go_cc/cursor_ext.hpp>
-#include <lex/cursor.hpp>
+#include <frontend/go_cc/common/reader.hpp>
 #include <unit/scope.hpp>
-#include <cc/strict_arith.hpp>
+#include <cc/strict/arith.hpp>
+#include <cc/strict/statements.hpp>
 
-using namespace lex;
+using namespace chars;
 
-ast::Node* go_cc::parse_return(Cursor* cur) {
-  skip(cur, SPACES);
-  auto ret = new ast::Return{parse_expr(cur, ";\n}")};
-  skip(cur, 1);
-  return ret;
+ast::Node* go_cc::parse_assignment(dt::StrView name, Reader* reader) {
+  auto expr = parse_expr(reader->Skip()->ReadExpr());
+  return cc::strict_assign(name, expr);
 }
 
-ast::Node* go_cc::parse_short_var_decl(dt::StrView id, Cursor* cur) {
-  skip(cur, SPACES);
+ast::Node* go_cc::parse_return(Reader* reader) {
+  auto expr = parse_expr(reader->Skip()->ReadExpr());
+  return new ast::Return{expr};
+}
 
-  auto expr = parse_expr(cur, ";\n");
-  skip(cur, 1);
-
+ast::Node* go_cc::parse_short_var_decl(dt::StrView id, Reader* reader) {
+  auto expr = parse_expr(reader->Skip()->ReadExpr());
   auto type = expr->Type();
+
   unit::scope_push(id, type);
   return new ast::DefVar{id, expr, type};
 }
 
-ast::Node* go_cc::parse_plus_assignment(dt::StrView id, Cursor* cur) {
-  skip(cur, SPACES);
-  return new ast::SumAssign{id, parse_expr(cur, ";\n")};
+ast::Node* go_cc::parse_plus_assignment(dt::StrView id, Reader* reader) {
+  auto expr = parse_expr(reader->Skip()->ReadExpr());
+  return cc::strict_sum_assign(id, expr);
 }
 
-ast::Node* go_cc::parse_if(Cursor* cur) {
+ast::Node* go_cc::parse_if(Reader* cur) {
+  throw 'f';
+  /*
   ast::NodeList on_true;
   ast::NodeList on_false;
 
@@ -64,4 +65,5 @@ ast::Node* go_cc::parse_if(Cursor* cur) {
   unit::drop_scope_level();
 
   return cc::strict_if_stmt(cond, std::move(on_true), std::move(on_false));
+  */
 }

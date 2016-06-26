@@ -26,11 +26,11 @@ void test_case(const char* name, LAMBDA code) {
   }
 }
 
-#define THROWS(EXPR) \
+#define THROWS(EXPR, EXCEPTION_T) \
   try { \
     EXPR; \
-    throw "not throws: {" #EXPR "}"; \
-  } catch (...) {}
+    throw "throw failed: {" #EXPR "}"; \
+  } catch (EXCEPTION_T) {}
 
 #define TRUE(COND) \
   if (!(COND)) { \
@@ -45,13 +45,13 @@ void test_case(const char* name, LAMBDA code) {
 #define RUN(NAME) \
   try { \
     test_##NAME(); \
-    puts(#NAME " passed"); \
+    puts("passed " #NAME); \
   } catch (const char* msg) { \
     errors_count(errors_count() + 1); \
-    printf(#NAME " FAILED! %s\n", msg); \
+    printf("FAILED " #NAME "! %s\n", msg); \
   } catch (FailedCase e) { \
     errors_count(errors_count() + 1); \
-    printf(#NAME " FAILED at %s! %s\n", e.case_name, e.msg); \
+    printf("FAILED " #NAME " at %s! %s\n", e.case_name, e.msg); \
   }
 
 #define FINISH() \

@@ -1,17 +1,18 @@
 #include <lex/num_tagger.hpp>
 
-#include <lex/char_groups.hpp>
-#include <lex/cursor.hpp>
+#include <chars/categories.hpp>
+#include <lex/reader.hpp>
 
 using namespace lex;
+using namespace chars;
 
-u32 NumTagger::Run(lex::Cursor* cur) {
-  if (!try_consume(cur, DIGITS)) {
+u32 NumTagger::Run(Reader* reader) {
+  if (!reader->TryConsume(DIGITS)) {
     return MALFORMED;
   }
 
-  if (try_consume(cur, '.')) {
-    return try_consume(cur, DIGITS) ? REAL : MALFORMED;
+  if (reader->TryConsume('.')) {
+    return reader->TryConsume(DIGITS) ? REAL : MALFORMED;
   } else {
     return INT;
   }

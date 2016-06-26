@@ -1,0 +1,5 @@
+* extensions for scripting languages written in scripting languages
+* plugin systems
+* emacs-like architecture software
+* cross-language embedded database
+* cross-language libraries

@@ -4,10 +4,10 @@
 
 namespace lex {
   struct NumTagger;
-  struct Cursor;
+  class Reader;
 }
 
 struct lex::NumTagger {
   enum: u32 {INT, REAL, MALFORMED};
-  static u32 Run(lex::Cursor*);
+  static u32 Run(Reader*);
 };

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="cpp_cg" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\chars\;CMake Files\src\lex\;CMake Files\src\dbg\;CMake Files\src\cc\;CMake Files\src\ast\;CMake Files\src\io\;CMake Files\src\sym\;CMake Files\src\intrinsic\;CMake Files\src\dt\;CMake Files\src\fmt\;CMake Files\src\backend\;CMake Files\src\backend\c\;CMake Files\src\backend\c\cg\;CMake Files\src\frontend\;CMake Files\src\frontend\go_cc\;CMake Files\src\di\;CMake Files\src\util\;CMake Files\src\unit\;CMake Files\src\app\;CMake Files\src\xtern\;CMake Files\tests\;CMake Files\tests\test_dt\;CMake Files\tests\test_cc\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="cpp_cg">
+         <Option output="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/libcpp_cg.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/quasilyte/CODE/GIT/dipl/Resembler/src" />
+            <Add directory="/home/quasilyte/CODE/GIT/dipl/Resembler/tests" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 cpp_cg" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="cpp_cg/fast">
+         <Option output="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/libcpp_cg.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/quasilyte/CODE/GIT/dipl/Resembler/src" />
+            <Add directory="/home/quasilyte/CODE/GIT/dipl/Resembler/tests" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 cpp_cg/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/code_writer.cpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/state.cpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/translator.cpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/type_map.cpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/utils.cpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/code_writer.hpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/state.hpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/translator.hpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/type_map.hpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/utils.hpp">
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/chars/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\chars\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/chars/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\chars\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/lex/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\lex\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/lex/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\lex\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/dbg/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\dbg\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/dbg/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\dbg\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/cc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\cc\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/cc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\cc\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/ast/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\ast\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/ast/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\ast\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/io/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\io\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/io/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\io\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/sym/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\sym\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/sym/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\sym\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/intrinsic/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\intrinsic\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/intrinsic/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\intrinsic\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/dt/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\dt\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/dt/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\dt\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/fmt/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\fmt\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/fmt/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\fmt\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\backend\c\cg\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/backend/c/cg/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\backend\c\cg\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/frontend/go_cc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\frontend\go_cc\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/frontend/go_cc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\frontend\go_cc\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/di/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\di\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/di/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\di\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/util/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\util\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/unit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\unit\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/unit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\unit\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/app/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\app\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/app/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\app\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/xtern/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\xtern\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/src/xtern/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\xtern\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/tests/test_dt/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\test_dt\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/tests/test_dt/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\test_dt\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/tests/test_cc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\test_cc\" />
+      </Unit>
+      <Unit filename="/home/quasilyte/CODE/GIT/dipl/Resembler/tests/test_cc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\test_cc\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

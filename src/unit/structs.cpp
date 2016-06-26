@@ -3,7 +3,6 @@
 #include <dt/dict.hpp>
 #include <sym/rules.hpp>
 #include <dev_assert.hpp>
-#include <errors.hpp>
 
 using namespace sym;
 using namespace dt;
@@ -13,7 +12,8 @@ Dict<sym::Struct*> type_name_map;
 
 void unit::declare_struct(dt::StrView name) {
   if (type_name_map.Find(name)) {
-    throw err::Redefinition{name, "struct"};
+    // throw err::Redefinition{name, "struct"};
+    throw "redefenition";
   } else {
     auto st = new sym::Struct{name, sym::Type::Struct(type_name_map.Size())};
 

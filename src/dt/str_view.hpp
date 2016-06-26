@@ -8,7 +8,7 @@ namespace dt {
 
 class dt::StrView {
 public:
-  StrView() = default;
+  StrView();
   StrView(const char* cstr);
   StrView(const char* bytes, u32 count);
   StrView(const char* begin, const char* end);
@@ -18,6 +18,7 @@ public:
 
   bool operator<(const StrView& other) const;
   bool operator==(const StrView& other) const;
+  operator bool() const;
   char operator[](std::size_t pos) const;
 
   bool IsEmpty() const noexcept;

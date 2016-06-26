@@ -4,10 +4,7 @@ namespace ast {
   struct Node;
 }
 
-namespace lex {
-  struct Cursor;
-}
-
 namespace go_cc {
-  ast::Node* parse(lex::Cursor*);
+  class Reader;
+  ast::Node* parse(Reader* reader);
 }

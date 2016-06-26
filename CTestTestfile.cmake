@@ -4,6 +4,7 @@
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
+subdirs(src/chars)
 subdirs(src/lex)
 subdirs(src/dbg)
 subdirs(src/cc)
@@ -19,5 +20,6 @@ subdirs(src/di)
 subdirs(src/util)
 subdirs(src/unit)
 subdirs(src/app)
+subdirs(src/xtern)
 subdirs(tests/test_dt)
 subdirs(tests/test_cc)

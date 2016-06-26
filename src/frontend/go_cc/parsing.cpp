@@ -1,30 +1,32 @@
 #include <frontend/go_cc/parsing.hpp>
 
-#include <lex/cursor.hpp>
-#include <frontend/go_cc/char_groups.hpp>
 #include <frontend/go_cc/expr_parsing.hpp>
 #include <frontend/go_cc/stmt_parsing.hpp>
+#include <frontend/go_cc/common/reader.hpp>
 #include <mn_hash.hpp>
 
-using namespace lex;
+using namespace chars;
 
-ast::Node* go_cc::parse(Cursor* cur) {
+ast::Node* go_cc::parse(Reader* reader) {
   using namespace mn_hash;
 
-  auto word = read(cur, IDENT);
+  auto word = reader->Read(C_IDENT);
 
   // If it is a keyword, most likely we need to parse a statement
   switch (encode9(word.Data(), word.Len())) {
-  case "return"_m9: return parse_return(cur);
-  case "if"_m9: return parse_if(cur);
+  case "return"_m9: return parse_return(reader);
+  case "if"_m9: return parse_if(reader);
 
   default:
     // It can be a statement like `x := 10` or `x++`
-    switch (at(skip(cur, SPACES))) {
+    switch (reader->Skip()->PeekCurrent()) {
+    case '=':
+      return parse_assignment(word, reader->Skip(1));
+
     case ':':
       // [goto label] | [short assignment]
-      if ('=' == peek(cur)) {
-        return parse_short_var_decl(word, skip(cur, 2));
+      if ('=' == reader->PeekNext()) {
+        return parse_short_var_decl(word, reader->Skip(2));
       } else {
         throw "cant parse goro labels yet";
       }
@@ -32,15 +34,16 @@ ast::Node* go_cc::parse(Cursor* cur) {
 
     case '+':
       // [x++] | [x+=] | [x+expr]
-      switch (peek(cur)) {
+      switch (reader->PeekNext()) {
       case '+': throw "no postfix ++";
       case '=':
-        return parse_plus_assignment(word, skip(cur, 2));
+        return parse_plus_assignment(word, reader->Skip(2));
       }
       break;
 
     default:
-      return parse_expr(cur, ";\n");
+      throw "cant parse expr";
+      // return parse_expr(cur, ";\n");
     }
   }
 

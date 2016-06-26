@@ -1,3 +1,7 @@
+Type system:
+- type relations (hierarchy)
+- "+" should also work with strings
+
 Implement (high priority):
 - higher order functions (function as a type); Note: need polymorphic function variant for this to work
 - mutually recursive functions

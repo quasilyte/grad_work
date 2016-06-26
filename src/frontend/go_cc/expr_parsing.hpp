@@ -6,11 +6,9 @@ namespace ast {
   struct Node;
 }
 
-namespace lex {
-  struct Cursor;
-}
-
 namespace go_cc {
-  ast::Node* parse_expr(lex::Cursor*, const char* terms);
-  ast::Node* parse_expr(lex::Cursor);
+  class Reader;
+
+  // ast::Node* parse_expr(Reader*, const char* terms);
+  ast::Node* parse_expr(dt::StrView);
 }

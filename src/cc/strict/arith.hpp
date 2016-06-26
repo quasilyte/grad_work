@@ -2,6 +2,7 @@
 
 #include <ast/binary_ops.hpp>
 #include <ast/typedefs.hpp>
+#include <dt/str_view.hpp>
 
 namespace ast {
   struct Node;
@@ -9,7 +10,6 @@ namespace ast {
 
 namespace cc {
 # define Node ast::Node
-# define NodeList ast::NodeList
 
   Node* strict_sum(ast::BinaryNode);
   Node* strict_sub(ast::BinaryNode);
@@ -18,8 +18,5 @@ namespace cc {
 
   Node* strict_eq(ast::BinaryNode);
 
-  Node* strict_if_stmt(Node* cond, NodeList&& on_true, NodeList&& on_false);
-
 # undef Node
-# undef NodeList
 }

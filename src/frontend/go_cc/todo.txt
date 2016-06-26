@@ -1,0 +1,22 @@
+// #todo:
+// - all { } create new scope
+// - for loops
+// - lambdas & function pointers
+// - deftype (structs)
+// - struct literals
+// - method funcs
+// - support more types (funcs, str, float64)
+// - type casts
+// - multiple return values (need tuples?)
+// - tuples in codegen
+// - basic i/o functions (printing/reading)
+// - check if function returns correct type and in all paths
+// - switch statement
+// - parallel assignment (x, y = y, x)
+// - destructuring (x, y := f(); g(f()), g has 2 params)
+// - methods (they generate MonoFn)
+// - parsing & saving of FFI modules
+// - loading of parsed FFI modules
+// - use externally defined types
+// - funcall via variable
+// - expr as sole statements for side-effects

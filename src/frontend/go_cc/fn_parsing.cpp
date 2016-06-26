@@ -5,88 +5,84 @@
 #include <unit/scope.hpp>
 #include <unit/fns.hpp>
 #include <unit/source.hpp>
-#include <frontend/go_cc/reader.hpp>
-#include <frontend/go_cc/char_groups.hpp>
-#include <frontend/go_cc/decl.hpp>
-#include <frontend/go_cc/types.hpp>
-#include <frontend/go_cc/cursor_ext.hpp>
+#include <frontend/go_cc/pods/decls.hpp>
+#include <frontend/go_cc/common/reader.hpp>
+#include <frontend/go_cc/common/types.hpp>
+#include <frontend/go_cc/common/reader.hpp>
 #include <frontend/go_cc/parsing.hpp>
 #include <sym/typedefs.hpp>
-#include <lex/cursor.hpp>
-#include <errors.hpp>
+#include <err/type_errors.hpp>
+#include <macro/blame.hpp>
 #include <mn_hash.hpp>
 
 using namespace go_cc;
-using namespace lex;
+using namespace chars;
 
+sym::Param collect_param(Reader* reader) {
+  auto name = reader->Read(C_IDENT);
+  auto type = type_by_name(reader->Skip()->Read(C_IDENT));
 
-sym::ParamList collect_params(Cursor cur) {
-  sym::ParamList params;
-
-  while (can_read(skip(&cur, SPACES))) {
-    auto name = next_ident(&cur);
-    auto type = type_by_name(next_ident(&cur));
-
-    if (!try_consume(skip(&cur, SPACES), ',') && can_read(&cur)) {
-      throw "expected `,`";
-    }
-
-    params.push_back(sym::Param{name, type});
-  }
-
-  return params;
+  return sym::Param{name, type};
 }
 
-ast::NodeList collect_exprs(Cursor* cur) {
+sym::ParamList collect_params(Reader reader) {
+  sym::ParamList params;
+
+  if (reader.Skip()->CanRead()) {
+    for (;;) {
+      auto param = collect_param(&reader);
+      params.push_back(param);
+
+      if (reader.Skip()->CanRead()) {
+        reader.MustConsume(',');
+      } else {
+        return params;
+      }
+    }
+  } else {
+    return params;
+  }
+}
+
+ast::NodeList collect_exprs(Reader* reader) {
   ast::NodeList exprs;
 
-  while (can_read(skip(cur, SPACES))) {
-    exprs.push_back(parse(cur));
+  while (reader->Skip()->CanRead()) {
+    exprs.push_back(parse(reader));
   }
 
   return exprs;
 }
 
-void parse_fn_decl(const FnDecl& fn, Cursor* cur) {
-  auto params = collect_params(Cursor{fn.params});
-
-  for (const sym::Param& param : params) {
-    unit::scope_push(param.name, param.type);
-  }
-
-  auto mono_fn = unit::declare_mono_fn(
-    fn.name, std::move(params), fn.ret_type
-  );
-
-  mono_fn->Define(std::move(collect_exprs(cur)));
-}
-
 void go_cc::declare_fn(const FnDecl& fn) {
-  auto params = collect_params(Cursor{fn.params});
+  auto params = collect_params(Reader{fn.params});
 
   unit::declare_mono_fn(
     fn.name, std::move(params), fn.ret_type
   );
 }
 
-void define_fn(Cursor* cur, const FnDecl& fn) {
+void define_fn(Reader* reader, const FnDecl& fn) {
   auto mono_fn = unit::get_mono_fn(fn.name);
 
   for (const sym::Param& param : mono_fn->Params()) {
     unit::scope_push(param.name, param.type);
   }
 
-  mono_fn->Define(std::move(collect_exprs(cur)));
+  mono_fn->Define(std::move(collect_exprs(reader)));
 }
 
 void go_cc::define_fn(const FnDecl& fn) {
-  Cursor cur{fn.body};
+  Reader reader{fn.body};
 
   try {
     unit::create_scope_level();
-    ::define_fn(&cur, fn);
+    ::define_fn(&reader, fn);
     unit::drop_scope_level();
-  } catch (err::FnCallArity e) {
+  }
+  catch (const err::AbstractError& e) { e.Blame(reader.Pos()); }
+
+  /* catch (err::FnCallArity e) {
     BLAME(
       "function {%.*s} expects {%u} arguments, {%u} given",
       &cur,
@@ -132,5 +128,5 @@ void go_cc::define_fn(const FnDecl& fn) {
     );
   } catch (err::UnexpectedToken e) {
     BLAME("operator {%s} does not exist", &cur, e.token);
-  }
+  }*/
 }
