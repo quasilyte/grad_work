@@ -2,7 +2,8 @@ project(io)
 
 set(
   io_src
-  utils.cpp
+  w_utils.cpp
+  r_utils.cpp
   file_writer.cpp
 )
 
